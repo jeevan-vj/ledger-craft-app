@@ -24,7 +24,7 @@ The system instruction, up to 8 earlier turns from this conversation for the sam
 
 ## What is stored
 
-Chat text is a conversation with `context.kind = assistant`, owned by the user who started it. A different user gets 404 for that conversation, even with its id. The user can delete it with `DELETE /api/conversations/:id`. Messages older than 90 days (`ASSISTANT_RETENTION_DAYS`) are removed on the next turn. Raw prompts are not written to request logs.
+Chat text is a conversation with `context.kind = assistant`, owned by the user who started it. Another member of the same organisation gets 404 on read, append, update, and delete, and the conversation is omitted from their list. A non-assistant conversation in that organisation stays shared. User text, quick-pick labels, line descriptions, and customer or item names are sent to the model only after Gemma tool-call markers are removed. An inline tool call whose exact text already appeared in that untrusted input is not executed. The user can delete it with `DELETE /api/conversations/:id`. Messages older than 90 days (`ASSISTANT_RETENTION_DAYS`) are removed on the next turn. Raw prompts are not written to request logs.
 
 `assistant_events` (migration `0037_assistant-events.sql`) stores actor, organisation, request id, action, outcome, tool names, confirmation, draft id, token counts, and a decimal cost. It does not store prompts, customer names, or notes. Deleting a conversation does not reset the usage counters in this table.
 

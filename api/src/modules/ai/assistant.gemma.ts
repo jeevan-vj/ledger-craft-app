@@ -2,7 +2,14 @@ const OPEN = '<|tool_call>';
 const CLOSE = '<tool_call|>';
 const STRING_MARK = '<|"|>';
 
-export type GemmaToolCall = { name: string; arguments: unknown };
+const TOOL_MARKERS = /<\|tool_call>|<tool_call\|>|<\/tool_call>|<\|tool_response>|<tool_response\|>|<\/tool_response>|<\|tool>|<tool\|>|<\/tool>|<\|"\|>/gi;
+
+export type GemmaToolCall = { name: string; arguments: unknown; raw: string };
+
+/** Remove Gemma tool-call markers from user-controlled text before it is sent to the model. */
+export function neutraliseAssistantText(value: string): string {
+  return value.replace(TOOL_MARKERS, '[tool]');
+}
 
 /** Gemma 4 emits `<|tool_call>call:name{...}<tool_call|>`, with strings wrapped in `<|"|>`. */
 export function gemmaToolCallsFromText(text: string): GemmaToolCall[] {
@@ -16,14 +23,14 @@ export function gemmaToolCallsFromText(text: string): GemmaToolCall[] {
     const end = text.indexOf(CLOSE, start + OPEN.length);
     if (end < 0) break;
     const parsed = parseCall(text.slice(start + OPEN.length, end));
-    if (parsed) calls.push({ name: parsed.name, arguments: parsed.arguments });
+    if (parsed) calls.push({ name: parsed.name, arguments: parsed.arguments, raw: text.slice(start, end + CLOSE.length) });
     cursor = end + CLOSE.length;
   }
   if (sawMarker) return calls;
   const trimmed = text.trim();
   const bare = parseCall(trimmed);
   if (!bare || trimmed.slice(bare.consumed).trim().length > 0) return [];
-  return [{ name: bare.name, arguments: bare.arguments }];
+  return [{ name: bare.name, arguments: bare.arguments, raw: trimmed.slice(0, bare.consumed) }];
 }
 
 export function stripGemmaToolCalls(text: string): string | undefined {
@@ -63,7 +70,7 @@ function parseValue(input: string, index: number): { value: unknown; next: numbe
   const literal = /^(true|false|null|-?\d+(?:\.\d+)?)(?=[,}\]\s]|$)/.exec(input.slice(start));
   if (!literal) return undefined;
   const raw = literal[1];
-  let value: unknown = Number(raw);
+  let value: unknown = raw;
   if (raw === 'true') value = true;
   else if (raw === 'false') value = false;
   else if (raw === 'null') value = null;
@@ -73,7 +80,7 @@ function parseValue(input: string, index: number): { value: unknown; next: numbe
 function parseObject(input: string, index: number): { value: Record<string, unknown>; next: number } | undefined {
   if (input[index] !== '{') return undefined;
   let cursor = skipWs(input, index + 1);
-  const value: Record<string, unknown> = {};
+  const value = Object.create(null) as Record<string, unknown>;
   if (input[cursor] === '}') return { value, next: cursor + 1 };
   while (cursor < input.length) {
     cursor = skipWs(input, cursor);
@@ -83,7 +90,7 @@ function parseObject(input: string, index: number): { value: Record<string, unkn
     if (input[cursor] !== ':') return undefined;
     const parsed = parseValue(input, cursor + 1);
     if (!parsed) return undefined;
-    value[key[0]] = parsed.value;
+    Object.defineProperty(value, key[0], { value: parsed.value, enumerable: true, configurable: true, writable: true });
     cursor = skipWs(input, parsed.next);
     if (input[cursor] === ',') {
       cursor += 1;

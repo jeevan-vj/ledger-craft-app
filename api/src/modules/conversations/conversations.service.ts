@@ -14,14 +14,14 @@ import * as repo from './conversations.repository';
 
 export async function listConversationsForUser(db: Database, userId: string): Promise<ConversationListResponse> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
-    const conversations = await repo.listConversations(tx, ctx.organisationId);
+    const conversations = await repo.listConversations(tx, ctx.organisationId, ctx.userId);
     return conversationListResponseSchema.parse({ conversations });
   });
 }
 
 export async function getConversationForUser(db: Database, userId: string, id: string): Promise<ConversationDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
-    const conversation = await repo.getConversation(tx, ctx.organisationId, id);
+    const conversation = await repo.getConversation(tx, ctx.organisationId, id, ctx.userId);
     if (!conversation) throw new HTTPException(404, { message: 'Conversation not found' });
     return conversation;
   });
@@ -42,7 +42,7 @@ export async function addMessageForUser(
   input: AddConversationMessageRequest,
 ): Promise<ConversationDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
-    const existing = await repo.getConversation(tx, ctx.organisationId, id);
+    const existing = await repo.getConversation(tx, ctx.organisationId, id, ctx.userId);
     if (!existing) throw new HTTPException(404, { message: 'Conversation not found' });
     const updated = await repo.insertMessage(tx, ctx, id, input);
     if (!updated) throw new HTTPException(404, { message: 'Conversation not found' });
@@ -57,7 +57,7 @@ export async function updateConversationForUser(
   input: UpdateConversationRequest,
 ): Promise<ConversationDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
-    const updated = await repo.updateConversation(tx, ctx.organisationId, id, input);
+    const updated = await repo.updateConversation(tx, ctx.organisationId, id, ctx.userId, input);
     if (!updated) throw new HTTPException(404, { message: 'Conversation not found' });
     return updated;
   });
@@ -66,7 +66,7 @@ export async function updateConversationForUser(
 export async function deleteConversationForUser(db: Database, userId: string, id: string): Promise<void> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     await deleteProposalsForConversation(tx, ctx.organisationId, id);
-    const deleted = await repo.deleteConversation(tx, ctx.organisationId, id);
+    const deleted = await repo.deleteConversation(tx, ctx.organisationId, id, ctx.userId);
     if (!deleted) throw new HTTPException(404, { message: 'Conversation not found' });
   });
 }

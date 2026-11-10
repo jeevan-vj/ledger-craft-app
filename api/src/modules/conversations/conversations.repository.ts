@@ -30,14 +30,22 @@ function toDto(
   });
 }
 
-export async function listConversations(tx: Database, organisationId: string): Promise<ConversationDto[]> {
+function isAssistantContext(context: unknown): boolean {
+  return !!context && typeof context === 'object' && (context as { kind?: string }).kind === 'assistant';
+}
+
+function visibleToUser(row: { userId: string; context: unknown }, userId: string): boolean {
+  return !isAssistantContext(row.context) || row.userId === userId;
+}
+
+export async function listConversations(tx: Database, organisationId: string, userId: string): Promise<ConversationDto[]> {
   const rows = await tx
     .select()
     .from(conversations)
     .where(eq(conversations.organisationId, organisationId))
     .orderBy(desc(conversations.updatedAt));
   const result: ConversationDto[] = [];
-  for (const row of rows) {
+  for (const row of rows.filter((row) => visibleToUser(row, userId))) {
     const messages = await tx
       .select()
       .from(conversationMessages)
@@ -52,12 +60,13 @@ export async function getConversation(
   tx: Database,
   organisationId: string,
   id: string,
+  userId: string,
 ): Promise<ConversationDto | undefined> {
   const [row] = await tx
     .select()
     .from(conversations)
     .where(and(eq(conversations.id, id), eq(conversations.organisationId, organisationId)));
-  if (!row) return undefined;
+  if (!row || !visibleToUser(row, userId)) return undefined;
   const messages = await tx
     .select()
     .from(conversationMessages)
@@ -86,7 +95,7 @@ export async function insertConversation(
 
 export async function insertMessage(
   tx: Database,
-  ctx: { organisationId: string },
+  ctx: { organisationId: string; userId: string },
   conversationId: string,
   input: AddConversationMessageRequest,
 ): Promise<ConversationDto | undefined> {
@@ -101,16 +110,17 @@ export async function insertMessage(
     .update(conversations)
     .set({ updatedAt: new Date() })
     .where(and(eq(conversations.id, conversationId), eq(conversations.organisationId, ctx.organisationId)));
-  return getConversation(tx, ctx.organisationId, conversationId);
+  return getConversation(tx, ctx.organisationId, conversationId, ctx.userId);
 }
 
 export async function updateConversation(
   tx: Database,
   organisationId: string,
   id: string,
+  userId: string,
   input: UpdateConversationRequest,
 ): Promise<ConversationDto | undefined> {
-  const existing = await getConversation(tx, organisationId, id);
+  const existing = await getConversation(tx, organisationId, id, userId);
   if (!existing) return undefined;
   const values: Partial<typeof conversations.$inferInsert> = { updatedAt: new Date() };
   if (input.title !== undefined) values.title = input.title;
@@ -122,10 +132,12 @@ export async function updateConversation(
     .update(conversations)
     .set(values)
     .where(and(eq(conversations.id, id), eq(conversations.organisationId, organisationId)));
-  return getConversation(tx, organisationId, id);
+  return getConversation(tx, organisationId, id, userId);
 }
 
-export async function deleteConversation(tx: Database, organisationId: string, id: string): Promise<boolean> {
+export async function deleteConversation(tx: Database, organisationId: string, id: string, userId: string): Promise<boolean> {
+  const existing = await getConversation(tx, organisationId, id, userId);
+  if (!existing) return false;
   const deleted = await tx
     .delete(conversations)
     .where(and(eq(conversations.id, id), eq(conversations.organisationId, organisationId)))

@@ -78,21 +78,60 @@ export function redactAssistantLog(value: string): string {
   return value.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[email]').slice(0, 500);
 }
 
+function assistantDebugEnabled(env: { ASSISTANT_DEBUG?: string; NODE_ENV?: string }): boolean {
+  return env.ASSISTANT_DEBUG === '1' && (env.NODE_ENV === 'development' || env.NODE_ENV === 'test');
+}
+
+function debugSnippet(text: string): string {
+  const hidden = text
+    .replace(/<\|tool_call>[\s\S]*?<tool_call\|>/g, '[tool-call]')
+    .replace(/call:[A-Za-z_][A-Za-z0-9_]*\{[\s\S]*\}/g, '[tool-call]');
+  return redactAssistantLog(hidden).slice(0, 120);
+}
+
 export function logAssistantModelTurn(turn: AssistantModelTurn, env: { ASSISTANT_DEBUG?: string; NODE_ENV?: string } = process.env): void {
-  if (env.ASSISTANT_DEBUG !== '1' || (env.NODE_ENV !== 'development' && env.NODE_ENV !== 'test')) return;
+  if (!assistantDebugEnabled(env)) return;
+  const text = turn.text ?? '';
   console.info(JSON.stringify({
     source: 'assistant_model',
     toolCalls: turn.toolCalls.map((call) => call.name),
-    text: redactAssistantLog(turn.text ?? ''),
+    textLength: text.length,
+    snippet: debugSnippet(text),
   }));
 }
 
-export function parseWorkersAiAssistantTurn(response: unknown): AssistantModelTurn {
+function toolNamesOnly(body: Record<string, unknown>): string[] {
+  const choice = messageOf(body);
+  const direct = body.tool_calls ?? body.toolCalls;
+  const nested = choice?.tool_calls ?? choice?.toolCalls;
+  const legacy = asRecord(choice?.function_call);
+  const calls = Array.isArray(direct) ? direct : Array.isArray(nested) ? nested : legacy ? [legacy] : [];
+  return calls.flatMap((call) => {
+    const record = asRecord(call) ?? {};
+    const fn = asRecord(record.function);
+    const name = typeof record.name === 'string' ? record.name : typeof fn?.name === 'string' ? fn.name : '';
+    return name ? [name] : [];
+  });
+}
+
+export function logAssistantParseFailure(response: unknown, env: { ASSISTANT_DEBUG?: string; NODE_ENV?: string } = process.env): void {
+  if (!assistantDebugEnabled(env)) return;
+  const body = unwrap(response);
+  const text = textOf(body.response ?? body.text ?? messageOf(body)?.content) ?? '';
+  console.info(JSON.stringify({
+    source: 'assistant_model',
+    toolCalls: toolNamesOnly(body),
+    textLength: text.length,
+    snippet: debugSnippet(text),
+  }));
+}
+
+export function parseWorkersAiAssistantTurn(response: unknown, untrustedText = ''): AssistantModelTurn {
   const body = unwrap(response);
   let toolCalls = toolCallsOf(body);
   let text = textOf(body.response ?? body.text ?? messageOf(body)?.content);
   if (!toolCalls.length && text) {
-    const gemma = gemmaToolCallsFromText(text);
+    const gemma = gemmaToolCallsFromText(text).filter((call) => !untrustedText.includes(call.raw));
     if (gemma.length) {
       toolCalls = gemma.map((call, index) => ({ id: `call_${index + 1}`, name: call.name, arguments: call.arguments }));
       const bare = text.trim().startsWith('call:');
@@ -114,7 +153,7 @@ export function createWorkersAiAssistantModel(
   model = process.env.ASSISTANT_WORKERS_AI_MODEL || ASSISTANT_WORKERS_AI_MODEL,
 ): AssistantModel {
   return {
-    async complete({ messages, tools, signal }) {
+    async complete({ messages, tools, signal, untrustedText }) {
       const timedOut = () => apiError(504, 'ASSISTANT_TIMEOUT', 'The assistant took too long. Nothing was saved. Use Invoices to continue.');
       if (signal.aborted) throw timedOut();
       const response = await new Promise<unknown>((resolve, reject) => {
@@ -126,11 +165,11 @@ export function createWorkersAiAssistantModel(
         );
       });
       try {
-        const turn = parseWorkersAiAssistantTurn(response);
+        const turn = parseWorkersAiAssistantTurn(response, untrustedText ?? '');
         logAssistantModelTurn(turn);
         return turn;
       } catch (error) {
-        logAssistantModelTurn({ text: textOf(unwrap(response).response) ?? '', toolCalls: [], inputTokens: 0, outputTokens: 0 });
+        logAssistantParseFailure(response);
         throw error;
       }
     },

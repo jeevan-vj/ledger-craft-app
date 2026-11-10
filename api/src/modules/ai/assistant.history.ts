@@ -1,4 +1,5 @@
 import type { AssistantModelMessage } from './assistant.config';
+import { neutraliseAssistantText } from './assistant.gemma';
 
 export const ASSISTANT_HISTORY_TURNS = 8;
 export const ASSISTANT_HISTORY_CHARS = 4_000;
@@ -14,12 +15,12 @@ export function assistantHistoryMessages(rows: readonly AssistantHistoryRow[]): 
   let current: AssistantModelMessage[] | null = null;
   for (const row of rows) {
     if (row.role === 'user') {
-      current = [{ role: 'user', content: row.content.trim() }];
+      current = [{ role: 'user', content: neutraliseAssistantText(row.content.trim()) }];
       turns.push(current);
       continue;
     }
     if (row.role !== 'assistant') continue;
-    const message: AssistantModelMessage = { role: 'assistant', content: summarizeAssistant(row) };
+    const message: AssistantModelMessage = { role: 'assistant', content: neutraliseAssistantText(summarizeAssistant(row)) };
     if (current) current.push(message);
     else {
       current = [message];
@@ -29,15 +30,36 @@ export function assistantHistoryMessages(rows: readonly AssistantHistoryRow[]): 
   const kept = turns.slice(-ASSISTANT_HISTORY_TURNS);
   while (kept.length > 1 && turnChars(kept) > ASSISTANT_HISTORY_CHARS) kept.shift();
   const flat = kept.flat().filter((message) => message.content.length > 0);
-  let used = flat.reduce((sum, message) => sum + message.content.length, 0);
-  for (let index = 0; index < flat.length && used > ASSISTANT_HISTORY_CHARS; index += 1) {
-    const message = flat[index];
-    const overflow = used - ASSISTANT_HISTORY_CHARS;
-    const next = message.content.slice(overflow);
-    used -= message.content.length - next.length;
-    flat[index] = { ...message, content: next };
+  while (flat.length > 0 && flat.reduce((sum, message) => sum + message.content.length, 0) > ASSISTANT_HISTORY_CHARS) {
+    flat.shift();
   }
-  return flat.filter((message) => message.content.length > 0);
+  return flat;
+}
+
+export function untrustedHistoryText(rows: readonly AssistantHistoryRow[]): string {
+  const bits: string[] = [];
+  for (const row of rows) {
+    bits.push(row.content);
+    for (const part of partsOf(row.metadata)) {
+      if (Array.isArray(part.options)) {
+        for (const option of part.options) {
+          if (option && typeof option === 'object' && typeof (option as { label?: unknown }).label === 'string') {
+            bits.push((option as { label: string }).label);
+          }
+        }
+      }
+      const proposal = part.proposal;
+      if (!proposal || typeof proposal !== 'object') continue;
+      if (typeof proposal.customerName === 'string') bits.push(proposal.customerName);
+      if (!Array.isArray(proposal.lines)) continue;
+      for (const line of proposal.lines) {
+        if (line && typeof line === 'object' && typeof (line as { description?: unknown }).description === 'string') {
+          bits.push((line as { description: string }).description);
+        }
+      }
+    }
+  }
+  return bits.join('\n');
 }
 
 function turnChars(turns: readonly AssistantModelMessage[][]): number {

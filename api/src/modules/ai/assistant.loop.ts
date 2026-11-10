@@ -5,7 +5,8 @@ import type { Database } from '../../db/client';
 import { apiError, errorCodeFromCause } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import type { AssistantModel, AssistantModelMessage } from './assistant.config';
-import { assistantHistoryMessages } from './assistant.history';
+import { assistantHistoryMessages, untrustedHistoryText } from './assistant.history';
+import { neutraliseAssistantText } from './assistant.gemma';
 import { listAssistantHistory } from './assistant.store';
 import { ASSISTANT_TOOL_DEFINITIONS, executeAssistantTool, isAllowedTool } from './assistant.tools';
 
@@ -95,10 +96,10 @@ function argumentsOf(value: unknown): unknown {
   try { return JSON.parse(value) as unknown; } catch { return value; }
 }
 
-async function oneTurn(model: AssistantModel, messages: AssistantModelMessage[], timeoutMs: number) {
+async function oneTurn(model: AssistantModel, messages: AssistantModelMessage[], timeoutMs: number, untrustedText: string) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
-  const completed = model.complete({ messages, tools: ASSISTANT_TOOL_DEFINITIONS, signal: controller.signal });
+  const completed = model.complete({ messages, tools: ASSISTANT_TOOL_DEFINITIONS, signal: controller.signal, untrustedText });
   void completed.catch(() => undefined);
   const aborted = new Promise<never>((_, reject) => {
     controller.signal.addEventListener('abort', () => reject(apiError(504, 'ASSISTANT_TIMEOUT', TIMEOUT)));
@@ -155,10 +156,11 @@ export async function runAssistantLoop(input: {
   const prior = input.conversationId
     ? await withOrganisationTx(input.db, input.userId, (tx, ctx) => listAssistantHistory(tx, ctx, input.conversationId!))
     : [];
+  const untrustedParts = [input.message, untrustedHistoryText(prior)];
   const messages: AssistantModelMessage[] = [
     { role: 'system', content: SYSTEM },
     ...assistantHistoryMessages(prior),
-    { role: 'user', content: input.message },
+    { role: 'user', content: neutraliseAssistantText(input.message) },
   ];
   const parts: AssistantPart[] = [];
   const toolNames: string[] = [];
@@ -171,7 +173,7 @@ export async function runAssistantLoop(input: {
   for (let step = 0; step < input.maxSteps; step += 1) {
     const remaining = input.timeoutMs - (Date.now() - started);
     if (remaining <= 0) throw apiError(504, 'ASSISTANT_TIMEOUT', TIMEOUT);
-    const turn = await oneTurn(input.model, messages, remaining);
+    const turn = await oneTurn(input.model, messages, remaining, untrustedParts.join('\n'));
     inputTokens = Math.min(inputTokens + turn.inputTokens, 2_000_000);
     outputTokens = Math.min(outputTokens + turn.outputTokens, 2_000_000);
     if (turn.toolCalls.length === 0) break;
@@ -185,14 +187,12 @@ export async function runAssistantLoop(input: {
       const key = assistantToolCallKey(call.name, args);
       if (seenToolCalls.has(key)) {
         repeated = true;
-        messages.push({
-          role: 'tool',
-          name: call.name,
-          content: JSON.stringify({
-            note: 'Already called with these arguments in this turn. Use the earlier result.',
-            result: seenToolCalls.get(key),
-          }).slice(0, 4_000),
-        });
+        const repeatedRaw = JSON.stringify({
+          note: 'Already called with these arguments in this turn. Use the earlier result.',
+          result: seenToolCalls.get(key),
+        }).slice(0, 4_000);
+        untrustedParts.push(repeatedRaw);
+        messages.push({ role: 'tool', name: call.name, content: neutraliseAssistantText(repeatedRaw) });
         continue;
       }
       const result = await withOrganisationTx(input.db, input.userId, (tx, ctx) => executeAssistantTool(
@@ -204,7 +204,9 @@ export async function runAssistantLoop(input: {
       seenToolCalls.set(key, result.modelContent);
       parts.push(...result.parts);
       if (result.proposal) proposal = result.proposal;
-      messages.push({ role: 'tool', name: call.name, content: JSON.stringify(result.modelContent).slice(0, 4_000) });
+      const toolRaw = JSON.stringify(result.modelContent).slice(0, 4_000);
+      untrustedParts.push(toolRaw);
+      messages.push({ role: 'tool', name: call.name, content: neutraliseAssistantText(toolRaw) });
     }
     if (repeated) break;
   }
