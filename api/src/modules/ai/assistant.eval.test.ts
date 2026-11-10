@@ -200,6 +200,109 @@ describe('assistant eval suite', () => {
     expect((await tally(db)).expenses).toBe(0);
   }));
 
+  it('refuses an expense-named tool with a link to Expenses', () => run({
+    steps: [turn([{ name: 'prepare_expense', arguments: { amount: '45.00' } }])],
+  }, async ({ ask, db, calls }) => {
+    const reply = await ask('Record $45 of fuel');
+    expect(reply.parts).toContainEqual({ type: 'link', href: '/expenses', label: 'Expenses' });
+    expect(reply.parts.some((part) => part.type === 'link' && part.href === '/invoices')).toBe(false);
+    expect((await tally(db)).expenses).toBe(0);
+    expect(calls.n).toBe(1);
+  }));
+
+  it('routes a fuel expense to Expenses when the model only answers in text', () => {
+    const seen = { n: 0 };
+    const model: AssistantModel = {
+      async complete() {
+        seen.n += 1;
+        return { text: 'Use the Invoices screen.', toolCalls: [], inputTokens: 4, outputTokens: 2 };
+      },
+    };
+    return run({ model }, async ({ ask, db }) => {
+      const reply = await ask(prompt('expense-deferred'));
+      expect(reply.parts).toContainEqual({ type: 'text', text: 'Expenses cannot be saved from the assistant yet. Use the Expenses screen.' });
+      expect(reply.parts).toContainEqual({ type: 'link', href: '/expenses', label: 'Expenses' });
+      expect(reply.parts.some((part) => part.type === 'link' && part.href === '/invoices')).toBe(false);
+      expect((await tally(db)).expenses).toBe(0);
+      expect(seen.n).toBe(0);
+    });
+  });
+
+  it('keeps one outstanding summary when list_outstanding is repeated', () => {
+    const seen = { n: 0 };
+    const model: AssistantModel = {
+      async complete() {
+        seen.n += 1;
+        return turn([{ name: 'list_outstanding', arguments: {} }]);
+      },
+    };
+    return run({ model }, async ({ ask }) => {
+      const reply = await ask(prompt('who-owes'));
+      expect(reply.parts.filter((part) => part.type === 'text')).toHaveLength(1);
+      expect(reply.parts.filter((part) => part.type === 'link')).toHaveLength(1);
+      expect(seen.n).toBe(2);
+    });
+  });
+
+  it('keeps one quick-pick list when search_customers is repeated', () => {
+    const seen = { n: 0 };
+    const model: AssistantModel = {
+      async complete() {
+        seen.n += 1;
+        return turn([{ name: 'search_customers', arguments: { query: 'Sarah' } }]);
+      },
+    };
+    return run({ model }, async ({ call, ask }) => {
+      await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah.chen@example.test' }, 201);
+      await call('/api/customers', 'POST', { name: 'Sarah Jones', email: 'sarah.jones@example.test' }, 201);
+      const reply = await ask(prompt('ambiguous-customer'));
+      expect(reply.parts.filter((part) => part.type === 'quick_picks')).toHaveLength(1);
+      expect(seen.n).toBe(2);
+    });
+  });
+
+  it('prepares an invoice when a repeated search shares a step with a new tool', () => {
+    const seen = { n: 0 };
+    const model: AssistantModel = {
+      async complete({ messages }) {
+        seen.n += 1;
+        const ran = messages.filter((message) => message.role === 'tool').length;
+        if (ran === 0) return turn([{ name: 'search_customers', arguments: { query: 'Sarah' } }]);
+        return turn([
+          { name: 'search_customers', arguments: { query: 'Sarah' } },
+          { name: 'prepare_invoice_proposal', arguments: { customerQuery: 'Sarah', dueDate: '2026-11-13', taxInclusive: true, lines: [{ description: 'Plumbing', quantity: '1', rate: '100.00' }] } },
+        ]);
+      },
+    };
+    return run({ model }, async ({ call, ask }) => {
+      await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah@example.test' }, 201);
+      const reply = await ask(prompt('gst-inclusive'));
+      expect(reply.parts.filter((part) => part.type === 'proposal')).toHaveLength(1);
+      expect(reply.parts.filter((part) => part.type === 'text')).toHaveLength(1);
+      expect(seen.n).toBe(2);
+    });
+  });
+
+  it('still runs the same tool when the arguments differ', () => {
+    const seen = { n: 0 };
+    const model: AssistantModel = {
+      async complete({ messages }) {
+        seen.n += 1;
+        const ran = messages.filter((message) => message.role === 'tool').length;
+        if (ran === 0) return turn([{ name: 'search_customers', arguments: { query: 'Sarah' } }]);
+        if (ran === 1) return turn([{ name: 'search_customers', arguments: { query: 'Jones' } }]);
+        return { text: 'Done.', toolCalls: [], inputTokens: 1, outputTokens: 1 };
+      },
+    };
+    return run({ model }, async ({ call, ask }) => {
+      await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah.chen@example.test' }, 201);
+      await call('/api/customers', 'POST', { name: 'Sarah Jones', email: 'sarah.jones@example.test' }, 201);
+      const reply = await ask(prompt('ambiguous-customer'));
+      expect(reply.parts.filter((part) => part.type === 'quick_picks')).toHaveLength(1);
+      expect(seen.n).toBe(3);
+    });
+  });
+
   it('prices inclusive GST on the server and saves one non-posting draft', () => run({
     steps: [turn([{ name: 'prepare_invoice_proposal', arguments: { customerQuery: 'Sarah', dueDate: '2026-11-13', taxInclusive: true, taxRate: '0', lines: [{ description: 'Plumbing', quantity: '3', rate: '100.00' }] } }])],
   }, async ({ call, ask, db }) => {

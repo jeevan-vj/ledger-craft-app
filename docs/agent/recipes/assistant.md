@@ -6,7 +6,9 @@ P1 is the API in `api/src/modules/ai`. Web and mobile chat UI are later phases. 
 
 `POST /api/ai/assistant` is the turn. `POST /api/ai/assistant/drafts` is the only save. `POST /api/ai/assistant/proposals/:id/preview` reprices the same edits and writes nothing. All three require the session organisation. The body cannot choose an organisation.
 
-The turn is capped at 6 model steps and 8 seconds. Tool arguments are Zod-parsed. Allowed tools are `search_customers`, `search_catalogue`, `prepare_invoice_proposal`, and `list_outstanding`. Any other tool name is refused and answered with a link to Invoices or Expenses.
+The turn is capped at 4 model steps and 30 seconds. A runtime `timeoutMs` below 30 seconds is the budget that runs, including the live eval. Anything above 30 seconds is capped there, inside a Worker request. Tool arguments are Zod-parsed. Allowed tools are `search_customers`, `search_catalogue`, `prepare_invoice_proposal`, and `list_outstanding`. Any other tool name is refused and answered with a link to Invoices or Expenses.
+
+A repeated call with the same tool and arguments returns the earlier result with a note and ends the turn. The reply keeps one copy of each part.
 
 `prepare_invoice_proposal` returns a proposal and does not insert an invoice. The proposal row is stored in `assistant_proposals` (`0038_assistant-proposals.sql`), which the conversation API cannot write. Saving clears the payload and keeps the id, organisation, saved invoice id, and signature. The 90-day purge and deleting the conversation remove the row. Save or preview of a removed proposal is `404` with `That proposal is not in this business.` A proposal owned by another business returns that same not-found error.
 
@@ -34,8 +36,8 @@ Per business, from the environment, defaulting to 100 messages/day, 20/minute, a
 
 ## Expenses
 
-There is no expense draft status. `createExpenseInTx` inserts a real expense and posts a journal when the status is approved. Pending is still a saved expense. The assistant does not call it. A fuel request is refused with a link to Expenses.
+There is no expense draft status. `createExpenseInTx` inserts a real expense and posts a journal when the status is approved. Pending is still a saved expense. The assistant does not call it. A user message that asks for an expense, including a fuel expense, is refused with a link to Expenses before the model runs. A tool name containing `expense` is refused the same way.
 
 ## Evals
 
-CI runs `api/src/modules/ai/assistant.eval.test.ts` with a scripted model. The live script is `pnpm --filter @ledgercraft/api eval:assistant:live`.
+CI runs `api/src/modules/ai/assistant.eval.test.ts` with a scripted model. The live script is `pnpm --filter @ledgercraft/api eval:assistant:live`. It sets a 30 second turn budget.
