@@ -35,9 +35,10 @@ export function assistantCustomerPickMessage(label: string): string {
 
 /**
  * Second turn for the live customer pick. The assistant loop sends only the
- * current user message, so this repeats the quantity, rate, and plus-GST
- * treatment. Replaying earlier turns is a separate product fix.
+ * current user message, so this repeats the quantity, rate, plus-GST treatment,
+ * and the first prompt's due date. Totals stay null until a due date is present.
+ * Replaying earlier turns is a separate product fix.
  */
 export function assistantLivePickFollowUp(label: string): string {
-  return `${assistantCustomerPickMessage(label)}: 3 hours at $100 plus GST`;
+  return `${assistantCustomerPickMessage(label)}: 3 hours at $100 plus GST, due 2026-11-13`;
 }

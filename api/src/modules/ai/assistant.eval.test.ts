@@ -73,7 +73,7 @@ describe('assistant eval suite', () => {
       taxRate: '15',
       totals: { subtotal: '300.00', taxAmount: '45.00', total: '345.00' },
     });
-    expect(assistantLivePickFollowUp(ASSISTANT_LIVE_CUSTOMER_PICK.customerLabel)).toBe('Use customer Sarah Chen: 3 hours at $100 plus GST');
+    expect(assistantLivePickFollowUp(ASSISTANT_LIVE_CUSTOMER_PICK.customerLabel)).toBe('Use customer Sarah Chen: 3 hours at $100 plus GST, due 2026-11-13');
   });
 
   async function run(options: {

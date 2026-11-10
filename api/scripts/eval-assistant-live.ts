@@ -195,7 +195,7 @@ await withTestDb(async () => {
         headers: { ...headers, Cookie: cookie },
         body: JSON.stringify({
           conversationId: firstBody.conversationId,
-          // History is not replayed. The follow-up has to carry the price itself.
+          // History is not replayed. The follow-up carries the price and the due date.
           message: assistantLivePickFollowUp(chosen.label),
         }),
       });
