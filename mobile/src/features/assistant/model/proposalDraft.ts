@@ -35,6 +35,43 @@ export function validTaxRate(value: string): boolean {
   return money.test(value) && Number(value) >= 0 && Number(value) <= 100;
 }
 
+export const DATE_FORMAT_MESSAGE = 'Enter a real date';
+export const GST_RATE_FORMAT_MESSAGE = 'Enter a GST rate from 0 to 100';
+
+export function issueDateFormatError(proposalDate: string, value: string): string | undefined {
+  if (value === proposalDate || realCalendarDay(value)) return undefined;
+  return DATE_FORMAT_MESSAGE;
+}
+
+export function dueDateFormatError(proposalDue: string | null, value: string): string | undefined {
+  if (value === (proposalDue ?? '') || realCalendarDay(value)) return undefined;
+  return DATE_FORMAT_MESSAGE;
+}
+
+export function taxRateFormatError(proposalRate: string, value: string): string | undefined {
+  if (value === proposalRate || validTaxRate(value)) return undefined;
+  return GST_RATE_FORMAT_MESSAGE;
+}
+
+export function formatBlocksPreview(proposal: AssistantProposal, draft: ProposalDraft): boolean {
+  return Boolean(
+    issueDateFormatError(proposal.date, draft.issueDate)
+    || dueDateFormatError(proposal.dueDate, draft.dueDate)
+    || taxRateFormatError(proposal.taxRate, draft.taxRate),
+  );
+}
+
+export function screenMatchesPricedPreview(
+  proposal: AssistantProposal,
+  draft: ProposalDraft,
+  priced: { date: string; dueDate: string | null; taxRate: string },
+): boolean {
+  if (formatBlocksPreview(proposal, draft)) return false;
+  return priced.date === draft.issueDate
+    && priced.taxRate === draft.taxRate
+    && (priced.dueDate ?? '') === draft.dueDate;
+}
+
 export function draftFromProposal(proposal: AssistantProposal): ProposalDraft {
   return {
     customerId: proposal.customerId,
@@ -100,5 +137,19 @@ export function buildSaveBody(conversationId: string, proposal: AssistantProposa
 }
 
 export function draftHasEdits(proposal: AssistantProposal, draft: ProposalDraft): boolean {
-  return saveEdits(proposal, draft) !== undefined;
+  if (draft.customerId !== proposal.customerId) return true;
+  if ((draft.customerName ?? '') !== (proposal.customerName ?? '')) return true;
+  if (draft.issueDate !== proposal.date) return true;
+  if (draft.dueDate !== (proposal.dueDate ?? '')) return true;
+  if (draft.taxInclusive !== proposal.taxInclusive) return true;
+  if (draft.taxRate !== proposal.taxRate) return true;
+  if (draft.notes.trim() !== (proposal.notes ?? '')) return true;
+  return draft.lines.length !== proposal.lines.length || draft.lines.some((line, index) => {
+    const source = proposal.lines[index];
+    return line.description.trim() !== source?.description
+      || line.quantity !== source?.quantity
+      || line.rate !== (source?.rate ?? '')
+      || line.itemId !== source?.itemId
+      || line.unit !== source?.unit;
+  });
 }

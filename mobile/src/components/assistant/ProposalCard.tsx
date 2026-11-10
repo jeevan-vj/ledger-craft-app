@@ -3,7 +3,14 @@ import { StyleSheet, Text, View } from 'react-native';
 import type { AssistantProposal } from '@ledgercraft/contracts';
 import { ModernInput, PillButton } from '@/components/ui';
 import type { ProposalDraft } from '@/features/assistant/model/proposalDraft';
-import { draftHasEdits, draftReadyToSave } from '@/features/assistant/model/proposalDraft';
+import {
+  draftHasEdits,
+  draftReadyToSave,
+  dueDateFormatError,
+  issueDateFormatError,
+  screenMatchesPricedPreview,
+  taxRateFormatError,
+} from '@/features/assistant/model/proposalDraft';
 import { useProposalPreview, type ProposalPreviewState } from '@/features/assistant/model/useProposalPreview';
 import { useTheme } from '@/theme';
 
@@ -30,7 +37,11 @@ export function ProposalCard({ proposal, draft, conversationId, saving, onChange
   const dirty = draftHasEdits(proposal, draft);
   const ready = draftReadyToSave(draft);
   const preview = useProposalPreview(conversationId, proposal, draft);
-  const priced = pricedTotals(preview, proposal, dirty);
+  const priced = pricedTotals(preview, proposal, draft, dirty);
+  const unconfirmed = dirty || preview.status === 'pending' || preview.status === 'error';
+  const issueError = issueDateFormatError(proposal.date, draft.issueDate) ?? fieldMessage(preview, 'date') ?? fieldMessage(preview, 'issueDate');
+  const dueError = dueDateFormatError(proposal.dueDate, draft.dueDate) ?? fieldMessage(preview, 'dueDate');
+  const rateError = taxRateFormatError(proposal.taxRate, draft.taxRate) ?? fieldMessage(preview, 'taxRate');
   const updateLine = (index: number, patch: Partial<ProposalDraft['lines'][number]>) => {
     onChange({
       ...draft,
@@ -53,8 +64,9 @@ export function ProposalCard({ proposal, draft, conversationId, saving, onChange
         onChangeText={(issueDate) => onChange({ ...draft, issueDate })}
         placeholder="YYYY-MM-DD"
         autoCapitalize="none"
-        error={fieldMessage(preview, 'date') ?? fieldMessage(preview, 'issueDate')}
-        accessibilityHint="Calendar day the server uses as the invoice date"
+        keyboardType="numbers-and-punctuation"
+        error={issueError}
+        accessibilityHint={issueError ?? 'Calendar day the server uses as the invoice date'}
       />
       <ModernInput
         label="Due date"
@@ -62,8 +74,9 @@ export function ProposalCard({ proposal, draft, conversationId, saving, onChange
         onChangeText={(dueDate) => onChange({ ...draft, dueDate })}
         placeholder="YYYY-MM-DD"
         autoCapitalize="none"
-        error={fieldMessage(preview, 'dueDate')}
-        accessibilityHint="Calendar day from the server, or a day you type"
+        keyboardType="numbers-and-punctuation"
+        error={dueError}
+        accessibilityHint={dueError ?? 'Calendar day from the server, or a day you type'}
       />
       <View style={styles.gst}>
         <PillButton
@@ -82,8 +95,8 @@ export function ProposalCard({ proposal, draft, conversationId, saving, onChange
         value={draft.taxRate}
         onChangeText={(taxRate) => onChange({ ...draft, taxRate })}
         keyboardType="decimal-pad"
-        error={fieldMessage(preview, 'taxRate')}
-        accessibilityHint="GST percent from 0 to 100. The server applies this rate."
+        error={rateError}
+        accessibilityHint={rateError ?? 'GST percent from 0 to 100. The server applies this rate.'}
       />
       {fieldMessage(preview, 'taxInclusive') ? <Text style={[theme.type.footnote, { color: theme.colors.danger }]}>{fieldMessage(preview, 'taxInclusive')}</Text> : null}
       {draft.lines.map((line, index) => {
@@ -110,8 +123,9 @@ export function ProposalCard({ proposal, draft, conversationId, saving, onChange
               onChangeText={(rate) => updateLine(index, { rate })}
               keyboardType="decimal-pad"
               placeholder="Rate"
-              error={fieldMessage(preview, `lines.${index}.rate`) ?? fieldMessage(preview, `lines.${index}.itemId`)}
+              error={fieldMessage(preview, `lines.${index}.rate`)}
             />
+            {fieldMessage(preview, `lines.${index}.itemId`) ? <Text style={[theme.type.footnote, { color: theme.colors.danger }]}>{fieldMessage(preview, `lines.${index}.itemId`)}</Text> : null}
             {priced && serverLine?.total ? <Text style={theme.type.subhead}>Line total {moneyText(serverLine.total, proposal.currency)}</Text> : null}
           </View>
         );
@@ -129,7 +143,7 @@ export function ProposalCard({ proposal, draft, conversationId, saving, onChange
         </View>
       ) : (
         <View>
-          <Text style={[theme.type.headline, { color: theme.colors.warning }]}>Incomplete</Text>
+          <Text style={[theme.type.headline, { color: theme.colors.warning }]}>{unconfirmed ? 'Unconfirmed' : 'Incomplete'}</Text>
           {preview.status === 'error' ? <Text accessibilityRole="alert" style={[theme.type.subhead, { color: theme.colors.danger }]}>{preview.message}</Text> : (
             <Text style={theme.type.subhead}>
               {preview.status === 'pending'
@@ -139,11 +153,6 @@ export function ProposalCard({ proposal, draft, conversationId, saving, onChange
                   : 'The server has not priced this invoice yet.'}
             </Text>
           )}
-          {dirty && proposal.totals && preview.status !== 'ready' ? (
-            <Text style={theme.type.footnote} accessibilityLabel={`Last server total ${moneyText(proposal.totals.total, proposal.currency)}`}>
-              Last server total {moneyText(proposal.totals.total, proposal.currency)}
-            </Text>
-          ) : null}
         </View>
       )}
       <PillButton label="Save draft" disabled={!ready || saving} loading={saving} onPress={onSave} />
@@ -154,11 +163,19 @@ export function ProposalCard({ proposal, draft, conversationId, saving, onChange
 function pricedTotals(
   preview: ProposalPreviewState,
   proposal: AssistantProposal,
+  draft: ProposalDraft,
   dirty: boolean,
 ): { subtotal: string; taxAmount: string; total: string } | null {
   if (preview.status === 'ready') {
-    const { subtotal, taxAmount, total } = preview.preview;
-    if (subtotal != null && taxAmount != null && total != null) return { subtotal, taxAmount, total };
+    const body = preview.preview;
+    const matches = body.date != null && body.taxRate != null && screenMatchesPricedPreview(proposal, draft, {
+      date: body.date,
+      dueDate: body.dueDate ?? null,
+      taxRate: body.taxRate,
+    });
+    if (matches && body.subtotal != null && body.taxAmount != null && body.total != null) {
+      return { subtotal: body.subtotal, taxAmount: body.taxAmount, total: body.total };
+    }
     return null;
   }
   if (preview.status === 'idle' && !dirty && proposal.totals) return proposal.totals;

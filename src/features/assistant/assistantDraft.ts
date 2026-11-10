@@ -34,6 +34,43 @@ export function validTaxRate(value: string): boolean {
   return money.test(value) && Number(value) >= 0 && Number(value) <= 100;
 }
 
+export const DATE_FORMAT_MESSAGE = 'Enter a real date';
+export const GST_RATE_FORMAT_MESSAGE = 'Enter a GST rate from 0 to 100';
+
+export function issueDateFormatError(proposalDate: string, value: string): string | undefined {
+  if (value === proposalDate || realCalendarDay(value)) return undefined;
+  return DATE_FORMAT_MESSAGE;
+}
+
+export function dueDateFormatError(proposalDue: string | null, value: string): string | undefined {
+  if (value === (proposalDue ?? '') || realCalendarDay(value)) return undefined;
+  return DATE_FORMAT_MESSAGE;
+}
+
+export function taxRateFormatError(proposalRate: string, value: string): string | undefined {
+  if (value === proposalRate || validTaxRate(value)) return undefined;
+  return GST_RATE_FORMAT_MESSAGE;
+}
+
+export function formatBlocksPreview(proposal: AssistantProposal, draft: ProposalDraft): boolean {
+  return Boolean(
+    issueDateFormatError(proposal.date, draft.issueDate)
+    || dueDateFormatError(proposal.dueDate, draft.dueDate)
+    || taxRateFormatError(proposal.taxRate, draft.taxRate),
+  );
+}
+
+export function screenMatchesPricedPreview(
+  proposal: AssistantProposal,
+  draft: ProposalDraft,
+  priced: { date: string; dueDate: string | null; taxRate: string },
+): boolean {
+  if (formatBlocksPreview(proposal, draft)) return false;
+  return priced.date === draft.issueDate
+    && priced.taxRate === draft.taxRate
+    && (priced.dueDate ?? '') === draft.dueDate;
+}
+
 export function draftFromProposal(proposal: AssistantProposal): ProposalDraft {
   return {
     customerId: proposal.customerId,

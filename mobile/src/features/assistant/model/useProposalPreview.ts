@@ -6,7 +6,7 @@ import {
 } from '@ledgercraft/contracts';
 import { AuthApiError } from '@/features/auth/api/http';
 import { previewAssistantProposal } from '@/features/assistant/api/assistantApi';
-import { draftHasEdits, saveEdits, type ProposalDraft } from './proposalDraft';
+import { draftHasEdits, formatBlocksPreview, saveEdits, type ProposalDraft } from './proposalDraft';
 
 export const ASSISTANT_PREVIEW_DEBOUNCE_MS = 400;
 
@@ -42,7 +42,7 @@ export function useProposalPreview(
   useEffect(() => {
     const requestId = ++generation.current;
     const edits = saveEdits(proposal, draft);
-    if (!conversationId || !dirty || !edits) {
+    if (!conversationId || !dirty || !edits || formatBlocksPreview(proposal, draft)) {
       setState({ status: 'idle' });
       return undefined;
     }

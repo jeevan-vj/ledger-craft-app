@@ -181,7 +181,7 @@ describe('assistant chat', () => {
     expect(rate.props.value).toBe('120.00');
     fireEvent.changeText(rate, '80.00');
     expect(screen.getByLabelText('Rate for Plumbing').props.value).toBe('80.00');
-    expect(screen.getByText('Incomplete')).toBeTruthy();
+    expect(screen.getByText('Unconfirmed')).toBeTruthy();
     fireEvent.press(screen.getByRole('button', { name: 'Save draft' }));
     await waitFor(() => expect(saveAssistantDraft).toHaveBeenCalledWith({
       conversationId,
@@ -293,7 +293,7 @@ describe('assistant chat', () => {
     try {
       fireEvent.changeText(screen.getByLabelText('Quantity for Plumbing'), '4');
       expect(previewAssistantProposal).not.toHaveBeenCalled();
-      expect(screen.getByText('Incomplete')).toBeTruthy();
+      expect(screen.getByText('Unconfirmed')).toBeTruthy();
       await act(async () => { jest.advanceTimersByTime(399); });
       expect(previewAssistantProposal).not.toHaveBeenCalled();
       await act(async () => { jest.advanceTimersByTime(1); });
@@ -348,7 +348,7 @@ describe('assistant chat', () => {
         await first.promise;
       });
       expect(screen.queryByText('480.00 NZD')).toBeNull();
-      expect(screen.getByText('Incomplete')).toBeTruthy();
+      expect(screen.getByText('Unconfirmed')).toBeTruthy();
       await act(async () => {
         second.resolve(pricedPreview({
           lines: [{ description: 'Plumbing', quantity: '5', rate: '120.00', taxRate: '15', tax: '78.26', total: '600.00' }],
@@ -401,8 +401,9 @@ describe('assistant chat', () => {
       fireEvent.changeText(limited.getByLabelText('Quantity for Plumbing'), '4');
       await act(async () => { jest.advanceTimersByTime(400); });
       expect(limited.getByText('Too many invoice previews. Wait a minute and try again.')).toBeTruthy();
-      expect(limited.getByText('Incomplete')).toBeTruthy();
+      expect(limited.getByText('Unconfirmed')).toBeTruthy();
       expect(limited.queryByText('360.00 NZD')).toBeNull();
+      expect(limited.queryByText(/Last server total/)).toBeNull();
       expect(limited.getByLabelText('Quantity for Plumbing').props.value).toBe('4');
     } finally {
       jest.useRealTimers();
@@ -420,7 +421,8 @@ describe('assistant chat', () => {
       fireEvent.changeText(missing.getByLabelText('GST rate'), '10');
       await act(async () => { jest.advanceTimersByTime(400); });
       expect(missing.getByText('That proposal is not in this business.')).toBeTruthy();
-      expect(missing.getByText('Incomplete')).toBeTruthy();
+      expect(missing.getByText('Unconfirmed')).toBeTruthy();
+      expect(missing.queryByText(/Last server total/)).toBeNull();
       expect(missing.getByLabelText('GST rate').props.value).toBe('10');
       expect(missing.getByRole('button', { name: 'Save draft' })).toBeTruthy();
     } finally {
@@ -443,6 +445,61 @@ describe('assistant chat', () => {
       proposalId,
       edits: { issueDate: '2026-11-10', taxRate: '10' },
     }, expect.any(String)));
+  });
+
+  it('does not show the previous total when the GST rate is not a rate', async () => {
+    jest.mocked(askAssistant).mockResolvedValue({
+      conversationId,
+      parts: [{ type: 'proposal', proposal: proposal() }],
+    });
+    const screen = await ask('Invoice Sarah for plumbing');
+    expect(await screen.findByText('360.00 NZD')).toBeTruthy();
+    fireEvent.changeText(screen.getByLabelText('GST rate'), '150');
+    expect(screen.getByText('Enter a GST rate from 0 to 100')).toBeTruthy();
+    expect(screen.getByLabelText('GST rate').props.accessibilityHint).toBe('Enter a GST rate from 0 to 100');
+    expect(screen.queryByText('360.00 NZD')).toBeNull();
+    expect(screen.getByText('Unconfirmed')).toBeTruthy();
+    expect(previewAssistantProposal).not.toHaveBeenCalled();
+    fireEvent.changeText(screen.getByLabelText('GST rate'), 'abc');
+    expect(screen.getByText('Enter a GST rate from 0 to 100')).toBeTruthy();
+    expect(screen.queryByText('360.00 NZD')).toBeNull();
+  });
+
+  it('does not show the previous total when the issue date is not a real day', async () => {
+    jest.mocked(askAssistant).mockResolvedValue({
+      conversationId,
+      parts: [{ type: 'proposal', proposal: proposal() }],
+    });
+    const screen = await ask('Invoice Sarah for plumbing');
+    await screen.findByText('360.00 NZD');
+    fireEvent.changeText(screen.getByLabelText('Issue date'), '2026-02-31');
+    expect(screen.getByText('Enter a real date')).toBeTruthy();
+    expect(screen.queryByText('360.00 NZD')).toBeNull();
+    expect(screen.getByText('Unconfirmed')).toBeTruthy();
+    expect(previewAssistantProposal).not.toHaveBeenCalled();
+  });
+
+  it('drops a confirmed total when the GST rate on screen is no longer the priced rate', async () => {
+    jest.mocked(askAssistant).mockResolvedValue({
+      conversationId,
+      parts: [{ type: 'proposal', proposal: proposal() }],
+    });
+    jest.mocked(previewAssistantProposal).mockResolvedValue(pricedPreview());
+    const screen = await ask('Invoice Sarah for plumbing');
+    await screen.findByLabelText('Quantity for Plumbing');
+    jest.useFakeTimers();
+    try {
+      fireEvent.changeText(screen.getByLabelText('Quantity for Plumbing'), '4');
+      await act(async () => { jest.advanceTimersByTime(400); });
+      expect(screen.getByText('480.00 NZD')).toBeTruthy();
+      fireEvent.changeText(screen.getByLabelText('GST rate'), '150');
+      expect(screen.getByText('Enter a GST rate from 0 to 100')).toBeTruthy();
+      expect(screen.queryByText('480.00 NZD')).toBeNull();
+      expect(screen.getByText('Unconfirmed')).toBeTruthy();
+      expect(previewAssistantProposal).toHaveBeenCalledTimes(1);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });
 

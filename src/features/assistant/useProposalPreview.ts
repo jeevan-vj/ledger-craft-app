@@ -5,7 +5,7 @@ import {
   type PreviewAssistantProposalResponse,
 } from '@ledgercraft/contracts';
 import { AssistantApiError, previewAssistantProposal } from './assistantApi';
-import { editsForSave, proposalIsDirty, type ProposalDraft } from './assistantDraft';
+import { editsForSave, formatBlocksPreview, proposalIsDirty, type ProposalDraft } from './assistantDraft';
 
 export const ASSISTANT_PREVIEW_DEBOUNCE_MS = 400;
 
@@ -32,7 +32,7 @@ export function useProposalPreview(
       return undefined;
     }
     const edits = editsForSave(proposal, draft);
-    if (!edits) {
+    if (!edits || formatBlocksPreview(proposal, draft)) {
       setState({ status: 'idle' });
       return undefined;
     }

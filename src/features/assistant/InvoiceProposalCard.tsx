@@ -2,7 +2,16 @@ import type { AssistantProposal } from '@ledgercraft/contracts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { canSaveDraft, customerNeedsPick, proposalIsDirty, type ProposalDraft } from './assistantDraft';
+import {
+  canSaveDraft,
+  customerNeedsPick,
+  dueDateFormatError,
+  issueDateFormatError,
+  proposalIsDirty,
+  screenMatchesPricedPreview,
+  taxRateFormatError,
+  type ProposalDraft,
+} from './assistantDraft';
 import { useProposalPreview, type ProposalPreviewState } from './useProposalPreview';
 
 type InvoiceProposalCardProps = {
@@ -30,7 +39,7 @@ function moneyText(amount: string, currency: string) {
 export function InvoiceProposalCard({ proposal, draft, conversationId, saving, onChange, onSave }: InvoiceProposalCardProps) {
   const dirty = proposalIsDirty(proposal, draft);
   const preview = useProposalPreview(conversationId, proposal, draft);
-  const priced = pricedTotals(preview, proposal, dirty);
+  const priced = pricedTotals(preview, proposal, draft, dirty);
   const needsCustomer = customerNeedsPick(proposal, draft);
   const saveAllowed = canSaveDraft(proposal, draft);
   const knownFields = new Set([
@@ -53,9 +62,9 @@ export function InvoiceProposalCard({ proposal, draft, conversationId, saving, o
     });
   };
 
-  const issueError = fieldMessage(preview, 'date') ?? fieldMessage(preview, 'issueDate');
-  const dueError = fieldMessage(preview, 'dueDate');
-  const taxRateError = fieldMessage(preview, 'taxRate');
+  const issueError = issueDateFormatError(proposal.date, draft.issueDate) ?? fieldMessage(preview, 'date') ?? fieldMessage(preview, 'issueDate');
+  const dueError = dueDateFormatError(proposal.dueDate, draft.dueDate) ?? fieldMessage(preview, 'dueDate');
+  const taxRateError = taxRateFormatError(proposal.taxRate, draft.taxRate) ?? fieldMessage(preview, 'taxRate');
   const taxTreatmentError = fieldMessage(preview, 'taxInclusive');
   const customerError = fieldMessage(preview, 'customerId');
 
@@ -178,9 +187,10 @@ export function InvoiceProposalCard({ proposal, draft, conversationId, saving, o
                   id={`desc-${proposal.id}-${index}`}
                   value={line.description}
                   aria-invalid={Boolean(descriptionError)}
+                  aria-describedby={descriptionError ? `desc-error-${proposal.id}-${index}` : undefined}
                   onChange={(event) => updateLine(index, { description: event.target.value })}
                 />
-                {descriptionError && <p className="text-sm text-destructive">{descriptionError}</p>}
+                {descriptionError && <p id={`desc-error-${proposal.id}-${index}`} className="text-sm text-destructive">{descriptionError}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor={`qty-${proposal.id}-${index}`}>{lineLabel(line.description, 'Quantity')}</Label>
@@ -189,9 +199,10 @@ export function InvoiceProposalCard({ proposal, draft, conversationId, saving, o
                   inputMode="decimal"
                   value={line.quantity}
                   aria-invalid={Boolean(quantityError)}
+                  aria-describedby={quantityError ? `qty-error-${proposal.id}-${index}` : undefined}
                   onChange={(event) => updateLine(index, { quantity: event.target.value })}
                 />
-                {quantityError && <p className="text-sm text-destructive">{quantityError}</p>}
+                {quantityError && <p id={`qty-error-${proposal.id}-${index}`} className="text-sm text-destructive">{quantityError}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor={`rate-${proposal.id}-${index}`}>{lineLabel(line.description, 'Rate')}</Label>
@@ -200,9 +211,10 @@ export function InvoiceProposalCard({ proposal, draft, conversationId, saving, o
                   inputMode="decimal"
                   value={line.rate}
                   aria-invalid={Boolean(rateError)}
+                  aria-describedby={rateError ? `rate-error-${proposal.id}-${index}` : undefined}
                   onChange={(event) => updateLine(index, { rate: event.target.value })}
                 />
-                {rateError && <p className="text-sm text-destructive">{rateError}</p>}
+                {rateError && <p id={`rate-error-${proposal.id}-${index}`} className="text-sm text-destructive">{rateError}</p>}
               </div>
               <div className="self-end space-y-1">
                 <p className="text-sm text-muted-foreground">{line.unit ? `Unit ${line.unit}` : 'No unit'}</p>
@@ -257,11 +269,19 @@ export function InvoiceProposalCard({ proposal, draft, conversationId, saving, o
 function pricedTotals(
   preview: ProposalPreviewState,
   proposal: AssistantProposal,
+  draft: ProposalDraft,
   dirty: boolean,
 ): { subtotal: string; taxAmount: string; total: string } | null {
   if (preview.status === 'ready') {
-    const { subtotal, taxAmount, total } = preview.preview;
-    if (subtotal != null && taxAmount != null && total != null) return { subtotal, taxAmount, total };
+    const body = preview.preview;
+    const matches = body.date != null && body.taxRate != null && screenMatchesPricedPreview(proposal, draft, {
+      date: body.date,
+      dueDate: body.dueDate ?? null,
+      taxRate: body.taxRate,
+    });
+    if (matches && body.subtotal != null && body.taxAmount != null && body.total != null) {
+      return { subtotal: body.subtotal, taxAmount: body.taxAmount, total: body.total };
+    }
     return null;
   }
   const stored = proposal.totals;

@@ -579,6 +579,69 @@ describe('Assistant page', () => {
       .map((call) => (call[1] as RequestInit).headers);
     expect(keys).toHaveLength(1);
   });
+
+  it('keeps totals unconfirmed when the GST rate on screen was not priced', async () => {
+    fetchMock.mockImplementation((input: RequestInfo) => {
+      const url = String(input);
+      if (url.includes('/api/healthz')) return json(health('available'));
+      if (url.includes('/preview')) return json(pricedPreview());
+      return json({
+        conversationId: CONVO,
+        parts: [{ type: 'proposal', proposal: proposal() }],
+      });
+    });
+    mount();
+    await ask('Invoice Sarah for plumbing');
+    const quantity = await screen.findByLabelText('Quantity for Plumbing');
+    vi.useFakeTimers();
+    try {
+      fireEvent.change(quantity, { target: { value: '4' } });
+      await act(async () => { await vi.advanceTimersByTimeAsync(400); });
+      expect(screen.getByText('480.00 NZD')).toBeInTheDocument();
+      fireEvent.change(screen.getByLabelText('GST rate'), { target: { value: '150' } });
+      const rate = screen.getByLabelText('GST rate');
+      expect(rate).toHaveAttribute('aria-invalid', 'true');
+      expect(rate).toHaveAttribute('aria-describedby', `gst-rate-error-${PROPOSAL}`);
+      expect(screen.getByText('Enter a GST rate from 0 to 100')).toBeInTheDocument();
+      expect(screen.getByText('Unconfirmed')).toBeInTheDocument();
+      expect(screen.queryByText('480.00 NZD')).not.toBeInTheDocument();
+      expect(screen.queryByText('360.00 NZD')).not.toBeInTheDocument();
+      fireEvent.change(rate, { target: { value: 'abc' } });
+      expect(screen.getByText('Enter a GST rate from 0 to 100')).toBeInTheDocument();
+      expect(previewCalls()).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('keeps totals unconfirmed when the issue date on screen is not a real day', async () => {
+    fetchMock.mockImplementation((input: RequestInfo) => {
+      const url = String(input);
+      if (url.includes('/api/healthz')) return json(health('available'));
+      if (url.includes('/preview')) return json(pricedPreview());
+      return json({
+        conversationId: CONVO,
+        parts: [{ type: 'proposal', proposal: proposal() }],
+      });
+    });
+    mount();
+    await ask('Invoice Sarah for plumbing');
+    await screen.findByText('360.00 NZD');
+    vi.useFakeTimers();
+    try {
+      fireEvent.change(screen.getByLabelText('Issue date'), { target: { value: '2026-02-31' } });
+      const issue = screen.getByLabelText('Issue date');
+      expect(issue).toHaveAttribute('aria-invalid', 'true');
+      expect(issue).toHaveAttribute('aria-describedby', `issue-error-${PROPOSAL}`);
+      expect(screen.getByText('Enter a real date')).toBeInTheDocument();
+      expect(screen.getByText('Unconfirmed')).toBeInTheDocument();
+      expect(screen.queryByText('360.00 NZD')).not.toBeInTheDocument();
+      await act(async () => { await vi.advanceTimersByTimeAsync(400); });
+      expect(previewCalls()).toHaveLength(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
 
 function pricedPreview(overrides: Record<string, unknown> = {}) {
