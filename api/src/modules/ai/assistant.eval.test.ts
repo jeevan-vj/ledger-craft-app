@@ -6,7 +6,8 @@ import { createDb } from '../../db/local';
 import { getDatabaseUrl } from '../../env';
 import { assistantEvents } from '../../db/schema/assistant-events';
 import { assistantProposals } from '../../db/schema/assistant-proposals';
-import { conversationMessages } from '../../db/schema/conversations';
+import { conversationMessages, conversations } from '../../db/schema/conversations';
+import { users } from '../../db/schema/identity';
 import { expenses } from '../../db/schema/expenses';
 import { invoices } from '../../db/schema/invoices';
 import { journalEntries } from '../../db/schema/accounts';
@@ -892,4 +893,117 @@ describe('assistant eval suite', () => {
     expect(preview.status).toBe(403);
     expect(errorEnvelopeSchema.parse(await preview.json()).error.code).toBe('ASSISTANT_DISABLED');
   }));
+
+  it('creates a proposal when the model sends numeric line amounts and a string GST flag', () => run({
+    steps: [turn([{
+      name: 'prepare_invoice_proposal',
+      arguments: {
+        customerQuery: 'Sarah Chen',
+        dueDate: '2026-11-13',
+        taxInclusive: 'false',
+        lines: [{ description: 'Hours', quantity: 3, rate: 100 }],
+      },
+    }])],
+  }, async ({ call, ask }) => {
+    await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah@example.test' }, 201);
+    const reply = await ask('Invoice Sarah Chen for 3 hours at $100 plus GST, due Friday');
+    const proposal = reply.parts.find((part) => part.type === 'proposal');
+    expect(proposal).toMatchObject({
+      type: 'proposal',
+      proposal: {
+        taxInclusive: false,
+        lines: [expect.objectContaining({ description: 'Hours', quantity: '3', rate: '100' })],
+        totals: { subtotal: '300.00', taxAmount: '45.00', total: '345.00' },
+      },
+    });
+  }));
+
+  it('replays this user and organisation history so a customer pick keeps the invoice lines', () => {
+    const seen: Array<Array<{ role: string; content: string }>> = [];
+    return run({
+      model: {
+        async complete({ messages }) {
+          seen.push(messages.map((message) => ({ role: message.role, content: message.content })));
+          const pick = messages.at(-1)?.content === 'Use customer Sarah Chen';
+          if (pick) return { text: 'continued', toolCalls: [], inputTokens: 3, outputTokens: 2 };
+          return turn([{
+            name: 'prepare_invoice_proposal',
+            arguments: {
+              customerQuery: 'Sarah',
+              dueDate: 'Friday',
+              taxInclusive: false,
+              notes: 'DROP-LINES-NOTE',
+              lines: [{ description: 'Hours', quantity: '3', rate: '100.00' }],
+            },
+          }]);
+        },
+      },
+    }, async ({ app, cookie, call }) => {
+      await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah.chen@example.test' }, 201);
+      await call('/api/customers', 'POST', { name: 'Sarah Jones', email: 'sarah.jones@example.test' }, 201);
+      const firstResponse = await app.request('/api/ai/assistant', {
+        method: 'POST',
+        headers: { ...headers, Cookie: cookie },
+        body: JSON.stringify({ message: 'Invoice Sarah 3 hours at $100 plus GST' }),
+      });
+      const first = await firstResponse.json() as AssistantTurnResponse;
+      expect(firstResponse.status).toBe(200);
+      const proposal = first.parts.find((part) => part.type === 'proposal');
+      if (proposal?.type !== 'proposal') throw new Error('missing proposal');
+      expect(first.parts.some((part) => part.type === 'quick_picks')).toBe(true);
+      const secondResponse = await app.request('/api/ai/assistant', {
+        method: 'POST',
+        headers: { ...headers, Cookie: cookie },
+        body: JSON.stringify({ conversationId: first.conversationId, message: 'Use customer Sarah Chen' }),
+      });
+      expect(secondResponse.status).toBe(200);
+      const followUp = seen.find((messages) => messages.at(-1)?.content === 'Use customer Sarah Chen') ?? [];
+      expect(followUp[0]?.role).toBe('system');
+      expect(followUp[0]?.content).toContain('prepare_invoice_proposal');
+      expect(followUp.map((message) => message.content).join('\n')).toContain('Invoice Sarah 3 hours at $100 plus GST');
+      expect(followUp.map((message) => message.content).join('\n')).toContain(proposal.proposal.id);
+      expect(followUp.map((message) => message.content).join('\n')).toContain('qty 3');
+      expect(followUp.map((message) => message.content).join('\n')).toContain('rate 100.00');
+      expect(followUp.map((message) => message.content).join('\n')).toContain('Sarah Chen');
+      expect(followUp.map((message) => message.content).join('\n')).not.toContain('DROP-LINES-NOTE');
+      expect(followUp.at(-1)).toEqual({ role: 'user', content: 'Use customer Sarah Chen' });
+      const userIndex = followUp.findIndex((message) => message.content.includes('Invoice Sarah 3 hours'));
+      const pickIndex = followUp.findIndex((message) => message.content === 'Use customer Sarah Chen');
+      expect(userIndex).toBeGreaterThan(0);
+      expect(pickIndex).toBeGreaterThan(userIndex);
+    });
+  });
+
+  it('does not replay or continue a conversation owned by another user', () => {
+    const calls = { n: 0 };
+    return run({
+      model: {
+        async complete() {
+          calls.n += 1;
+          return { text: 'No outstanding invoices.', toolCalls: [], inputTokens: 1, outputTokens: 1 };
+        },
+      },
+    }, async ({ app, cookie, db }) => {
+      const firstResponse = await app.request('/api/ai/assistant', {
+        method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify({ message: 'Who owes me money?' }),
+      });
+      const first = await firstResponse.json() as AssistantTurnResponse;
+      expect(firstResponse.status).toBe(200);
+      expect(calls.n).toBe(1);
+      const otherEmail = `other-${crypto.randomUUID()}@example.test`;
+      const other = await app.request('/api/auth/sign-up/email', {
+        method: 'POST', headers, body: JSON.stringify({ name: 'Other', email: otherEmail, password: 'password123' }),
+      });
+      expect(other.status).toBeLessThan(400);
+      const [otherUser] = await db.select({ id: users.id }).from(users).where(eq(users.email, otherEmail));
+      await db.update(conversations).set({ userId: otherUser.id }).where(eq(conversations.id, first.conversationId));
+      const denied = await app.request('/api/ai/assistant', {
+        method: 'POST',
+        headers: { ...headers, Cookie: cookie },
+        body: JSON.stringify({ conversationId: first.conversationId, message: 'Use customer Sarah Chen' }),
+      });
+      expect(denied.status).toBe(404);
+      expect(calls.n).toBe(1);
+    });
+  });
 });

@@ -41,7 +41,7 @@ const { createApp } = await import('../src/app');
 const { createDb } = await import('../src/db/local');
 const { withTestDb } = await import('../src/test/harness');
 const { createAuth } = await import('../src/modules/auth/auth');
-const { parseWorkersAiAssistantTurn } = await import('../src/modules/ai/assistant.workers');
+const { logAssistantModelTurn, parseWorkersAiAssistantTurn, workersAiToolRequest } = await import('../src/modules/ai/assistant.workers');
 const { ASSISTANT_EVAL_PROMPTS } = await import('../src/modules/ai/assistant.prompts');
 const modelName = process.env.ASSISTANT_WORKERS_AI_MODEL || ASSISTANT_WORKERS_AI_MODEL;
 const headers = { Origin: 'http://localhost:8080', 'Content-Type': 'application/json' };
@@ -63,12 +63,14 @@ await withTestDb(async () => {
           const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${modelName}`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages, tools }),
+            body: JSON.stringify({ messages, ...workersAiToolRequest(tools) }),
             signal,
           });
           const payload = await response.json() as unknown;
           if (!response.ok) throw new Error(`Workers AI HTTP ${response.status}`);
-          return parseWorkersAiAssistantTurn(payload);
+          const turn = parseWorkersAiAssistantTurn(payload);
+          logAssistantModelTurn(turn);
+          return turn;
         },
       },
       now: monday,

@@ -1,5 +1,6 @@
 import { assistantProposalSchema, type AssistantPart, type AssistantProposal } from '@ledgercraft/contracts';
-import { and, eq, gte, inArray, lt } from 'drizzle-orm';
+import { and, asc, eq, gte, inArray, lt, sql } from 'drizzle-orm';
+import type { AssistantHistoryRow } from './assistant.history';
 import type { Database } from '../../db/client';
 import { assistantEvents } from '../../db/schema/assistant-events';
 import { assistantProposals } from '../../db/schema/assistant-proposals';
@@ -121,11 +122,33 @@ export async function ensureAssistantConversation(tx: Database, ctx: { organisat
   const [row] = await tx.select().from(conversations).where(and(
     eq(conversations.id, conversationId),
     eq(conversations.organisationId, ctx.organisationId),
+    eq(conversations.userId, ctx.userId),
   ));
   if (!row || (row.context as { kind?: string } | null)?.kind !== 'assistant') {
     return undefined;
   }
   return row.id;
+}
+
+export async function listAssistantHistory(
+  tx: Database,
+  ctx: { organisationId: string; userId: string },
+  conversationId: string,
+): Promise<AssistantHistoryRow[]> {
+  const [owned] = await tx.select({ id: conversations.id }).from(conversations).where(and(
+    eq(conversations.id, conversationId),
+    eq(conversations.organisationId, ctx.organisationId),
+    eq(conversations.userId, ctx.userId),
+  ));
+  if (!owned) return [];
+  return tx.select({
+    role: conversationMessages.role,
+    content: conversationMessages.content,
+    metadata: conversationMessages.metadata,
+  }).from(conversationMessages).where(and(
+    eq(conversationMessages.organisationId, ctx.organisationId),
+    eq(conversationMessages.conversationId, conversationId),
+  )).orderBy(asc(conversationMessages.createdAt), sql`rowid`);
 }
 
 export async function storeAssistantTurn(tx: Database, ctx: { organisationId: string; userId: string }, input: {

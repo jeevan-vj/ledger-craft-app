@@ -14,27 +14,63 @@ import type { AssistantToolCall, AssistantToolDefinition } from './assistant.con
 import { resolveRelativeDate } from './assistant.dates';
 import { pricedTotals } from './assistant.proposal';
 
+const decimalText = z.preprocess((value) => (
+  typeof value === 'number' && Number.isFinite(value) ? String(value) : value
+), z.string().regex(/^\d+(\.\d+)?$/));
+const taxFlag = z.preprocess((value) => {
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  return value;
+}, z.boolean());
 const querySchema = z.object({ query: z.string().trim().min(1).max(80) });
 const lineSchema = z.object({
   description: z.string().trim().min(1).max(200),
-  quantity: z.string().regex(/^\d+(\.\d+)?$/),
+  quantity: decimalText,
   itemId: z.string().uuid().optional(),
   itemQuery: z.string().trim().min(1).max(80).optional(),
-  rate: z.string().regex(/^\d+(\.\d+)?$/).optional(),
+  rate: decimalText.optional(),
 });
 const prepareSchema = z.object({
   customerId: z.string().uuid().optional(),
   customerQuery: z.string().trim().min(1).max(80).optional(),
   dueDate: z.string().trim().min(1).max(40).optional(),
-  taxInclusive: z.boolean().optional(),
+  taxInclusive: taxFlag.optional(),
   notes: z.string().max(1000).optional(),
   lines: z.array(lineSchema).min(1).max(20),
 });
+const invoiceLineParameters = {
+  type: 'object',
+  properties: {
+    description: { type: 'string' },
+    quantity: { type: 'string', description: 'Decimal text, for example 3 or 1.5.' },
+    rate: { type: 'string', description: 'Unit price as decimal text. Omit when the price is unknown.' },
+    itemQuery: { type: 'string' },
+    itemId: { type: 'string' },
+  },
+  required: ['description', 'quantity'],
+  additionalProperties: false,
+};
 
 export const ASSISTANT_TOOL_DEFINITIONS: readonly AssistantToolDefinition[] = [
   { name: 'search_customers', description: 'Find customers in this business by name.', parameters: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'], additionalProperties: false } },
   { name: 'search_catalogue', description: 'Find catalogue items and their saved prices. Do not invent a price.', parameters: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'], additionalProperties: false } },
-  { name: 'prepare_invoice_proposal', description: 'Prepare an invoice proposal. The server prices it. This does not save or send.', parameters: { type: 'object', properties: { customerQuery: { type: 'string' }, customerId: { type: 'string' }, dueDate: { type: 'string' }, taxInclusive: { type: 'boolean' }, lines: { type: 'array' } }, required: ['lines'], additionalProperties: false } },
+  {
+    name: 'prepare_invoice_proposal',
+    description: 'Call this to prepare an invoice. Include every line the user stated. Quantity and rate are decimal strings. taxInclusive is false for plus GST and true when the price includes GST. This does not save or send.',
+    parameters: {
+      type: 'object',
+      properties: {
+        customerQuery: { type: 'string', description: 'Customer name when the id is not known.' },
+        customerId: { type: 'string', description: 'Customer id from an earlier search or quick pick.' },
+        dueDate: { type: 'string', description: 'Due date as YYYY-MM-DD or a phrase such as Friday.' },
+        taxInclusive: { type: 'boolean', description: 'True when the price includes GST. False when the price is plus GST.' },
+        notes: { type: 'string' },
+        lines: { type: 'array', description: 'One entry for each line the user asked for.', items: invoiceLineParameters },
+      },
+      required: ['lines'],
+      additionalProperties: false,
+    },
+  },
   { name: 'list_outstanding', description: 'Read outstanding invoice balances for this business. This does not change records.', parameters: { type: 'object', properties: {}, additionalProperties: false } },
 ];
 

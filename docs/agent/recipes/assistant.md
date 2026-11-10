@@ -20,11 +20,11 @@ The preview response is `previewAssistantProposalResponseSchema`: `date`, `dueDa
 
 ## What is sent to Workers AI
 
-The system instruction, the current user message, tool definitions, and tool results. Tool results are ids, names, saved prices, and outstanding totals. They omit email, phone, address, and notes. The default model is `@cf/google/gemma-4-26b-a4b-it` (`ASSISTANT_WORKERS_AI_MODEL`).
+The system instruction, up to 8 earlier turns from this conversation for the same user and organisation (capped at 4,000 characters, oldest dropped first), the current user message, OpenAI-shaped tool definitions (`type: function`, `tool_choice: auto`), and tool results. History includes user text, assistant text, quick-pick labels, and pending proposal ids and lines. It omits proposal notes. Tool results are ids, names, saved prices, and outstanding totals. They omit email, phone, address, and notes. The default model is `@cf/google/gemma-4-26b-a4b-it` (`ASSISTANT_WORKERS_AI_MODEL`). Gemma tool calls may arrive as `<|tool_call>call:name{...}<tool_call|>` inside the reply text; the parser reads that form as well as structured `tool_calls`. `ASSISTANT_DEBUG=1` logs the tool names and a truncated, email-redacted reply only when `NODE_ENV` is `development` or `test`. It does not log tool arguments or prompts. Production ignores the flag.
 
 ## What is stored
 
-Chat text is a conversation with `context.kind = assistant`. The user can delete it with `DELETE /api/conversations/:id`. Messages older than 90 days (`ASSISTANT_RETENTION_DAYS`) are removed on the next turn. Raw prompts are not written to request logs.
+Chat text is a conversation with `context.kind = assistant`, owned by the user who started it. A different user gets 404 for that conversation, even with its id. The user can delete it with `DELETE /api/conversations/:id`. Messages older than 90 days (`ASSISTANT_RETENTION_DAYS`) are removed on the next turn. Raw prompts are not written to request logs.
 
 `assistant_events` (migration `0037_assistant-events.sql`) stores actor, organisation, request id, action, outcome, tool names, confirmation, draft id, token counts, and a decimal cost. It does not store prompts, customer names, or notes. Deleting a conversation does not reset the usage counters in this table.
 
