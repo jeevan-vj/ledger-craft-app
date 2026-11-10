@@ -7,7 +7,7 @@ export function assistantScreenLink(href: string): HomeQuickActionLink {
   if (href === '/invoices') {
     return { tab: 'Invoices', params: invoiceTabParams({ name: 'InvoiceList' }) };
   }
-  const invoice = href.match(invoiceId);
+  const invoice = invoiceId.exec(href);
   if (invoice?.[1]) {
     return { tab: 'Invoices', params: invoiceTabParams({ name: 'InvoiceDetail', params: { invoiceId: invoice[1] } }) };
   }

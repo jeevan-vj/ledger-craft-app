@@ -37,8 +37,61 @@ type AssistantNavigation = CompositeNavigationProp<
 >;
 
 type UserTurn = { kind: 'user'; id: string; text: string };
-type AssistantTurn = { kind: 'assistant'; id: string; conversationId: string; parts: AssistantPart[] };
+type StoredPart = { id: string; part: AssistantPart };
+type AssistantTurn = { kind: 'assistant'; id: string; conversationId: string; parts: StoredPart[] };
 type ThreadItem = UserTurn | AssistantTurn;
+
+function AssistantPartView({ entry, drafts, savingId, onOpen, onPick, onDraft, onSave }: Readonly<{
+  entry: StoredPart;
+  drafts: Record<string, ProposalDraft>;
+  savingId: string | null;
+  onOpen: (href: string) => void;
+  onPick: (field: 'customerId' | 'itemId', option: { id: string; label: string }) => void;
+  onDraft: (proposalId: string, next: ProposalDraft) => void;
+  onSave: (proposal: AssistantProposal) => void;
+}>) {
+  const theme = useTheme();
+  const { part } = entry;
+  if (part.type === 'text') return <Text style={theme.type.body}>{part.text}</Text>;
+  if (part.type === 'link') {
+    return (
+      <AppPressable accessibilityRole="link" accessibilityLabel={part.label} onPress={() => onOpen(part.href)} style={styles.link}>
+        <Text style={[theme.type.callout, { color: theme.colors.accentText }]}>{part.label}</Text>
+      </AppPressable>
+    );
+  }
+  if (part.type === 'quick_picks') {
+    return (
+      <View accessibilityLabel={part.prompt}>
+        <Text style={theme.type.subhead}>{part.prompt}</Text>
+        <View style={styles.picks}>
+          {part.options.map((option) => (
+            <AppPressable
+              key={option.id}
+              accessibilityRole="button"
+              accessibilityLabel={option.label}
+              accessibilityHint={part.prompt}
+              onPress={() => onPick(part.field, option)}
+              style={[styles.chip, { backgroundColor: theme.colors.accentFill, minHeight: theme.control.default }]}
+            >
+              <Text style={[theme.type.callout, { color: theme.colors.accentText }]}>{option.label}</Text>
+            </AppPressable>
+          ))}
+        </View>
+      </View>
+    );
+  }
+  const draft = drafts[part.proposal.id] ?? draftFromProposal(part.proposal);
+  return (
+    <ProposalCard
+      proposal={part.proposal}
+      draft={draft}
+      saving={savingId === part.proposal.id}
+      onChange={(next) => onDraft(part.proposal.id, next)}
+      onSave={() => onSave(part.proposal)}
+    />
+  );
+}
 
 export default function AssistantScreen() {
   const theme = useTheme();
@@ -81,7 +134,12 @@ export default function AssistantScreen() {
         }
         return next;
       });
-      setItems((current) => [...current, { kind: 'assistant', id: randomId(), conversationId: reply.conversationId, parts: reply.parts }]);
+      setItems((current) => [...current, {
+        kind: 'assistant',
+        id: randomId(),
+        conversationId: reply.conversationId,
+        parts: reply.parts.map((part) => ({ id: randomId(), part })),
+      }]);
     } catch (error) {
       setItems((current) => current.filter((item) => item.id !== id));
       setComposer(message);
@@ -117,7 +175,7 @@ export default function AssistantScreen() {
   };
 
   const pick = (turn: AssistantTurn, field: 'customerId' | 'itemId', option: { id: string; label: string }) => {
-    const proposal = turn.parts.find((part) => part.type === 'proposal');
+    const proposal = turn.parts.find((entry) => entry.part.type === 'proposal')?.part;
     if (field === 'customerId' && proposal?.type === 'proposal') {
       setDrafts((current) => {
         const draft = current[proposal.proposal.id] ?? draftFromProposal(proposal.proposal);
@@ -162,48 +220,18 @@ export default function AssistantScreen() {
           <Text key={item.id} style={[theme.type.body, styles.user, { color: theme.colors.text }]}>{item.text}</Text>
         ) : (
           <View key={item.id} style={styles.reply}>
-            {item.parts.map((part, index) => {
-              if (part.type === 'text') return <Text key={index} style={theme.type.body}>{part.text}</Text>;
-              if (part.type === 'link') {
-                return (
-                  <AppPressable key={index} accessibilityRole="link" accessibilityLabel={part.label} onPress={() => openForm(part.href)} style={styles.link}>
-                    <Text style={[theme.type.callout, { color: theme.colors.accentText }]}>{part.label}</Text>
-                  </AppPressable>
-                );
-              }
-              if (part.type === 'quick_picks') {
-                return (
-                  <View key={index} accessibilityLabel={part.prompt}>
-                    <Text style={theme.type.subhead}>{part.prompt}</Text>
-                    <View style={styles.picks}>
-                      {part.options.map((option) => (
-                        <AppPressable
-                          key={option.id}
-                          accessibilityRole="button"
-                          accessibilityLabel={option.label}
-                          accessibilityHint={part.prompt}
-                          onPress={() => pick(item, part.field, option)}
-                          style={[styles.chip, { backgroundColor: theme.colors.accentFill, minHeight: theme.control.default }]}
-                        >
-                          <Text style={[theme.type.callout, { color: theme.colors.accentText }]}>{option.label}</Text>
-                        </AppPressable>
-                      ))}
-                    </View>
-                  </View>
-                );
-              }
-              const draft = drafts[part.proposal.id] ?? draftFromProposal(part.proposal);
-              return (
-                <ProposalCard
-                  key={part.proposal.id}
-                  proposal={part.proposal}
-                  draft={draft}
-                  saving={savingId === part.proposal.id}
-                  onChange={(next) => setDrafts((current) => ({ ...current, [part.proposal.id]: next }))}
-                  onSave={() => { void save(item.conversationId, part.proposal); }}
-                />
-              );
-            })}
+            {item.parts.map((entry) => (
+              <AssistantPartView
+                key={entry.id}
+                entry={entry}
+                drafts={drafts}
+                savingId={savingId}
+                onOpen={openForm}
+                onPick={(field, option) => pick(item, field, option)}
+                onDraft={(proposalId, next) => setDrafts((current) => ({ ...current, [proposalId]: next }))}
+                onSave={(proposal) => { void save(item.conversationId, proposal); }}
+              />
+            ))}
           </View>
         ))}
         {running ? (

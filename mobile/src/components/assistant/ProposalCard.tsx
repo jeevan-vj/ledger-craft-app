@@ -7,13 +7,13 @@ import { draftHasEdits, draftReadyToSave } from '@/features/assistant/model/prop
 import { useTheme } from '@/theme';
 import { formatMoney } from '@/utils/money';
 
-type ProposalCardProps = {
+type ProposalCardProps = Readonly<{
   proposal: AssistantProposal;
   draft: ProposalDraft;
   saving: boolean;
   onChange: (draft: ProposalDraft) => void;
   onSave: () => void;
-};
+}>;
 
 export function ProposalCard({ proposal, draft, saving, onChange, onSave }: ProposalCardProps) {
   const theme = useTheme();
@@ -57,28 +57,31 @@ export function ProposalCard({ proposal, draft, saving, onChange, onSave }: Prop
         />
       </View>
       <Text style={theme.type.footnote}>GST rate {proposal.taxRate} from the server</Text>
-      {draft.lines.map((line, index) => (
-        <View key={`${line.description}-${index}`} style={styles.line}>
-          <ModernInput
-            label={`Description ${index + 1}`}
-            value={line.description}
-            onChangeText={(description) => updateLine(index, { description })}
-          />
-          <ModernInput
-            label={`Quantity for ${line.description || `line ${index + 1}`}`}
-            value={line.quantity}
-            onChangeText={(quantity) => updateLine(index, { quantity })}
-            keyboardType="decimal-pad"
-          />
-          <ModernInput
-            label={`Rate for ${line.description || `line ${index + 1}`}`}
-            value={line.rate}
-            onChangeText={(rate) => updateLine(index, { rate })}
-            keyboardType="decimal-pad"
-            placeholder="Rate"
-          />
-        </View>
-      ))}
+      {draft.lines.map((line, index) => {
+        const lineName = line.description || `line ${index + 1}`;
+        return (
+          <View key={`${line.description}-${index}`} style={styles.line}>
+            <ModernInput
+              label={`Description ${index + 1}`}
+              value={line.description}
+              onChangeText={(description) => updateLine(index, { description })}
+            />
+            <ModernInput
+              label={`Quantity for ${lineName}`}
+              value={line.quantity}
+              onChangeText={(quantity) => updateLine(index, { quantity })}
+              keyboardType="decimal-pad"
+            />
+            <ModernInput
+              label={`Rate for ${lineName}`}
+              value={line.rate}
+              onChangeText={(rate) => updateLine(index, { rate })}
+              keyboardType="decimal-pad"
+              placeholder="Rate"
+            />
+          </View>
+        );
+      })}
       <ModernInput
         label="Notes"
         value={draft.notes}

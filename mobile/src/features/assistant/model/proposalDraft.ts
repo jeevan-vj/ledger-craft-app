@@ -56,12 +56,11 @@ export function buildSaveBody(conversationId: string, proposal: AssistantProposa
   if (notes !== (proposal.notes ?? '')) edits.notes = notes.length ? notes : null;
   const linesChanged = draft.lines.length !== proposal.lines.length || draft.lines.some((line, index) => {
     const source = proposal.lines[index];
-    return !source
-      || line.description.trim() !== source.description
-      || line.quantity !== source.quantity
-      || line.rate !== (source.rate ?? '')
-      || line.itemId !== source.itemId
-      || line.unit !== source.unit;
+    return line.description.trim() !== source?.description
+      || line.quantity !== source?.quantity
+      || line.rate !== (source?.rate ?? '')
+      || line.itemId !== source?.itemId
+      || line.unit !== source?.unit;
   });
   if (linesChanged) {
     edits.lines = draft.lines.map((line) => ({
