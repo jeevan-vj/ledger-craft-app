@@ -2,9 +2,13 @@ import {
   assistantTurnRequestSchema,
   assistantTurnResponseSchema,
   errorEnvelopeSchema,
+  previewAssistantProposalRequestSchema,
+  previewAssistantProposalResponseSchema,
   saveAssistantDraftRequestSchema,
   type AssistantTurnRequest,
   type AssistantTurnResponse,
+  type PreviewAssistantProposalRequest,
+  type PreviewAssistantProposalResponse,
   type SaveAssistantDraftRequest,
 } from '@ledgercraft/contracts';
 import { z } from 'zod';
@@ -19,6 +23,14 @@ const USER_MESSAGES = new Set([
   'ASSISTANT_UNAVAILABLE',
   'NOT_FOUND',
   'PROPOSAL_INCOMPLETE',
+]);
+
+const PREVIEW_MESSAGES = new Set([
+  'ASSISTANT_PREVIEW_LIMIT',
+  'ASSISTANT_DISABLED',
+  'ASSISTANT_UNAVAILABLE',
+  'NOT_FOUND',
+  'VALIDATION_ERROR',
 ]);
 
 export class AssistantApiError extends Error {
@@ -73,4 +85,37 @@ export async function saveAssistantDraft(input: SaveAssistantDraftRequest, idemp
     throw new AssistantApiError('The draft could not be opened. Nothing else was changed.', response.status);
   }
   return parsed.data;
+}
+
+const UNCONFIRMED = 'The server could not reprice this edit. Totals stay unconfirmed.';
+
+export async function previewAssistantProposal(
+  proposalId: string,
+  input: PreviewAssistantProposalRequest,
+  signal?: AbortSignal,
+): Promise<PreviewAssistantProposalResponse> {
+  const response = await fetch(`/api/ai/assistant/proposals/${encodeURIComponent(proposalId)}/preview`, {
+    method: 'POST',
+    credentials: 'include',
+    signal,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(previewAssistantProposalRequestSchema.parse(input)),
+  });
+  if (!response.ok) throw await previewFailure(response);
+  const parsed = previewAssistantProposalResponseSchema.safeParse(await response.json());
+  if (!parsed.success) throw new AssistantApiError(UNCONFIRMED, response.status);
+  return parsed.data;
+}
+
+async function previewFailure(response: Response): Promise<AssistantApiError> {
+  let code: string | undefined;
+  let message = UNCONFIRMED;
+  try {
+    const body = errorEnvelopeSchema.parse(await response.json());
+    code = body.error.code;
+    if (PREVIEW_MESSAGES.has(code)) message = body.error.message;
+  } catch {
+    // A non-envelope body keeps the unconfirmed preview message.
+  }
+  return new AssistantApiError(message, response.status, code);
 }

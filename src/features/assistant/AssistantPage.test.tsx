@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes, useParams } from 'react-router-dom';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { resetServerCapabilitiesForTests } from '@/services/capabilitiesService';
 import { AssistantPage } from './AssistantPage';
@@ -81,6 +81,10 @@ async function ask(text: string) {
   await user.click(screen.getByRole('button', { name: 'Ask' }));
   return user;
 }
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 beforeEach(() => {
   resetServerCapabilitiesForTests();
@@ -384,4 +388,278 @@ describe('Assistant page', () => {
     mount('/');
     expect(await screen.findByRole('link', { name: 'Assistant' })).toHaveAttribute('href', '/assistant');
   });
+
+  it('reprices an edit from the server after a short pause', async () => {
+    fetchMock.mockImplementation((input: RequestInfo) => {
+      const url = String(input);
+      if (url.includes('/api/healthz')) return json(health('available'));
+      if (url.includes('/preview')) return json(pricedPreview());
+      return json({
+        conversationId: CONVO,
+        parts: [{ type: 'proposal', proposal: proposal() }],
+      });
+    });
+    mount();
+    await ask('Invoice Sarah for plumbing');
+    const quantity = await screen.findByLabelText('Quantity for Plumbing');
+    vi.useFakeTimers();
+    try {
+      fireEvent.change(quantity, { target: { value: '4' } });
+      expect(previewCalls()).toHaveLength(0);
+      expect(screen.getByText('Unconfirmed')).toBeInTheDocument();
+      expect(screen.queryByText('360.00 NZD')).not.toBeInTheDocument();
+      await act(async () => { await vi.advanceTimersByTimeAsync(399); });
+      expect(previewCalls()).toHaveLength(0);
+      await act(async () => { await vi.advanceTimersByTimeAsync(1); });
+      expect(previewCalls()).toHaveLength(1);
+      const body = JSON.parse(String((previewCalls()[0]?.[1] as RequestInit).body));
+      expect(body).toEqual({
+        conversationId: CONVO,
+        edits: { lines: [{ description: 'Plumbing', quantity: '4', rate: '120.00', unit: 'h', itemId: null }] },
+      });
+      expect(screen.getByText('Priced by the server')).toBeInTheDocument();
+      expect(screen.getByText('417.39 NZD')).toBeInTheDocument();
+      expect(screen.getByText('62.61 NZD')).toBeInTheDocument();
+      expect(screen.getByText('480.00 NZD')).toBeInTheDocument();
+      expect(screen.getByText('Line total 480.00 NZD')).toBeInTheDocument();
+      expect(screen.queryByText('360.00')).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('ignores a preview response that belongs to an older edit', async () => {
+    const pending: Array<{ resolve: (response: Response) => void; signal: AbortSignal | undefined }> = [];
+    fetchMock.mockImplementation((input: RequestInfo, init?: RequestInit) => {
+      const url = String(input);
+      if (url.includes('/api/healthz')) return json(health('available'));
+      if (url.includes('/preview')) {
+        return new Promise<Response>((resolve) => {
+          pending.push({ resolve, signal: init?.signal ?? undefined });
+        });
+      }
+      return json({
+        conversationId: CONVO,
+        parts: [{ type: 'proposal', proposal: proposal() }],
+      });
+    });
+    mount();
+    await ask('Invoice Sarah for plumbing');
+    const quantity = await screen.findByLabelText('Quantity for Plumbing');
+    vi.useFakeTimers();
+    try {
+      fireEvent.change(quantity, { target: { value: '4' } });
+      await act(async () => { await vi.advanceTimersByTimeAsync(400); });
+      fireEvent.change(quantity, { target: { value: '5' } });
+      await act(async () => { await vi.advanceTimersByTimeAsync(400); });
+      expect(pending).toHaveLength(2);
+      expect(pending[0]?.signal?.aborted).toBe(true);
+      const firstQuantity = JSON.parse(String((previewCalls()[0]?.[1] as RequestInit).body)).edits.lines[0].quantity;
+      const secondQuantity = JSON.parse(String((previewCalls()[1]?.[1] as RequestInit).body)).edits.lines[0].quantity;
+      expect(firstQuantity).toBe('4');
+      expect(secondQuantity).toBe('5');
+      await act(async () => {
+        pending[0]?.resolve(new Response(JSON.stringify(pricedPreview({
+          lines: [{ description: 'Plumbing', quantity: '4', rate: '120.00', taxRate: '15', tax: '62.61', total: '480.00' }],
+          subtotal: '417.39',
+          taxAmount: '62.61',
+          total: '480.00',
+        })), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+      });
+      expect(screen.queryByText('480.00 NZD')).not.toBeInTheDocument();
+      expect(screen.getByText('Unconfirmed')).toBeInTheDocument();
+      await act(async () => {
+        pending[1]?.resolve(new Response(JSON.stringify(pricedPreview({
+          lines: [{ description: 'Plumbing', quantity: '5', rate: '120.00', taxRate: '15', tax: '78.26', total: '600.00' }],
+          subtotal: '521.74',
+          taxAmount: '78.26',
+          total: '600.00',
+        })), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+      });
+      expect(screen.getByText('600.00 NZD')).toBeInTheDocument();
+      expect(screen.getByText('521.74 NZD')).toBeInTheDocument();
+      expect(screen.getByText('78.26 NZD')).toBeInTheDocument();
+      expect(screen.getByText('Line total 600.00 NZD')).toBeInTheDocument();
+      expect(screen.queryByText('480.00 NZD')).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('shows server field errors and keeps totals unconfirmed when preview is refused', async () => {
+    fetchMock.mockImplementation((input: RequestInfo) => {
+      const url = String(input);
+      if (url.includes('/api/healthz')) return json(health('available'));
+      if (url.includes('/preview')) {
+        return json(pricedPreview({
+          dueDate: '2026-11-01',
+          errors: [{ field: 'dueDate', message: "Due date can't be before the invoice date" }],
+        }));
+      }
+      return json({
+        conversationId: CONVO,
+        parts: [{ type: 'proposal', proposal: proposal() }],
+      });
+    });
+    const view = mount();
+    await ask('Invoice Sarah for plumbing');
+    const due = await screen.findByLabelText('Due date');
+    vi.useFakeTimers();
+    try {
+      fireEvent.change(due, { target: { value: '2026-11-01' } });
+      await act(async () => { await vi.advanceTimersByTimeAsync(400); });
+      expect(screen.getByText("Due date can't be before the invoice date")).toBeInTheDocument();
+      expect(due).toHaveAttribute('aria-invalid', 'true');
+      expect(screen.getByText('480.00 NZD')).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+      view.unmount();
+    }
+
+    const refused = [
+      { code: 'ASSISTANT_PREVIEW_LIMIT', status: 429, message: 'Too many invoice previews. Wait a minute and try again.' },
+      { code: 'NOT_FOUND', status: 404, message: 'That proposal is not in this business.' },
+    ];
+    for (const item of refused) {
+      fetchMock.mockImplementation((input: RequestInfo) => {
+        const url = String(input);
+        if (url.includes('/api/healthz')) return json(health('available'));
+        if (url.includes('/preview')) return errorBody(item.code, item.message, item.status);
+        return json({
+          conversationId: CONVO,
+          parts: [{ type: 'proposal', proposal: proposal() }],
+        });
+      });
+      const view = mount();
+      await ask(`Invoice Sarah (${item.code})`);
+      const quantity = await screen.findByLabelText('Quantity for Plumbing');
+      vi.useFakeTimers();
+      try {
+        fireEvent.change(quantity, { target: { value: '4' } });
+        await act(async () => { await vi.advanceTimersByTimeAsync(400); });
+        const alert = screen.getByRole('alert');
+        expect(alert).toHaveTextContent(item.message);
+        expect(screen.getByText('Unconfirmed')).toBeInTheDocument();
+        expect(screen.queryByText('360.00 NZD')).not.toBeInTheDocument();
+        expect(quantity).toHaveValue('4');
+        expect(screen.getByRole('button', { name: 'Save draft' })).toBeEnabled();
+      } finally {
+        vi.useRealTimers();
+      }
+      view.unmount();
+    }
+  });
+
+  it('sends the edited issue date and GST rate when the draft is saved', async () => {
+    fetchMock.mockImplementation((input: RequestInfo) => {
+      const url = String(input);
+      if (url.includes('/api/healthz')) return json(health('available'));
+      if (url.includes('/api/ai/assistant/drafts')) return json({ id: INVOICE });
+      if (url.includes('/preview')) return json(pricedPreview({ date: '2026-11-10', taxRate: '10' }));
+      return json({
+        conversationId: CONVO,
+        parts: [{ type: 'proposal', proposal: proposal() }],
+      });
+    });
+    mount();
+    await ask('Invoice Sarah for plumbing');
+    fireEvent.change(await screen.findByLabelText('Issue date'), { target: { value: '2026-11-10' } });
+    fireEvent.change(screen.getByLabelText('GST rate'), { target: { value: '10' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save draft' }));
+    await screen.findByRole('heading', { name: `Saved draft ${INVOICE}` });
+    const saveCall = fetchMock.mock.calls.find((call) => String(call[0]).includes('/api/ai/assistant/drafts'));
+    const body = JSON.parse(String((saveCall?.[1] as RequestInit).body));
+    expect(body).toEqual({
+      conversationId: CONVO,
+      proposalId: PROPOSAL,
+      edits: { issueDate: '2026-11-10', taxRate: '10' },
+    });
+    const keys = fetchMock.mock.calls
+      .filter((call) => String(call[0]).includes('/api/ai/assistant/drafts'))
+      .map((call) => (call[1] as RequestInit).headers);
+    expect(keys).toHaveLength(1);
+  });
+
+  it('keeps totals unconfirmed when the GST rate on screen was not priced', async () => {
+    fetchMock.mockImplementation((input: RequestInfo) => {
+      const url = String(input);
+      if (url.includes('/api/healthz')) return json(health('available'));
+      if (url.includes('/preview')) return json(pricedPreview());
+      return json({
+        conversationId: CONVO,
+        parts: [{ type: 'proposal', proposal: proposal() }],
+      });
+    });
+    mount();
+    await ask('Invoice Sarah for plumbing');
+    const quantity = await screen.findByLabelText('Quantity for Plumbing');
+    vi.useFakeTimers();
+    try {
+      fireEvent.change(quantity, { target: { value: '4' } });
+      await act(async () => { await vi.advanceTimersByTimeAsync(400); });
+      expect(screen.getByText('480.00 NZD')).toBeInTheDocument();
+      fireEvent.change(screen.getByLabelText('GST rate'), { target: { value: '150' } });
+      const rate = screen.getByLabelText('GST rate');
+      expect(rate).toHaveAttribute('aria-invalid', 'true');
+      expect(rate).toHaveAttribute('aria-describedby', `gst-rate-error-${PROPOSAL}`);
+      expect(screen.getByText('Enter a GST rate from 0 to 100')).toBeInTheDocument();
+      expect(screen.getByText('Unconfirmed')).toBeInTheDocument();
+      expect(screen.queryByText('480.00 NZD')).not.toBeInTheDocument();
+      expect(screen.queryByText('360.00 NZD')).not.toBeInTheDocument();
+      fireEvent.change(rate, { target: { value: 'abc' } });
+      expect(screen.getByText('Enter a GST rate from 0 to 100')).toBeInTheDocument();
+      expect(previewCalls()).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('keeps totals unconfirmed when the issue date on screen is not a real day', async () => {
+    fetchMock.mockImplementation((input: RequestInfo) => {
+      const url = String(input);
+      if (url.includes('/api/healthz')) return json(health('available'));
+      if (url.includes('/preview')) return json(pricedPreview());
+      return json({
+        conversationId: CONVO,
+        parts: [{ type: 'proposal', proposal: proposal() }],
+      });
+    });
+    mount();
+    await ask('Invoice Sarah for plumbing');
+    await screen.findByText('360.00 NZD');
+    vi.useFakeTimers();
+    try {
+      fireEvent.change(screen.getByLabelText('Issue date'), { target: { value: '2026-02-31' } });
+      const issue = screen.getByLabelText('Issue date');
+      expect(issue).toHaveAttribute('aria-invalid', 'true');
+      expect(issue).toHaveAttribute('aria-describedby', `issue-error-${PROPOSAL}`);
+      expect(screen.getByText('Enter a real date')).toBeInTheDocument();
+      expect(screen.getByText('Unconfirmed')).toBeInTheDocument();
+      expect(screen.queryByText('360.00 NZD')).not.toBeInTheDocument();
+      await act(async () => { await vi.advanceTimersByTimeAsync(400); });
+      expect(previewCalls()).toHaveLength(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
+
+function pricedPreview(overrides: Record<string, unknown> = {}) {
+  return {
+    proposalId: PROPOSAL,
+    date: '2026-11-09',
+    dueDate: '2026-11-13',
+    taxInclusive: true,
+    taxRate: '15',
+    lines: [{ description: 'Plumbing', quantity: '4', rate: '120.00', taxRate: '15', tax: '62.61', total: '480.00' }],
+    subtotal: '417.39',
+    taxAmount: '62.61',
+    total: '480.00',
+    errors: [],
+    ...overrides,
+  };
+}
+
+function previewCalls() {
+  return fetchMock.mock.calls.filter((call) => String(call[0]).includes('/preview'));
+}

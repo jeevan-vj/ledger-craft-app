@@ -41,10 +41,11 @@ type StoredPart = { id: string; part: AssistantPart };
 type AssistantTurn = { kind: 'assistant'; id: string; conversationId: string; parts: StoredPart[] };
 type ThreadItem = UserTurn | AssistantTurn;
 
-function AssistantPartView({ entry, drafts, savingId, onOpen, onPick, onDraft, onSave }: Readonly<{
+function AssistantPartView({ entry, drafts, savingId, conversationId, onOpen, onPick, onDraft, onSave }: Readonly<{
   entry: StoredPart;
   drafts: Record<string, ProposalDraft>;
   savingId: string | null;
+  conversationId?: string;
   onOpen: (href: string) => void;
   onPick: (field: 'customerId' | 'itemId', option: { id: string; label: string }) => void;
   onDraft: (proposalId: string, next: ProposalDraft) => void;
@@ -86,6 +87,7 @@ function AssistantPartView({ entry, drafts, savingId, onOpen, onPick, onDraft, o
     <ProposalCard
       proposal={part.proposal}
       draft={draft}
+      conversationId={conversationId}
       saving={savingId === part.proposal.id}
       onChange={(next) => onDraft(part.proposal.id, next)}
       onSave={() => onSave(part.proposal)}
@@ -226,6 +228,7 @@ export default function AssistantScreen() {
                 entry={entry}
                 drafts={drafts}
                 savingId={savingId}
+                conversationId={item.conversationId}
                 onOpen={openForm}
                 onPick={(field, option) => pick(item, field, option)}
                 onDraft={(proposalId, next) => setDrafts((current) => ({ ...current, [proposalId]: next }))}
