@@ -133,6 +133,12 @@ function shortDate(value: string) {
   return date.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' });
 }
 
+function taskPress(action: string, onReview: () => void, onCreate: () => void, onContinue: () => void) {
+  if (action === 'Review') return onReview;
+  if (action === 'Create invoice') return onCreate;
+  return onContinue;
+}
+
 function taskCopy(overdueCount: number, firstInvoice: boolean) {
   if (overdueCount > 0) {
     const suffix = overdueCount === 1 ? '' : 's';
@@ -181,7 +187,7 @@ function HomeTasks({ dismissed, firstInvoice, overdueCount, onReview, onCreate, 
   if (dismissed === null) return null;
   if (dismissed) return <DashedSetupCard title="You're all caught up" description="New tasks and overdue invoices will show here." icon="check" />;
   const copy = taskCopy(overdueCount, firstInvoice);
-  const onPress = copy.action === 'Review' ? onReview : copy.action === 'Create invoice' ? onCreate : onContinue;
+  const onPress = taskPress(copy.action, onReview, onCreate, onContinue);
   return (
     <>
       {firstInvoice ? null : <Text style={[theme.type.headline, styles.sectionTitle]}>Tasks</Text>}
@@ -237,6 +243,14 @@ function HomeActions({ onQuickAction }: Readonly<{ onQuickAction: (action: HomeQ
   );
 }
 
+function reportWidgets(reports: ReportWidgetData[], reportError: string | null) {
+  if (reports.length > 0) {
+    return <View style={styles.reportList}>{reports.map((report) => <ReportWidget key={report.type} report={report} />)}</View>;
+  }
+  if (reportError) return null;
+  return <DashedSetupCard title="No dashboard widgets" description="Configure visible widgets on the web; your personal layout syncs here." icon="bar-chart-2" />;
+}
+
 function ReportWidget({ report }: Readonly<{ report: ReportWidgetData }>) {
   const theme = useTheme();
   const authority = report.authority.status === 'authoritative' ? 'Server-authoritative · Posted ledger' : 'Operational activity';
@@ -288,11 +302,7 @@ function HomeReports({ dashboard, savedReports, reportError, onFilters, onRetry 
           <Text selectable style={[theme.type.subhead, { color: theme.colors.danger }]}>{reportError} Tap to retry.</Text>
         </AppPressable>
       ) : null}
-      {reports.length > 0 ? (
-        <View style={styles.reportList}>{reports.map((report) => <ReportWidget key={report.type} report={report} />)}</View>
-      ) : reportError ? null : (
-        <DashedSetupCard title="No dashboard widgets" description="Configure visible widgets on the web; your personal layout syncs here." icon="bar-chart-2" />
-      )}
+      {reportWidgets(reports, reportError)}
     </>
   );
 }
