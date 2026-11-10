@@ -22,6 +22,9 @@ describe('assistant expense intent', () => {
     expect(isExpenseRequest('Add a $45 fuel expense')).toBe(true);
     expect(isExpenseRequest('ADD AN EXPENSE for fuel')).toBe(true);
     expect(isExpenseRequest('Invoice Sarah for 3 hours at $100 including GST, due 2026-11-13')).toBe(false);
+    expect(isExpenseRequest('invoice Sarah for expenses incurred')).toBe(false);
+    expect(isExpenseRequest('Invoice Expenses Inc for 2 hours at $100')).toBe(false);
+    expect(isExpenseRequest('Quote Sarah for reimbursable expenses')).toBe(false);
     expect(isExpenseRequest('Who owes me money?')).toBe(false);
     expect(isExpenseRequest('The inexpensive filter')).toBe(false);
   });

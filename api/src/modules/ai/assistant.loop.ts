@@ -31,8 +31,15 @@ const SYSTEM = [
 
 const EXPENSE_TEXT = 'Expenses cannot be saved from the assistant yet. Use the Expenses screen.';
 
+const EXPENSE_WORD = /\bexpenses?\b/i;
+const RECORD_VERB = /\b(add|record|log|track|create|new)\b/i;
+const DOCUMENT_INTENT = /\b(invoices?|quotes?|estimates?|bills?)\b/i;
+const EXPENSE_ASIDE = /\b(?:expenses?\s+(?:inc\.?|incorporated|ltd\.?|llc|limited|co\.?|company|pty)|expenses?\s+incurred|incurred\s+expenses?|reimbursable\s+expenses?)\b/i;
+
 export function isExpenseRequest(message: string): boolean {
-  return /\bexpenses?\b/i.test(message);
+  if (DOCUMENT_INTENT.test(message) || !EXPENSE_WORD.test(message)) return false;
+  if (RECORD_VERB.test(message)) return true;
+  return !EXPENSE_ASIDE.test(message);
 }
 
 export function dedupeAssistantParts(parts: AssistantPart[]): AssistantPart[] {

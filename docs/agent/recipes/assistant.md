@@ -36,7 +36,7 @@ Per business, from the environment, defaulting to 100 messages/day, 20/minute, a
 
 ## Expenses
 
-There is no expense draft status. `createExpenseInTx` inserts a real expense and posts a journal when the status is approved. Pending is still a saved expense. The assistant does not call it. A user message that asks for an expense, including a fuel expense, is refused with a link to Expenses before the model runs. A tool name containing `expense` is refused the same way.
+There is no expense draft status. `createExpenseInTx` inserts a real expense and posts a journal when the status is approved. Pending is still a saved expense. The assistant does not call it. A message that records an expense, such as adding a fuel expense, is refused with a link to Expenses before the model runs. That uses an add, record, log, track, create, or new verb, or treats expense as the thing being recorded. An invoice, quote, estimate, or bill request still reaches the model when it mentions expenses. A tool name containing `expense` is refused the same way.
 
 ## Evals
 
