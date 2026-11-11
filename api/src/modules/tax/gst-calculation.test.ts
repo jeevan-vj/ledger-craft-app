@@ -83,17 +83,18 @@ describe('authoritative saved GST calculation', () => {
     } finally { await f.sql.end(); }
   }));
 
-  it('rejects a stale draft and compares changed books without altering the filed source snapshot', async () => withTestDb(async () => {
+  it('rejects a source dated inside a filed period and keeps the filed source snapshot unchanged', async () => withTestDb(async () => {
     const f = await registered();
     try {
       await books(f);
       const preparation = await f.request<GstPreparationResponse>(url);
       const saved = await f.request<TaxReturnDto>('/api/tax-returns', 'POST', draft(preparation), 201);
       const filed = await f.request<TaxReturnDto>(`/api/tax-returns/${saved.id}/file`, 'POST', { irdReference: 'TEST-MYIR-GST-001' });
-      await f.request('/api/expenses', 'POST', { description: 'Late entered supported receipt', amount: '115', taxAmount: '15', gstTreatment: 'standard', status: 'approved', currency: 'NZD', expenseDate: '2026-04-22' }, 201);
+      const late = await f.request<{ error: { code: string } }>('/api/expenses', 'POST', { description: 'Late entered supported receipt', amount: '115', taxAmount: '15', gstTreatment: 'standard', status: 'approved', currency: 'NZD', expenseDate: '2026-04-22' }, 409);
+      expect(late.error.code).toBe('GST_PERIOD_FILED');
       await f.request('/api/tax-returns', 'POST', draft(preparation), 409);
       const compared = await f.request<{ recorded: TaxReturnDto; current: GstPreparationResponse; difference: { netGst: string }; settingsChanged: boolean }>(`/api/tax-returns/${saved.id}/recalculation`);
-      expect(compared).toMatchObject({ recorded: { status: 'submitted', netGst: '75.00' }, current: { netGstPosition: '60.00' }, difference: { netGst: '-15.00' }, settingsChanged: false });
+      expect(compared).toMatchObject({ recorded: { status: 'submitted', netGst: '75.00' }, current: { netGstPosition: '75.00' }, difference: { netGst: '0.00' }, settingsChanged: false });
       expect(compared.recorded).toEqual(filed);
       expect(await f.request(`/api/tax-returns/${saved.id}`)).toEqual(filed);
       await f.request(`/api/tax-returns/${saved.id}`, 'PATCH', { netGst: '60.00' }, 409);

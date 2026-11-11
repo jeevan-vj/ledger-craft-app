@@ -1,4 +1,5 @@
 import { assertAccountingDateOpen } from './period-lock';
+import { assertGstSourceOpen, gstJournalChecks } from '../tax/gst-period-lock';
 import { and, eq } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
@@ -54,6 +55,7 @@ export async function bankLedgerAccount(tx: Database, ctx: PostingContext, bankA
 export async function postBalancedEntry(tx: Database, ctx: PostingContext, input: { date: string; description: string; referenceType: string; referenceId: string; lines: PostingLine[] }) {
   const [existing] = await tx.select({ id: journalEntries.id }).from(journalEntries).where(and(eq(journalEntries.organisationId, ctx.organisationId), eq(journalEntries.referenceType, input.referenceType), eq(journalEntries.referenceId, input.referenceId), eq(journalEntries.status, 'posted')));
   if (existing) return existing.id;
+  await assertGstSourceOpen(tx, ctx.organisationId, await gstJournalChecks(tx, ctx.organisationId, input.date, input.lines.map((line) => line.accountId)));
   await assertOpenBankPostingDate(tx, ctx.organisationId, input.date, input.lines.map(line => line.accountId));
   const debit = input.lines.reduce((sum, line) => sum.add(line.debit), decimal(0));
   const credit = input.lines.reduce((sum, line) => sum.add(line.credit), decimal(0));

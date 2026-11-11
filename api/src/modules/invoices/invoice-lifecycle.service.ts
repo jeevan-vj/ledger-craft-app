@@ -1,4 +1,5 @@
 import { assertAccountingDateOpen } from '../accounting/period-lock';
+import { assertGstSourceOpen, invoiceSettlementDates } from '../tax/gst-period-lock';
 import { hasActiveCreditNotes } from '../credit-notes/credit-notes.repository';
 import { organisationToday } from '../accounting/organisation-date';
 import {
@@ -35,6 +36,10 @@ export async function cancelInvoiceForUser(db: Database, userId: string, id: str
     const invoice = requireInvoice(await repo.getInvoice(tx, ctx.organisationId, id));
     if (invoice.status === 'cancelled') return invoice;
     await assertAccountingDateOpen(tx, ctx.organisationId, invoice.date);
+    await assertGstSourceOpen(tx, ctx.organisationId, [
+      { kind: 'sales_document', dates: [invoice.date] },
+      { kind: 'customer_settlement', dates: await invoiceSettlementDates(tx, ctx.organisationId, id) },
+    ]);
     if (await hasActiveCreditNotes(tx, ctx.organisationId, id)) throw apiError(409, 'INVOICE_HAS_CREDIT_NOTES', 'Reverse active credit notes and customer refunds before cancelling the invoice');
     if (decimal(invoice.totalPaid).compare(0) > 0) throw apiError(409, 'INVOICE_HAS_PAYMENTS', 'Reverse invoice payments before cancelling');
     await postInvoiceReversalJournal(tx, ctx, {
@@ -53,6 +58,10 @@ export async function restoreInvoiceForUser(db: Database, userId: string, id: st
     const wasCancelled = invoice.status === 'cancelled';
     if (!wasCancelled && !invoice.archivedAt) return invoice;
     await assertAccountingDateOpen(tx, ctx.organisationId, invoice.date);
+    await assertGstSourceOpen(tx, ctx.organisationId, [
+      { kind: 'sales_document', dates: [invoice.date] },
+      { kind: 'customer_settlement', dates: await invoiceSettlementDates(tx, ctx.organisationId, id) },
+    ]);
     const restored = requireInvoice(await repo.restoreInvoice(tx, ctx.organisationId, id));
     if (wasCancelled && await hasInvoiceCancellationJournal(tx, ctx.organisationId, id)) await postInvoiceRestoreJournal(tx, ctx, {
       invoiceId: restored.id, invoiceNumber: restored.invoiceNumber, date: await organisationToday(tx, ctx.organisationId), total: restored.total,
@@ -68,6 +77,7 @@ export async function archiveInvoiceForUser(db: Database, userId: string, id: st
     if (!['draft', 'cancelled'].includes(invoice.status)) {
       throw apiError(409, 'INVOICE_ARCHIVE_REQUIRES_CANCEL', 'Cancel this invoice before archiving it');
     }
+    await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'sales_document', dates: [invoice.date] }]);
     const archived = requireInvoice(await repo.archiveInvoice(tx, ctx.organisationId, id));
     await repo.recordHistory(tx, ctx, id, { action: 'archived', fromStatus: invoice.status, toStatus: invoice.status, reason: input.reason });
     return archived;

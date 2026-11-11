@@ -37,7 +37,7 @@ import { receipts } from './schema/receipts';
 import { conversationMessages, conversations } from './schema/conversations';
 import { assistantEvents } from './schema/assistant-events';
 import { assistantProposals } from './schema/assistant-proposals';
-import { taxConfigurations, taxReturns, taxAdjustments } from './schema/tax';
+import { taxConfigurations, taxReturns, taxAdjustments, gstReturnAuditEvents } from './schema/tax';
 import { idempotencyKeys } from './schema/idempotency';
 import { rlsProbe } from './schema/probe';
 import { sharedInvoices } from './schema/shared-invoices';
@@ -110,6 +110,7 @@ export const schema = {
   taxConfigurations,
   taxReturns,
   taxAdjustments,
+  gstReturnAuditEvents,
   idempotencyKeys,
   sharedInvoices,
   vendors,

@@ -450,6 +450,7 @@ export {
 export {
   createTaxReturnRequestSchema,
   fileTaxReturnRequestSchema,
+  reopenGstReturnRequestSchema,
   gstReconciliationSnapshotSchema,
   irdReturnDataSchema,
   taxConfigurationSchema,
@@ -461,6 +462,7 @@ export {
   upsertTaxConfigurationRequestSchema,
   type CreateTaxReturnRequest,
   type FileTaxReturnRequest,
+  type ReopenGstReturnRequest,
   type TaxConfigurationDto,
   type TaxReturnDto,
   type TaxReturnListResponse,

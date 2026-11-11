@@ -1,4 +1,5 @@
 import { assertAccountingDateOpen } from '../accounting/period-lock';
+import { assertGstSourceOpen, invoiceSettlementDates } from '../tax/gst-period-lock';
 import type {
   CreateInvoiceRequest,
   InvoiceDto,
@@ -75,6 +76,7 @@ export async function createInvoiceInTx(
   input: CreateInvoiceRequest,
 ): Promise<InvoiceDto> {
   await assertAccountingDateOpen(tx, ctx.organisationId, input.date);
+  await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'sales_document', dates: [input.date] }]);
   const customer = await customersRepo.getCustomer(tx, ctx.organisationId, input.customerId);
   if (!customer) throw new HTTPException(400, { message: 'Customer not found' });
 
@@ -175,6 +177,10 @@ export async function updateInvoiceInTx(
 ): Promise<InvoiceDto> {
     const existing = await invoicesRepo.getInvoice(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Invoice not found' });
+    await assertGstSourceOpen(tx, ctx.organisationId, [
+      { kind: 'sales_document', dates: [existing.date, input.date] },
+      { kind: 'customer_settlement', dates: await invoiceSettlementDates(tx, ctx.organisationId, id) },
+    ]);
     if (Object.keys(input).some(key=>!['notes','terms','expectedUpdatedAt'].includes(key))) await assertAccountingDateOpen(tx, ctx.organisationId, existing.date, input.date ?? existing.date);
     if (await hasActiveCreditNotes(tx, ctx.organisationId, id) && Object.keys(input).some(key => !['notes', 'terms', 'dueDate', 'paymentTermDays', 'expectedUpdatedAt'].includes(key))) {
       throw apiError(409, 'INVOICE_HAS_CREDIT_NOTES', 'Reverse active credit notes and customer refunds before changing invoice amounts or status');
@@ -280,7 +286,10 @@ export async function updateInvoiceInTx(
 export async function prepareInvoiceDeliveryInTx(tx: Database, ctx: { organisationId: string; userId: string }, id: string, input: SendInvoiceRequest) {
     const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, id);
     if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
-    if (invoice.status === 'draft') await assertAccountingDateOpen(tx, ctx.organisationId, invoice.date);
+    if (invoice.status === 'draft') {
+      await assertAccountingDateOpen(tx, ctx.organisationId, invoice.date);
+      await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'sales_document', dates: [invoice.date] }]);
+    }
     const customer = await customersRepo.getCustomer(tx, ctx.organisationId, invoice.customerId);
     if (!customer) throw new HTTPException(400, { message: 'Customer not found' });
 
@@ -309,6 +318,7 @@ export async function completeInvoiceDeliveryInTx(tx: Database, ctx: { organisat
     if (prepared.status !== 'draft') {
       return prepared;
     }
+    await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'sales_document', dates: [prepared.date] }]);
     const sent = await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, id, 'sent');
     if (!sent) throw new HTTPException(404, { message: 'Invoice not found' });
     await postInvoiceJournal(tx, ctx, { invoiceId: sent.id, invoiceNumber: sent.invoiceNumber, date: sent.date, subtotal: sent.subtotal, taxAmount: sent.taxAmount, total: sent.total });

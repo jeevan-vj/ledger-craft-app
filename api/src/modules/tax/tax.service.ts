@@ -6,6 +6,7 @@ import {
   type GstReturnRecalculationResponse,
   type CreateTaxReturnRequest,
   type FileTaxReturnRequest,
+  type ReopenGstReturnRequest,
   type TaxConfigurationDto,
   type TaxReturnDto,
   type TaxReturnListResponse,
@@ -139,6 +140,26 @@ export async function fileTaxReturnForUser(
     const filed = await repo.fileReturn(tx, ctx.organisationId, id, input.irdReference);
     if (!filed) throw new HTTPException(409, { message: 'Tax return is no longer a draft' });
     return filed;
+  });
+}
+
+export async function reopenGstReturnForUser(
+  db: Database,
+  userId: string,
+  id: string,
+  input: ReopenGstReturnRequest,
+): Promise<TaxReturnDto> {
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if (!['owner', 'admin'].includes(ctx.role)) throw apiError(403, 'FORBIDDEN', 'Only an owner or admin can reopen a filed GST period.');
+    const existing = await repo.getReturn(tx, ctx.organisationId, id);
+    if (!existing) throw new HTTPException(404, { message: 'Tax return not found' });
+    if (existing.returnType !== 'GST') throw apiError(422, 'GST_RETURN_REQUIRED', 'Only a GST return can be reopened.');
+    if (!['submitted', 'approved'].includes(existing.status) || existing.supersededAt) {
+      throw apiError(409, 'GST_RETURN_NOT_FILED', 'Only a filed GST return that is still in force can be reopened.');
+    }
+    const reopened = await repo.supersedeFiledReturn(tx, ctx, id, input.reason);
+    if (!reopened) throw apiError(409, 'GST_RETURN_NOT_FILED', 'Only a filed GST return that is still in force can be reopened.');
+    return reopened;
   });
 }
 

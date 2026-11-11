@@ -100,6 +100,8 @@ export const taxReturnSchema = z.object({
   submittedAt: z.string().nullable(),
   irdReference: z.string().nullable(),
   returnData: irdReturnDataSchema.nullable(),
+  supersededAt: z.string().datetime().optional(),
+  reopenReason: z.string().min(1).optional(),
   createdAt: z.string().min(1),
   updatedAt: z.string().min(1),
 });
@@ -126,6 +128,10 @@ export const fileTaxReturnRequestSchema = z.object({
   irdReference: z.string().trim().min(1).max(100),
 }).strict();
 
+export const reopenGstReturnRequestSchema = z.object({
+  reason: z.string().trim().min(1).max(500),
+}).strict();
+
 export const taxReturnListResponseSchema = z.object({
   taxReturns: z.array(taxReturnSchema),
 });
@@ -145,3 +151,4 @@ export type CreateTaxReturnRequest = z.infer<typeof createTaxReturnRequestSchema
 export type UpdateTaxReturnRequest = z.infer<typeof updateTaxReturnRequestSchema>;
 export type TaxReturnListResponse = z.infer<typeof taxReturnListResponseSchema>;
 export type FileTaxReturnRequest = z.infer<typeof fileTaxReturnRequestSchema>;
+export type ReopenGstReturnRequest = z.infer<typeof reopenGstReturnRequestSchema>;

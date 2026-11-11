@@ -9,4 +9,5 @@ export const gstWorkspaceApi = {
   },
   async getReturn(id: string) { return taxReturnSchema.parse(await apiRequest(`/api/tax-returns/${id}`, { method: 'GET' })); },
   async fileReturn(id: string, reference: string) { const body = fileTaxReturnRequestSchema.parse({ irdReference: reference }); return taxReturnSchema.parse(await apiRequest(`/api/tax-returns/${id}/file`, { method: 'POST', body: JSON.stringify(body) })); },
+  async reopen(id: string, reason: string) { return taxReturnSchema.parse(await apiRequest(`/api/tax-returns/${id}/reopen`, { method: 'POST', body: JSON.stringify({ reason }) })); },
 };

@@ -63,6 +63,15 @@ describe('friendly API copy', () => {
     })).toBe('Save the IRD accounting basis, filing frequency and period-ending month in GST settings before sending this tax invoice. Drafts can still be edited. Ref: req_gst');
   });
 
+  it('keeps the filed GST period message so the person can correct or reopen it', () => {
+    expect(friendlyApiText({
+      status: 409,
+      code: 'GST_PERIOD_FILED',
+      message: 'This date falls in the filed GST period 2026-09-01 to 2026-10-31. Record a correction in the next open period, or ask an owner or admin to reopen the period.',
+      requestId: 'req_gst_lock',
+    })).toBe('This date falls in the filed GST period 2026-09-01 to 2026-10-31. Record a correction in the next open period, or ask an owner or admin to reopen the period. Ref: req_gst_lock');
+  });
+
   it('keeps the actionable email-unavailable message', () => {
     expect(friendlyApiText({
       status: 503,

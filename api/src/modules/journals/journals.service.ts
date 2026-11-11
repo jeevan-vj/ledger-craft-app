@@ -1,4 +1,5 @@
 import { assertAccountingDateOpen } from '../accounting/period-lock';
+import { assertGstSourceOpen, gstJournalChecks } from '../tax/gst-period-lock';
 import {
   journalEntryListResponseSchema,
   journalEntrySchema,
@@ -54,6 +55,7 @@ export async function createJournalEntryForUser(
     if (!debit || !credit) throw new HTTPException(404, { message: 'Account not found' });
     const amount = input.amount;
     await assertAccountingDateOpen(tx, ctx.organisationId, input.entryDate);
+    await assertGstSourceOpen(tx, ctx.organisationId, await gstJournalChecks(tx, ctx.organisationId, input.entryDate, [input.debitAccountId, input.creditAccountId]));
     const entryNumber = await nextJournalEntryNumber(tx, ctx.organisationId, input.entryDate);
     const entry = await repo.insertJournalEntry(tx, ctx, { ...input, amount: roundMoney(amount) }, entryNumber);
     if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: entry });
@@ -72,6 +74,7 @@ export async function updateJournalEntryForUser(
     if (!current) throw new HTTPException(404, { message: 'Journal entry not found' });
     if (input.status === undefined || input.status === current.status) return current;
     await assertAccountingDateOpen(tx, ctx.organisationId, current.entryDate);
+    await assertGstSourceOpen(tx, ctx.organisationId, await gstJournalChecks(tx, ctx.organisationId, current.entryDate, [current.debitAccountId, current.creditAccountId]));
     if ((input.status as string | undefined) === 'reversed') {
       throw apiError(409, 'CONFLICT', 'Journal entries can only be reversed by posting a reversing entry');
     }
@@ -92,6 +95,7 @@ export async function deleteJournalEntryForUser(db: Database, userId: string, id
     const current = await repo.getJournalEntry(tx, ctx.organisationId, id);
     if (!current) throw new HTTPException(404, { message: 'Journal entry not found' });
     await assertAccountingDateOpen(tx, ctx.organisationId, current.entryDate);
+    await assertGstSourceOpen(tx, ctx.organisationId, await gstJournalChecks(tx, ctx.organisationId, current.entryDate, [current.debitAccountId, current.creditAccountId]));
     if (current.status !== 'draft') {
       throw apiError(409, 'CONFLICT', 'Posted journal entries are immutable; create a reversing entry instead');
     }

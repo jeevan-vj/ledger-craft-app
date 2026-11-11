@@ -7,9 +7,9 @@ import {
   type UpdateTaxReturnRequest,
   type UpsertTaxConfigurationRequest,
 } from '@ledgercraft/contracts';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import type { Database } from '../../db/client';
-import { taxConfigurations, taxReturns } from '../../db/schema/tax';
+import { gstReturnAuditEvents, taxConfigurations, taxReturns } from '../../db/schema/tax';
 import { roundMoney } from '../invoices/money';
 
 function toConfigDto(row: typeof taxConfigurations.$inferSelect): TaxConfigurationDto {
@@ -46,6 +46,7 @@ function toReturnDto(row: typeof taxReturns.$inferSelect): TaxReturnDto {
     returnData: row.returnData ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
+    ...(row.supersededAt ? { supersededAt: row.supersededAt.toISOString(), ...(row.reopenReason ? { reopenReason: row.reopenReason } : {}) } : {}),
   });
 }
 
@@ -218,6 +219,24 @@ export async function fileReturn(
     ))
     .returning();
   return row ? toReturnDto(row) : undefined;
+}
+
+export async function supersedeFiledReturn(
+  tx: Database,
+  ctx: { organisationId: string; userId: string },
+  id: string,
+  reason: string,
+): Promise<TaxReturnDto | undefined> {
+  const now = new Date();
+  const [row] = await tx.update(taxReturns).set({ supersededAt: now, reopenReason: reason, updatedAt: now }).where(and(
+    eq(taxReturns.id, id),
+    eq(taxReturns.organisationId, ctx.organisationId),
+    inArray(taxReturns.status, ['submitted', 'approved']),
+    isNull(taxReturns.supersededAt),
+  )).returning();
+  if (!row) return undefined;
+  await tx.insert(gstReturnAuditEvents).values({ organisationId: ctx.organisationId, taxReturnId: id, actorId: ctx.userId, action: 'reopen', reason });
+  return toReturnDto(row);
 }
 
 export async function deleteReturn(tx: Database, organisationId: string, id: string): Promise<boolean> {

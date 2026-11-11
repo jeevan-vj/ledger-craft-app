@@ -43,6 +43,8 @@ export const taxReturns = sqliteTable('tax_returns', {
   submittedAt: timestamptz('submitted_at'),
   irdReference: text('ird_reference'),
   returnData: text('return_data', { mode: 'json' }),
+  supersededAt: timestamptz('superseded_at'),
+  reopenReason: text('reopen_reason'),
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [
@@ -68,4 +70,19 @@ export const taxAdjustments = sqliteTable('tax_adjustments', {
   uniqueIndex('tax_adjustments_org_id_uidx').on(table.organisationId, table.id),
   index('tax_adjustments_org_idx').on(table.organisationId),
   foreignKey({ columns: [table.organisationId, table.taxReturnId], foreignColumns: [taxReturns.organisationId, taxReturns.id] }).onDelete('restrict'),
+]);
+
+export const gstReturnAuditEvents = sqliteTable('gst_return_audit_events', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  taxReturnId: text('tax_return_id').notNull(),
+  actorId: text('actor_id').notNull(),
+  action: text('action').notNull(),
+  reason: text('reason').notNull(),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  uniqueIndex('gst_return_audit_events_org_id_uidx').on(table.organisationId, table.id),
+  index('gst_return_audit_events_org_idx').on(table.organisationId),
+  foreignKey({ columns: [table.organisationId, table.taxReturnId], foreignColumns: [taxReturns.organisationId, taxReturns.id] }).onDelete('restrict'),
+  check('gst_return_audit_events_action_check', sql`${table.action} IN ('reopen')`),
 ]);
