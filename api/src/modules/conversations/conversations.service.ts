@@ -65,6 +65,8 @@ export async function updateConversationForUser(
 
 export async function deleteConversationForUser(db: Database, userId: string, id: string): Promise<void> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const existing = await repo.getConversation(tx, ctx.organisationId, id, ctx.userId);
+    if (!existing) throw new HTTPException(404, { message: 'Conversation not found' });
     await deleteProposalsForConversation(tx, ctx.organisationId, id);
     const deleted = await repo.deleteConversation(tx, ctx.organisationId, id, ctx.userId);
     if (!deleted) throw new HTTPException(404, { message: 'Conversation not found' });

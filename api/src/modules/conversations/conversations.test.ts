@@ -1,7 +1,10 @@
+import { DatabaseSync } from 'node:sqlite';
 import { conversationSchema, errorEnvelopeSchema } from '@ledgercraft/contracts';
+import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 import { createApp } from '../../app';
 import { createDb } from '../../db/local';
+import { assistantProposals } from '../../db/schema/assistant-proposals';
 import { getDatabaseUrl } from '../../env';
 import { createAuth } from '../auth/auth';
 import { assertLocalDatabaseReachable, withTestDb } from '../../test/harness';
@@ -16,8 +19,7 @@ const originHeaders = {
   'Content-Type': 'application/json',
 };
 
-async function signUp(app: ReturnType<typeof createApp>, name: string) {
-  const email = `${name.toLowerCase().replace(/\s+/g, '-')}-${crypto.randomUUID()}@example.com`;
+async function signUp(app: ReturnType<typeof createApp>, name: string, email = `${name.toLowerCase().replace(/\s+/g, '-')}-${crypto.randomUUID()}@example.com`) {
   const response = await app.request('/api/auth/sign-up/email', {
     method: 'POST',
     headers: originHeaders,
@@ -88,6 +90,83 @@ describe('conversation routes', () => {
           headers: { Cookie: ownerA.cookie },
         });
         expect(deleted.status).toBe(204);
+      } finally {
+        await sql.end();
+      }
+    });
+  });
+
+  it('returns 404 for another member and leaves the owner proposal rows in place', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Owner');
+        const created = await app.request('/api/conversations', {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ title: 'Invoice draft', context: { kind: 'assistant' } }),
+        });
+        expect(created.status).toBe(201);
+        const conversation = conversationSchema.parse(await created.json());
+        const me = await app.request('/api/me', { headers: { Cookie: owner.cookie } });
+        expect(me.status).toBe(200);
+        const organisationId = ((await me.json()) as { organisation: { id: string } }).organisation.id;
+        const proposalId = crypto.randomUUID();
+        await db.insert(assistantProposals).values({
+          id: proposalId,
+          organisationId,
+          conversationId: conversation.id,
+          payload: '{"kind":"invoice"}',
+          signature: 'owner-proposal',
+        });
+        const before = await db.select().from(assistantProposals).where(eq(assistantProposals.id, proposalId));
+        expect(before).toHaveLength(1);
+
+        const memberEmail = `member-${crypto.randomUUID()}@example.com`;
+        const invited = await app.request(`/api/organisations/${organisationId}/invitations`, {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ email: memberEmail, role: 'member' }),
+        });
+        expect(invited.status).toBe(201);
+        const { acceptToken } = await invited.json() as { acceptToken: string };
+        const member = await signUp(app, 'Teammate', memberEmail);
+        const accepted = await app.request('/api/invitations/accept', {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: member.cookie },
+          body: JSON.stringify({ token: acceptToken }),
+        });
+        expect(accepted.status).toBe(200);
+
+        const proposalDeletes: string[] = [];
+        const prepare = DatabaseSync.prototype.prepare;
+        DatabaseSync.prototype.prepare = function prepareAndWatch(sqlText: string) {
+          if (/delete\s+from\s+"?assistant_proposals"?/i.test(sqlText)) proposalDeletes.push(sqlText);
+          return prepare.call(this, sqlText);
+        };
+        let denied: Response;
+        try {
+          denied = await app.request(`/api/conversations/${conversation.id}`, {
+            method: 'DELETE',
+            headers: { Cookie: member.cookie },
+          });
+        } finally {
+          DatabaseSync.prototype.prepare = prepare;
+        }
+        expect(denied.status).toBe(404);
+        expect(errorEnvelopeSchema.parse(await denied.json()).error.code).toBe('NOT_FOUND');
+        expect(proposalDeletes, 'proposal rows were deleted before the owner check').toEqual([]);
+        expect(await db.select().from(assistantProposals).where(eq(assistantProposals.id, proposalId))).toEqual(before);
+
+        const removed = await app.request(`/api/conversations/${conversation.id}`, {
+          method: 'DELETE',
+          headers: { Cookie: owner.cookie },
+        });
+        expect(removed.status).toBe(204);
+        expect(await db.select().from(assistantProposals).where(eq(assistantProposals.id, proposalId))).toEqual([]);
       } finally {
         await sql.end();
       }
