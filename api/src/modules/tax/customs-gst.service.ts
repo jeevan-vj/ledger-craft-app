@@ -43,8 +43,9 @@ async function postCustomsJournals(tx: Database, ctx: Context, entry: CustomsGst
   const gst = await systemAccount(tx, ctx, '2150');
   const payable = await systemAccount(tx, ctx, '2100');
   const bank = await systemAccount(tx, ctx, '1110');
+  // An existing GST journal returns before its date is checked again. A later
+  // settlement must not re-open the assessment date.
   if (claim) {
-    await assertAccountingDateOpen(tx, ctx.organisationId, claim);
     await postBalancedEntry(tx, ctx, {
       date: claim, description: `Customs GST ${entry.reference}`, referenceType: 'customs_gst', referenceId: entry.id,
       lines: [
@@ -54,7 +55,6 @@ async function postCustomsJournals(tx: Database, ctx: Context, entry: CustomsGst
     });
   }
   if (entry.paymentDate) {
-    await assertAccountingDateOpen(tx, ctx.organisationId, entry.paymentDate);
     await postBalancedEntry(tx, ctx, {
       date: entry.paymentDate, description: `Pay Customs GST ${entry.reference}`, referenceType: 'customs_gst_payment', referenceId: entry.id,
       lines: [
@@ -102,7 +102,8 @@ export async function payCustomsGstForUser(db: Database, userId: string, id: str
     if (basis === 'invoice' && input.paymentDate < current.invoiceDate) {
       throw apiError(422, 'CUSTOMS_GST_CLAIM_DATE', 'A later payment cannot move an invoice-basis claim backwards. Void this entry and record it again with both dates.');
     }
-    await assertGstSourceOpen(tx, ctx.organisationId, lockChecks(current.invoiceDate, input.paymentDate));
+    // The assessment date was locked when the GST journal was posted. This settlement does not move Box 13 on invoice basis. Payments and hybrid claim on this payment date.
+    await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'supplier_settlement', dates: [input.paymentDate] }]);
     const row = await repo.markCustomsGstPaid(tx, ctx.organisationId, id, input.paymentDate);
     if (!row) throw apiError(409, 'CUSTOMS_GST_ALREADY_PAID', 'This Customs GST entry is already paid.');
     const entry = toEntry(row, basis);

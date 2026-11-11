@@ -58,6 +58,20 @@ async function ac2Books(f: Awaited<ReturnType<typeof registered>>, pay: boolean)
 
 const ac2Boxes = { '5': '13500.00', '6': '2000.00', '7': '11500.00', '8': '1500.00', '9': '0.00', '10': '1500.00', '11': '2645.00', '12': '345.00', '13': '150.00', '14': '495.00', '15': '1005.00' };
 
+function v3(preparation: GstPreparationResponse) {
+  if (preparation.calculation?.version !== 'gst-ledger-v3') throw new Error('expected gst-ledger-v3');
+  return preparation.calculation;
+}
+
+async function fileStored(f: Awaited<ReturnType<typeof registered>>, preparation: GstPreparationResponse, reference: string) {
+  const draft = await f.request<TaxReturnDto>('/api/tax-returns', 'POST', {
+    periodStart: '2026-09-01', periodEnd: '2026-10-31', returnType: 'GST', totalSales: preparation.totalSales, totalPurchases: preparation.totalPurchases,
+    gstOnSales: preparation.gstOnSales, gstOnPurchases: preparation.gstOnPurchases, netGst: preparation.netGstPosition,
+    returnData: { preparation: { basis: preparation.basis, baseCurrency: 'NZD', calculationFingerprint: preparation.calculation!.fingerprint } },
+  }, 201);
+  return f.request<TaxReturnDto>(`/api/tax-returns/${draft.id}/file`, 'POST', { irdReference: reference });
+}
+
 describe('typed adjustments, rounding and Customs GST', () => {
   it('AC2 invoice basis puts the $150 Customs GST entry in Box 13 and leaves Box 11 unchanged', async () => withTestDb(async () => {
     const f = await registered('invoice');
@@ -70,10 +84,14 @@ describe('typed adjustments, rounding and Customs GST', () => {
       expect(entry.claimDate).toBe('2026-10-20');
       const preparation = await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`);
       expect(preparation.calculation?.myIrBoxes).toMatchObject(ac2Boxes);
-      expect(preparation.calculation?.version).toBe('gst-ledger-v3');
-      if (preparation.calculation?.version !== 'gst-ledger-v3') throw new Error('expected gst-ledger-v3');
-      expect(preparation.calculation).toMatchObject({ mappingStatus: 'supported', customsGst: '150.00', rounding: { output: '0.00', input: '0.00' }, result: 'payable' });
+      expect(preparation.gstOnPurchases).toBe('495.00');
       expect(preparation.netGstPosition).toBe('1005.00');
+      const calculation = v3(preparation);
+      expect(calculation).toMatchObject({ mappingStatus: 'supported', customsGst: '150.00', rounding: { output: '0.00', input: '0.00' }, roundingReviewRequired: false, result: 'payable' });
+      const filed = await fileStored(f, preparation, 'MYIR-AC2');
+      expect(filed.status).toBe('submitted');
+      expect(filed.netGst).toBe('1005.00');
+      expect(filed.gstOnPurchases).toBe('495.00');
     } finally { await f.sql.end(); }
   }));
 
@@ -86,11 +104,19 @@ describe('typed adjustments, rounding and Customs GST', () => {
       const before = await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`);
       expect(before.calculation?.myIrBoxes['11']).toBe('2645.00');
       expect(before.calculation?.myIrBoxes['13']).toBe('0.00');
+      expect(before.gstOnPurchases).toBe('345.00');
+      expect(before.netGstPosition).toBe('1155.00');
+      expect(v3(before)).toMatchObject({ customsGst: '0.00', rounding: { output: '0.00', input: '0.00' }, roundingReviewRequired: false });
       const paid = await f.request<CustomsGstEntry>(`/api/tax/customs-gst/${unpaid.id}/payment`, 'POST', { paymentDate: '2026-10-16' });
       expect(paid.claimDate).toBe('2026-10-16');
       const preparation = await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`);
       expect(preparation.calculation?.myIrBoxes).toMatchObject(ac2Boxes);
-      expect(preparation.calculation?.mappingStatus).toBe('supported');
+      expect(preparation.gstOnPurchases).toBe('495.00');
+      expect(preparation.netGstPosition).toBe('1005.00');
+      expect(v3(preparation)).toMatchObject({ mappingStatus: 'supported', customsGst: '150.00', rounding: { output: '0.00', input: '0.00' }, roundingReviewRequired: false, myIrBoxes: { '15': '1005.00' } });
+      const filed = await fileStored(f, preparation, 'MYIR-AC2B');
+      expect(filed.netGst).toBe('1005.00');
+      expect(filed.gstOnPurchases).toBe('495.00');
     } finally { await f.sql.end(); }
   }));
 
@@ -134,10 +160,16 @@ describe('typed adjustments, rounding and Customs GST', () => {
     try {
       const unpaid = await f.request<CustomsGstEntry>('/api/tax/customs-gst', 'POST', { invoiceDate: '2026-10-08', amount: '150.00', reference: 'CUS-HYBRID', description: 'Unpaid import assessment' }, 201);
       expect(unpaid.claimDate).toBeNull();
-      expect((await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`)).calculation?.myIrBoxes['13']).toBe('0.00');
+      const waiting = await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`);
+      expect(waiting.gstOnPurchases).toBe('0.00');
+      expect(waiting.calculation?.myIrBoxes['13']).toBe('0.00');
+      expect(v3(waiting).rounding).toEqual({ output: '0.00', input: '0.00' });
       await f.request(`/api/tax/customs-gst/${unpaid.id}/payment`, 'POST', { paymentDate: '2026-10-21' });
       const preparation = await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`);
-      expect(preparation.calculation?.myIrBoxes).toMatchObject({ '11': '0.00', '13': '150.00' });
+      expect(preparation.gstOnPurchases).toBe('150.00');
+      expect(preparation.netGstPosition).toBe('-150.00');
+      expect(preparation.calculation?.myIrBoxes).toMatchObject({ '11': '0.00', '13': '150.00', '15': '-150.00' });
+      expect(v3(preparation)).toMatchObject({ rounding: { output: '0.00', input: '0.00' }, roundingReviewRequired: false });
       await f.request(`/api/tax/customs-gst/${unpaid.id}/void`, 'POST', { reason: 'Assessment was cancelled' });
       expect((await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`)).calculation?.myIrBoxes['13']).toBe('0.00');
     } finally { await f.sql.end(); }
@@ -159,9 +191,34 @@ describe('typed adjustments, rounding and Customs GST', () => {
       const refused = await f.request<{ error: { code: string } }>(`/api/tax/customs-gst/${open.id}/payment`, 'POST', { paymentDate: '2026-10-28' }, 409);
       expect(refused.error.code).toBe('GST_PERIOD_FILED');
       await f.request(`/api/tax/customs-gst/${open.id}/payment`, 'POST', { paymentDate: '2026-11-03' });
+      const october = await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`);
+      expect(october.gstOnPurchases).toBe('0.00');
+      expect(october.calculation?.myIrBoxes['13']).toBe('0.00');
       const next = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-11-01&to=2026-12-31');
-      expect(next.calculation?.myIrBoxes['13']).toBe('150.00');
-      expect(next.calculation?.myIrBoxes['11']).toBe('0.00');
+      expect(next.gstOnPurchases).toBe('150.00');
+      expect(next.netGstPosition).toBe('-150.00');
+      expect(next.calculation?.myIrBoxes).toMatchObject({ '11': '0.00', '13': '150.00', '15': '-150.00' });
+      expect(v3(next)).toMatchObject({ rounding: { output: '0.00', input: '0.00' }, roundingReviewRequired: false });
+    } finally { await f.sql.end(); }
+  }));
+
+  it('lets an invoice-basis settlement fall in an open period after the assessment period is filed', async () => withTestDb(async () => {
+    const f = await registered('invoice');
+    try {
+      const entry = await f.request<CustomsGstEntry>('/api/tax/customs-gst', 'POST', { invoiceDate: '2026-10-12', amount: '150.00', reference: 'CUS-LATER', description: 'Claimed on the assessment, paid later' }, 201);
+      expect(entry.claimDate).toBe('2026-10-12');
+      const preparation = await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`);
+      expect(preparation.gstOnPurchases).toBe('150.00');
+      expect(preparation.calculation?.myIrBoxes['13']).toBe('150.00');
+      await fileStored(f, preparation, 'MYIR-INVOICE-LOCK');
+      const paid = await f.request<CustomsGstEntry>(`/api/tax/customs-gst/${entry.id}/payment`, 'POST', { paymentDate: '2026-11-04' });
+      expect(paid.paymentDate).toBe('2026-11-04');
+      expect(paid.claimDate).toBe('2026-10-12');
+      const october = await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`);
+      expect(october.gstOnPurchases).toBe('150.00');
+      expect(october.calculation?.myIrBoxes).toMatchObject({ '11': '0.00', '13': '150.00' });
+      const refused = await f.request<{ error: { code: string } }>(`/api/tax/customs-gst/${entry.id}/void`, 'POST', { reason: 'Try to remove a filed claim' }, 409);
+      expect(refused.error.code).toBe('GST_PERIOD_FILED');
     } finally { await f.sql.end(); }
   }));
 

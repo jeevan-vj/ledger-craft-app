@@ -45,7 +45,7 @@ export function GstReturnDetail({ initial, canFile, canReopen = false, onFiled }
    <Text style={theme.type.body}>This is a record of filing you already completed in myIR.</Text>
    {needsRounding ? <><Text style={theme.type.body}>I have reviewed the rounding difference</Text><Switch accessibilityLabel="Confirm the rounding difference was reviewed" value={roundingAck} onValueChange={setRoundingAck} disabled={busy} /></> : null}
    <Switch accessibilityLabel="Confirm this return was filed externally in myIR" value={reviewed} onValueChange={setReviewed} disabled={busy} />
-   <ModernButton disabled={busy} loading={busy} onPress={() => void file()}>Record external filing</ModernButton>
+   <ModernButton disabled={busy || (needsRounding && !roundingAck)} loading={busy} onPress={() => void file()}>Record external filing</ModernButton>
   </> : null}
   <ModernButton variant="secondary" disabled={busy} onPress={() => void share()}>Share GST preparation PDF</ModernButton>
   {error ? <Text accessibilityRole="alert" style={{ color: theme.colors.danger }}>{error}</Text> : null}
