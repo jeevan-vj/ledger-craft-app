@@ -41,7 +41,7 @@ const { createApp } = await import('../src/app');
 const { createDb } = await import('../src/db/local');
 const { withTestDb } = await import('../src/test/harness');
 const { createAuth } = await import('../src/modules/auth/auth');
-const { parseWorkersAiAssistantTurn } = await import('../src/modules/ai/assistant.workers');
+const { logAssistantModelTurn, parseWorkersAiAssistantTurn, workersAiToolRequest } = await import('../src/modules/ai/assistant.workers');
 const { ASSISTANT_EVAL_PROMPTS, ASSISTANT_LIVE_CUSTOMER_PICK, assistantLivePickFollowUp } = await import('../src/modules/ai/assistant.prompts');
 const modelName = process.env.ASSISTANT_WORKERS_AI_MODEL || ASSISTANT_WORKERS_AI_MODEL;
 const headers = { Origin: 'http://localhost:8080', 'Content-Type': 'application/json' };
@@ -81,16 +81,18 @@ await withTestDb(async () => {
   try {
     const runtime: import('../src/modules/ai/assistant.config').AssistantRuntime = {
       model: {
-        async complete({ messages, tools, signal }) {
+        async complete({ messages, tools, signal, untrustedText }) {
           const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${modelName}`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages, tools }),
+            body: JSON.stringify({ messages, ...workersAiToolRequest(tools) }),
             signal,
           });
           const payload = await response.json() as unknown;
           if (!response.ok) throw new Error(`Workers AI HTTP ${response.status}`);
-          return parseWorkersAiAssistantTurn(payload);
+          const turn = parseWorkersAiAssistantTurn(payload, untrustedText ?? '');
+          logAssistantModelTurn(turn);
+          return turn;
         },
       },
       now: monday,
@@ -195,7 +197,7 @@ await withTestDb(async () => {
         headers: { ...headers, Cookie: cookie },
         body: JSON.stringify({
           conversationId: firstBody.conversationId,
-          // History is not replayed. The follow-up carries the price and the due date.
+          // The follow-up repeats the price, GST, and due date. Earlier turns are also replayed.
           message: assistantLivePickFollowUp(chosen.label),
         }),
       });

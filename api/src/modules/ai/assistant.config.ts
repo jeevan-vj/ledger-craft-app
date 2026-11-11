@@ -49,6 +49,7 @@ export type AssistantModel = {
     messages: AssistantModelMessage[];
     tools: readonly AssistantToolDefinition[];
     signal: AbortSignal;
+    untrustedText?: string;
   }): Promise<AssistantModelTurn>;
 };
 

@@ -202,6 +202,7 @@ export async function completeAssistantForUser(
     const loop = await runAssistantLoop({
       db,
       userId,
+      conversationId: gate.conversationId,
       message: input.message,
       model: runtime.model,
       now,

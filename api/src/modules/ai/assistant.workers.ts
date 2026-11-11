@@ -1,6 +1,9 @@
 import { apiError } from '../../http-error';
-import type { AssistantModel, AssistantModelTurn, AssistantToolCall } from './assistant.config';
+import type { AssistantModel, AssistantModelTurn, AssistantToolCall, AssistantToolDefinition } from './assistant.config';
+import { gemmaToolCallsFromText, stripGemmaToolCalls } from './assistant.gemma';
 import { ASSISTANT_WORKERS_AI_MODEL, type WorkersAiBinding } from './workers-ai';
+
+const INVALID = 'The assistant returned an unusable response. Nothing was saved.';
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
   return typeof value === 'object' && value !== null ? value as Record<string, unknown> : undefined;
@@ -14,14 +17,19 @@ function unwrap(response: unknown): Record<string, unknown> {
 
 function argumentsOf(value: unknown): unknown {
   if (typeof value !== 'string') return value ?? {};
-  try { return JSON.parse(value) as unknown; } catch { throw apiError(502, 'ASSISTANT_OUTPUT_INVALID', 'The assistant returned an unusable response. Nothing was saved.'); }
+  try { return JSON.parse(value) as unknown; } catch { throw apiError(502, 'ASSISTANT_OUTPUT_INVALID', INVALID); }
+}
+
+function messageOf(body: Record<string, unknown>): Record<string, unknown> | undefined {
+  return asRecord(asRecord((body.choices as unknown[] | undefined)?.[0])?.message);
 }
 
 function toolCallsOf(body: Record<string, unknown>): AssistantToolCall[] {
+  const choice = messageOf(body);
   const direct = body.tool_calls ?? body.toolCalls;
-  const choice = asRecord(asRecord((body.choices as unknown[] | undefined)?.[0])?.message);
   const nested = choice?.tool_calls ?? choice?.toolCalls;
-  const calls = Array.isArray(direct) ? direct : Array.isArray(nested) ? nested : [];
+  const legacy = asRecord(choice?.function_call);
+  const calls = Array.isArray(direct) ? direct : Array.isArray(nested) ? nested : legacy ? [legacy] : [];
   return calls.map((call, index) => {
     const record = asRecord(call) ?? {};
     const fn = asRecord(record.function);
@@ -29,6 +37,17 @@ function toolCallsOf(body: Record<string, unknown>): AssistantToolCall[] {
     const id = typeof record.id === 'string' ? record.id : `call_${index + 1}`;
     return { id, name, arguments: argumentsOf(record.arguments ?? fn?.arguments) };
   });
+}
+
+function textOf(value: unknown): string | undefined {
+  if (typeof value === 'string') return value;
+  if (!Array.isArray(value)) return undefined;
+  const text = value.map((part) => {
+    if (typeof part === 'string') return part;
+    const record = asRecord(part);
+    return typeof record?.text === 'string' ? record.text : '';
+  }).join('');
+  return text.length ? text : undefined;
 }
 
 function usageOf(body: Record<string, unknown>): { inputTokens: number; outputTokens: number } {
@@ -41,16 +60,89 @@ function usageOf(body: Record<string, unknown>): { inputTokens: number; outputTo
   };
 }
 
-export function parseWorkersAiAssistantTurn(response: unknown): AssistantModelTurn {
+export function workersAiToolRequest(tools: readonly AssistantToolDefinition[]) {
+  return {
+    tools: tools.map((tool) => ({
+      type: 'function' as const,
+      function: {
+        name: tool.name,
+        description: tool.description,
+        parameters: tool.parameters,
+      },
+    })),
+    tool_choice: 'auto' as const,
+  };
+}
+
+export function redactAssistantLog(value: string): string {
+  return value.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[email]').slice(0, 500);
+}
+
+function assistantDebugEnabled(env: { ASSISTANT_DEBUG?: string; NODE_ENV?: string }): boolean {
+  return env.ASSISTANT_DEBUG === '1' && (env.NODE_ENV === 'development' || env.NODE_ENV === 'test');
+}
+
+function debugSnippet(text: string): string {
+  const hidden = text
+    .replace(/<\|tool_call>[\s\S]*?<tool_call\|>/g, '[tool-call]')
+    .replace(/call:[A-Za-z_][A-Za-z0-9_]*\{[\s\S]*\}/g, '[tool-call]');
+  return redactAssistantLog(hidden).slice(0, 120);
+}
+
+export function logAssistantModelTurn(turn: AssistantModelTurn, env: { ASSISTANT_DEBUG?: string; NODE_ENV?: string } = process.env): void {
+  if (!assistantDebugEnabled(env)) return;
+  const text = turn.text ?? '';
+  console.info(JSON.stringify({
+    source: 'assistant_model',
+    toolCalls: turn.toolCalls.map((call) => call.name),
+    textLength: text.length,
+    snippet: debugSnippet(text),
+  }));
+}
+
+function toolNamesOnly(body: Record<string, unknown>): string[] {
+  const choice = messageOf(body);
+  const direct = body.tool_calls ?? body.toolCalls;
+  const nested = choice?.tool_calls ?? choice?.toolCalls;
+  const legacy = asRecord(choice?.function_call);
+  const calls = Array.isArray(direct) ? direct : Array.isArray(nested) ? nested : legacy ? [legacy] : [];
+  return calls.flatMap((call) => {
+    const record = asRecord(call) ?? {};
+    const fn = asRecord(record.function);
+    const name = typeof record.name === 'string' ? record.name : typeof fn?.name === 'string' ? fn.name : '';
+    return name ? [name] : [];
+  });
+}
+
+export function logAssistantParseFailure(response: unknown, env: { ASSISTANT_DEBUG?: string; NODE_ENV?: string } = process.env): void {
+  if (!assistantDebugEnabled(env)) return;
   const body = unwrap(response);
-  const toolCalls = toolCallsOf(body);
-  const textValue = body.response ?? body.text ?? asRecord(asRecord((body.choices as unknown[] | undefined)?.[0])?.message)?.content;
-  const text = typeof textValue === 'string' ? textValue : undefined;
+  const text = textOf(body.response ?? body.text ?? messageOf(body)?.content) ?? '';
+  console.info(JSON.stringify({
+    source: 'assistant_model',
+    toolCalls: toolNamesOnly(body),
+    textLength: text.length,
+    snippet: debugSnippet(text),
+  }));
+}
+
+export function parseWorkersAiAssistantTurn(response: unknown, untrustedText = ''): AssistantModelTurn {
+  const body = unwrap(response);
+  let toolCalls = toolCallsOf(body);
+  let text = textOf(body.response ?? body.text ?? messageOf(body)?.content);
+  if (!toolCalls.length && text) {
+    const gemma = gemmaToolCallsFromText(text).filter((call) => !untrustedText.includes(call.raw));
+    if (gemma.length) {
+      toolCalls = gemma.map((call, index) => ({ id: `call_${index + 1}`, name: call.name, arguments: call.arguments }));
+      const bare = text.trim().startsWith('call:');
+      text = bare ? undefined : stripGemmaToolCalls(text);
+    }
+  }
   if (!toolCalls.length && text == null) {
-    throw apiError(502, 'ASSISTANT_OUTPUT_INVALID', 'The assistant returned an unusable response. Nothing was saved.');
+    throw apiError(502, 'ASSISTANT_OUTPUT_INVALID', INVALID);
   }
   if (toolCalls.some((call) => !call.name)) {
-    throw apiError(502, 'ASSISTANT_OUTPUT_INVALID', 'The assistant returned an unusable response. Nothing was saved.');
+    throw apiError(502, 'ASSISTANT_OUTPUT_INVALID', INVALID);
   }
   const usage = usageOf(body);
   return { text, toolCalls, ...usage };
@@ -61,18 +153,25 @@ export function createWorkersAiAssistantModel(
   model = process.env.ASSISTANT_WORKERS_AI_MODEL || ASSISTANT_WORKERS_AI_MODEL,
 ): AssistantModel {
   return {
-    async complete({ messages, tools, signal }) {
+    async complete({ messages, tools, signal, untrustedText }) {
       const timedOut = () => apiError(504, 'ASSISTANT_TIMEOUT', 'The assistant took too long. Nothing was saved. Use Invoices to continue.');
       if (signal.aborted) throw timedOut();
       const response = await new Promise<unknown>((resolve, reject) => {
         const onAbort = () => reject(timedOut());
         signal.addEventListener('abort', onAbort, { once: true });
-        Promise.resolve(ai.run(model, { messages, tools }, { signal })).then(
+        Promise.resolve(ai.run(model, { messages, ...workersAiToolRequest(tools) }, { signal })).then(
           (value) => { signal.removeEventListener('abort', onAbort); resolve(value); },
           (error) => { signal.removeEventListener('abort', onAbort); reject(signal.aborted ? timedOut() : error); },
         );
       });
-      return parseWorkersAiAssistantTurn(response);
+      try {
+        const turn = parseWorkersAiAssistantTurn(response, untrustedText ?? '');
+        logAssistantModelTurn(turn);
+        return turn;
+      } catch (error) {
+        logAssistantParseFailure(response);
+        throw error;
+      }
     },
   };
 }
