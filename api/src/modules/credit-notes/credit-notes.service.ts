@@ -8,6 +8,7 @@ import { postBalancedEntry, reversePosting, systemAccount } from '../accounting/
 import { assertOpenSettlementPeriod } from '../currency/settlement.service';
 import { currencyRepository } from '../currency/currency.service';
 import { decimal, roundMoney } from '../invoices/money';
+import { withSalesTaxCodes } from '../invoices/sales-tax-code';
 import { computeInvoiceTotals } from '../invoices/totals';
 import * as invoicesRepo from '../invoices/invoices.repository';
 import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from '../invoices/idempotency';
@@ -48,7 +49,7 @@ export async function issueCreditNoteForUser(db: Database, userId: string, input
     if (invoice.baseCurrency !== 'NZD') throw new HTTPException(422, { message: 'Credit notes require NZD base books; the document can use a reviewed foreign currency' });
     const currency = required(await currencyRepository.getCurrency(tx, ctx.organisationId, invoice.currency), 'Document currency');
     if (decimal(input.taxRate).compare(100) > 0 || input.items.some(item => decimal(item.quantity).compare(0) <= 0 || decimal(item.rate).compare(0) < 0)) throw new HTTPException(400, { message: 'Credit quantities must be positive and GST rates between 0 and 100' });
-    const totals = computeInvoiceTotals(input, input.taxRate, currency.precision);
+    const totals = withSalesTaxCodes(computeInvoiceTotals(input, input.taxRate, currency.precision), input.items);
     const gross = decimal(totals.total); const tax = decimal(totals.taxAmount); const net = gross.sub(tax);
     if (gross.compare(0) <= 0 || net.compare(0) < 0) throw new HTTPException(400, { message: 'Credit note total must be positive' });
     const priorGross = decimal(invoice.totalCredited ?? '0'); const priorTax = decimal(invoice.taxCredited ?? '0');

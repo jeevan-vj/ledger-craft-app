@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { businessProfileSchema } from './business-profile';
+import { salesTaxCodeSchema } from './sales-tax-code';
 
 const money = z.string().regex(/^-?\d+(\.\d+)?$/);
 const paymentTermDays = z.number().int().min(0).max(365);
@@ -32,6 +33,7 @@ export const invoiceLineInputSchema = z
     discountType: discountType.optional(),
     discountValue: money.nullable().optional(),
     taxes: z.array(invoiceLineTaxSchema).max(10).optional(),
+    taxCode: salesTaxCodeSchema.optional(),
   })
   .strict();
 
@@ -132,6 +134,7 @@ export const invoiceLineSchema = z.object({
   discountValue: money.nullable().optional(),
   discountAmount: money.optional(),
   taxes: z.array(invoiceLineTaxSchema).optional(),
+  taxCode: salesTaxCodeSchema.nullable().optional(),
 });
 
 export const invoiceSchema = z.object({

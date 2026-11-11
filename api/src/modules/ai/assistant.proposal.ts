@@ -37,6 +37,7 @@ export function canonicalProposal(proposal: AssistantProposal): string {
       quantity: line.quantity,
       rate: line.rate,
       itemId: line.itemId,
+      ...(line.taxCode ? { taxCode: line.taxCode } : {}),
     })),
   });
 }

@@ -55,6 +55,7 @@ type DraftSourceLine = {
   unit?: string | null;
   itemId?: string | null;
   taxRate?: string;
+  taxCode?: 'standard_15' | 'zero_rated' | 'exempt';
 };
 
 type FieldError = { field: string; message: string };
@@ -98,6 +99,7 @@ async function priceAssistantDraft(
       unit: line.unit,
       itemId: line.itemId,
       taxRate: line.taxRate,
+      taxCode: line.taxCode,
     }))
     : proposal.lines.map((line) => ({
       description: line.description,
@@ -105,6 +107,7 @@ async function priceAssistantDraft(
       rate: line.rate,
       unit: line.unit,
       itemId: line.itemId,
+      taxCode: line.taxCode,
     }));
 
   const lines: PricedDraft['lines'] = [];
@@ -144,6 +147,7 @@ async function priceAssistantDraft(
         quantity: line.quantity,
         rate: line.rate ?? '',
         ...(line.unit ? { unit: line.unit } : {}),
+        ...(line.taxCode ? { taxCode: line.taxCode } : {}),
         ...(line.taxRate !== undefined ? { taxes: [{ id: 'gst', name: 'GST', rate: line.taxRate }] } : {}),
       })),
     };

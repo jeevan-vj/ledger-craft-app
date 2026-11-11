@@ -88,6 +88,7 @@ function InvoiceEditor() {
   const [taxAmount, setTaxAmount] = useState(0);
   const [total, setTotal] = useState(0);
   const [taxEnabled, setTaxEnabled] = useState(false);
+  const [zeroRatedChoice, setZeroRatedChoice] = useState<'zero_rated' | 'exempt' | null>(null);
   const [taxRate, setTaxRate] = useState(15);
 
   // Loading states
@@ -312,6 +313,11 @@ function InvoiceEditor() {
       return false;
     }
 
+    if (!taxEnabled && zeroRatedChoice == null) {
+      Alert.alert('GST', 'Choose zero-rated or exempt for a sale with no GST.');
+      return false;
+    }
+
     return true;
   };
 
@@ -335,9 +341,15 @@ function InvoiceEditor() {
         templateName,
       };
 
+      const codedLines = lineItems.map((item) => ({
+        ...item,
+        ...(taxEnabled && taxRate === 15 ? { taxCode: 'standard_15' as const } : {}),
+        ...(!taxEnabled && zeroRatedChoice ? { taxCode: zeroRatedChoice, taxes: [] as LineItem['taxes'] } : {}),
+      }));
+
       if (isEditMode && invoiceId) {
         // Update existing invoice
-        await invoiceService.updateInvoice(invoiceId, invoiceData, lineItems);
+        await invoiceService.updateInvoice(invoiceId, invoiceData, codedLines);
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         Alert.alert('Success', 'Invoice updated successfully', [
           {
@@ -348,7 +360,7 @@ function InvoiceEditor() {
       } else {
         // Create new invoice
         invoiceData.status = 'draft';
-        await invoiceService.createInvoice(invoiceData, lineItems);
+        await invoiceService.createInvoice(invoiceData, codedLines);
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         Alert.alert('Success', 'Invoice created successfully', [
           {
@@ -615,6 +627,8 @@ function InvoiceEditor() {
           onTaxEnabledChange={setTaxEnabled}
           onTaxRateChange={setTaxRate}
           formatCurrency={formatCurrency}
+          zeroRatedChoice={zeroRatedChoice}
+          onZeroRatedChoice={setZeroRatedChoice}
         />
 
         {/* Notes Card */}

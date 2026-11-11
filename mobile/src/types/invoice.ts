@@ -13,6 +13,7 @@ export interface LineItem {
   discountValue?: number | null;
   discountAmount?: number;
   taxes?: { id: string; name: string; rate: number }[];
+  taxCode?: 'standard_15' | 'zero_rated' | 'exempt' | null;
 }
 
 export interface AdditionalCharge {

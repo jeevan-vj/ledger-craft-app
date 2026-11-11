@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { invoiceLineTaxSchema } from './invoice';
+import { salesTaxCodeSchema } from './sales-tax-code';
 
 const money = z.string().regex(/^\d+(\.\d+)?$/);
 const day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
@@ -45,6 +46,7 @@ export const assistantProposalLineSchema = z.object({
   unit: z.string().min(1).max(20).nullable(),
   itemId: z.string().uuid().nullable(),
   missing: z.array(z.string().min(1).max(40)).max(5),
+  taxCode: salesTaxCodeSchema.optional(),
 }).strict();
 
 export const assistantProposalSchema = z.object({
@@ -108,6 +110,7 @@ export const saveAssistantDraftEditsSchema = z.object({
     unit: z.string().min(1).max(20).nullable().optional(),
     itemId: z.string().uuid().nullable().optional(),
     taxRate: gstRate.optional(),
+    taxCode: salesTaxCodeSchema.optional(),
   }).strict()).min(1).max(20).optional(),
 }).strict().superRefine((value, ctx) => {
   if (value.issueDate && value.dueDate && value.dueDate < value.issueDate) {

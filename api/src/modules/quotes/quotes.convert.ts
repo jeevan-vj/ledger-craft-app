@@ -69,6 +69,8 @@ export async function convertQuoteForUser(
         unit: item.unit,
         rate: item.rate,
         rateUnit: item.rateUnit,
+        ...(item.taxCode ? { taxCode: item.taxCode } : {}),
+        ...(item.taxCode === 'zero_rated' || item.taxCode === 'exempt' ? { taxes: [] } : {}),
       })),
     };
     const invoice = await createInvoiceInTx(tx, ctx, input);

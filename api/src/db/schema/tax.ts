@@ -72,6 +72,27 @@ export const taxAdjustments = sqliteTable('tax_adjustments', {
   foreignKey({ columns: [table.organisationId, table.taxReturnId], foreignColumns: [taxReturns.organisationId, taxReturns.id] }).onDelete('restrict'),
 ]);
 
+export const salesTaxReclassifications = sqliteTable('sales_tax_reclassifications', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  actorId: text('actor_id').notNull().references(() => users.id),
+  action: text('action').notNull(),
+  taxCode: text('tax_code'),
+  reason: text('reason').notNull(),
+  lineIds: text('line_ids', { mode: 'json' }).$type<string[]>().notNull(),
+  previousCodes: text('previous_codes', { mode: 'json' }).$type<Record<string, string | null>>().notNull(),
+  beforeImpact: text('before_impact', { mode: 'json' }).notNull(),
+  afterImpact: text('after_impact', { mode: 'json' }).notNull(),
+  undoneAt: timestamptz('undone_at'),
+  undoOfId: text('undo_of_id'),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  uniqueIndex('sales_tax_reclassifications_org_id_uidx').on(table.organisationId, table.id),
+  index('sales_tax_reclassifications_org_idx').on(table.organisationId),
+  check('sales_tax_reclassifications_action_check', sql`${table.action} IN ('apply', 'undo')`),
+  check('sales_tax_reclassifications_code_check', sql`${table.taxCode} IS NULL OR ${table.taxCode} IN ('zero_rated', 'exempt')`),
+]);
+
 export const gstReturnAuditEvents = sqliteTable('gst_return_audit_events', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   organisationId: text('organisation_id').notNull().references(() => organisations.id),

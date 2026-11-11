@@ -60,6 +60,7 @@ export function buildRecurringInvoicePayload({
         discountType: item.discountType,
         discountValue: money(item.discountValue),
         taxes: item.taxes?.map((tax) => ({ ...tax, rate: String(tax.rate) })),
+        ...(item.taxCode ? { taxCode: item.taxCode } : {}),
       })),
     },
     send: delivery,
