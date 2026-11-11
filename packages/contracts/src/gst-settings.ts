@@ -48,7 +48,7 @@ export const updateGstSettingsRequestSchema = z.object({
 });
 export const gstPeriodSchema = z.object({
   periodStart: gstDateSchema, periodEnd: gstDateSchema, dueDate: gstDateSchema,
-  status: z.enum(['not_started', 'draft', 'filed', 'overdue']),
+  status: z.enum(['not_started', 'draft', 'filed', 'overdue', 'reopened']),
   taxReturnId: z.string().uuid().nullable(), netGst: z.string().regex(/^-?\d+\.\d{2}$/).nullable(), irdReference: z.string().nullable(),
   dueDateRequiresConfirmation: z.boolean().optional(),
 });

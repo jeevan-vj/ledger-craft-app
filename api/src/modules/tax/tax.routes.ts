@@ -1,6 +1,7 @@
 import {
   createTaxReturnRequestSchema,
   fileTaxReturnRequestSchema,
+  reopenGstReturnRequestSchema,
   updateTaxReturnRequestSchema,
   upsertTaxConfigurationRequestSchema,
   gstPreparationQuerySchema,
@@ -80,6 +81,12 @@ export function taxRoutes() {
       const { db, user } = await requireSession(c);
       const input = fileTaxReturnRequestSchema.parse(await c.req.json());
       return c.json(await taxService.fileTaxReturnForUser(db, user.id, c.req.param('id'), input));
+    });
+
+    routes.post(`${prefix}/tax-returns/:id/reopen`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = reopenGstReturnRequestSchema.parse(await c.req.json());
+      return c.json(await taxService.reopenGstReturnForUser(db, user.id, c.req.param('id'), input));
     });
 
     routes.delete(`${prefix}/tax-returns/:id`, async (c) => {

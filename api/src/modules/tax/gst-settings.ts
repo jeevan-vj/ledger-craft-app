@@ -58,21 +58,23 @@ export async function gstPeriodsForUser(db: Database, userId: string, asOf = loc
       return gstPeriodsResponseSchema.parse({ settings, asOf, periods: [], reviewRequired: true, warnings: [...warnings, error instanceof Error ? error.message : 'Review the GST registration date.'] });
     }
     const records = (await taxRepo.listReturns(tx, ctx.organisationId)).filter(row => row.returnType === 'GST' && row.periodStart <= asOf);
-    const filed = records.filter(row => ['submitted', 'approved'].includes(row.status));
+    const filedHistory = records.filter(row => ['submitted', 'approved'].includes(row.status));
+    const filed = filedHistory.filter(row => !row.supersededAt);
     const seen = new Set<string>();
     let legacyMismatch = false;
     const periods: GstPeriodDto[] = [];
     const add = (period: { periodStart: string; periodEnd: string; dueDate: string; dueDateRequiresConfirmation?: boolean }, row?: typeof records[number]) => {
-      const isFiled = row !== undefined && ['submitted', 'approved'].includes(row.status);
+      const isFiled = row !== undefined && filed.includes(row);
+      const reopened = row !== undefined && !isFiled && Boolean(row.supersededAt);
       const dueDate = row?.returnData?.preparation?.dueDate ?? period.dueDate;
-      periods.push({ ...period, dueDate, status: isFiled ? 'filed' : row ? 'draft' : dueDate < asOf ? 'overdue' : 'not_started', taxReturnId: row?.id ?? null, netGst: row?.netGst ?? null, irdReference: isFiled ? row?.irdReference ?? null : null });
+      periods.push({ ...period, dueDate, status: isFiled ? 'filed' : reopened ? 'reopened' : row ? 'draft' : dueDate < asOf ? 'overdue' : 'not_started', taxReturnId: row?.id ?? null, netGst: row?.netGst ?? null, irdReference: isFiled || reopened ? row?.irdReference ?? null : null });
       if (row) seen.add(row.id);
     };
     for (const period of generated) {
       const matches = records.filter(row => row.periodStart === period.periodStart && row.periodEnd === period.periodEnd)
-        .sort((a, b) => Number(['submitted', 'approved'].includes(b.status)) - Number(['submitted', 'approved'].includes(a.status)) || b.updatedAt.localeCompare(a.updatedAt));
+        .sort((a, b) => Number(filed.includes(b)) - Number(filed.includes(a)) || Number(!b.supersededAt) - Number(!a.supersededAt) || b.updatedAt.localeCompare(a.updatedAt));
       if (matches[0]) add(period, matches[0]);
-      else if (filed.some(row => row.periodStart <= period.periodEnd && row.periodEnd >= period.periodStart)) legacyMismatch = true;
+      else if (filedHistory.some(row => row.periodStart <= period.periodEnd && row.periodEnd >= period.periodStart)) legacyMismatch = true;
       else add(period);
     }
     for (const row of records.filter(row => !seen.has(row.id))) {

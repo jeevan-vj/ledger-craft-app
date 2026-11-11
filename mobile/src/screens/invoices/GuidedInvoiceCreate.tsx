@@ -30,6 +30,7 @@ import {
 import { businessProfileService, type BusinessProfile } from '@/services/businessProfileService';
 import { customerService } from '@/services/customerService';
 import { invoiceService } from '@/services/invoiceService';
+import { AuthApiError } from '@/features/auth/api/http';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import type { InvoiceStackParamList } from '@/navigation/types';
 import { radius, space } from '@/theme/tokens';
@@ -244,7 +245,7 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
       navigation.replace('InvoiceDetail', { invoiceId: createdInvoice.id, entry: 'create' });
     } catch (caught) {
       console.error('Error saving the first invoice:', caught);
-      setError('The invoice could not be saved. Check your connection and try again.');
+      setError(caught instanceof AuthApiError && caught.code === 'GST_PERIOD_FILED' ? caught.message : 'The invoice could not be saved. Check your connection and try again.');
     } finally {
       savingRef.current = false;
       setSaving(false);

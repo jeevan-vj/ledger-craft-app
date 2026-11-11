@@ -237,6 +237,8 @@ export const COMPATIBILITY_COLUMNS = {
     'submitted_at',
     'ird_reference',
     'return_data',
+    'superseded_at',
+    'reopen_reason',
     'created_at',
     'updated_at',
   ],

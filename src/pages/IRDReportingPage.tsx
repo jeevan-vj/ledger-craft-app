@@ -14,6 +14,7 @@ import { gstSettingsApi } from '@/features/tax/gstSettingsApi';
 
 export default function IRDReportingPage() {
   const { me } = useAuth(); const canWrite = me?.permissions.includes('banking.write') === true;
+  const canReopen = me?.membership?.role === 'owner' || me?.membership?.role === 'admin';
   const [data, setData] = useState<GstPeriodsResponse>(); const [records, setRecords] = useState<TaxReturnDto[]>([]);
   const [period, setPeriod] = useState<GstPeriodRow>(); const [selected, setSelected] = useState<TaxReturnDto>();
   const [worksheet, setWorksheet] = useState<'gst' | 'company'>('gst');
@@ -46,7 +47,7 @@ export default function IRDReportingPage() {
     {worksheet === 'gst' && <>
       {data && <GstPeriodsOverview canWrite={canWrite} data={data} onPrepare={prepare} onView={id => void view(id)} />}
       {period && data?.settings.configured && basis && <GstPreparationPanel canWrite={canWrite} key={`${period.periodStart}-${period.periodEnd}-${basis}`} registeredBasis={basis} period={{ periodStart: period.periodStart, periodEnd: period.periodEnd, dueDate: period.dueDate }} onSaved={() => void load()} />}
-      {selected?.returnType === 'GST' && <GstSavedReturn canWrite={canWrite} value={selected} onFiled={() => void load()} onPrepareNew={data?.settings.configured && data.periods.some(row => row.periodStart === selected.periodStart && row.periodEnd === selected.periodEnd) ? () => prepare(data.periods.find(row => row.periodStart === selected.periodStart && row.periodEnd === selected.periodEnd)!) : undefined} />}
+      {selected?.returnType === 'GST' && <GstSavedReturn canWrite={canWrite} canReopen={canReopen} value={selected} onFiled={() => void load()} onPrepareNew={data?.settings.configured && data.periods.some(row => row.periodStart === selected.periodStart && row.periodEnd === selected.periodEnd) ? () => prepare(data.periods.find(row => row.periodStart === selected.periodStart && row.periodEnd === selected.periodEnd)!) : undefined} />}
       {data?.reviewRequired && <p className="text-sm text-muted-foreground">Your registered choices need review. <Link className="font-medium text-primary underline" to="/tax-config">Open GST settings</Link>.</p>}
       {records.filter(record => record.returnType === 'GST').length > 0 && <ContentPanel><section aria-label="Retained GST records" className="space-y-4"><h2 className="text-lg font-semibold">Retained GST records</h2><p className="text-sm text-muted-foreground">Historical drafts and filed snapshots retain the settings used when they were prepared.</p><ul className="divide-y divide-border">{records.filter(record => record.returnType === 'GST').map(record => <li key={record.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><span className="text-sm">{record.periodStart} to {record.periodEnd} · {record.status === 'submitted' ? 'Recorded as filed' : record.status} · NZD {record.netGst}{record.irdReference && ` · ${record.irdReference}`}</span><Button variant="outline" onClick={() => void view(record.id)}>View saved GST record</Button></li>)}</ul></section></ContentPanel>}
     </>}

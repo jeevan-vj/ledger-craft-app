@@ -1,4 +1,5 @@
 import { assertAccountingDateOpen } from '../accounting/period-lock';
+import { assertGstSourceOpen } from '../tax/gst-period-lock';
 import { defaultBankAccount } from '../bank/bank-workspace.repository';
 import {
   paymentListResponseSchema,
@@ -90,6 +91,10 @@ export async function createPaymentInTx(
   if (input.paymentDate < invoice.date) throw apiError(400, 'PAYMENT_PRECEDES_INVOICE', 'Record a customer advance as a liability; an invoice payment cannot precede its invoice date');
   const creditDate = await latestActiveCreditNoteDate(tx, ctx.organisationId, invoice.id);
   if (creditDate && input.paymentDate < creditDate) throw new HTTPException(409, { message: 'A payment cannot precede an already allocated credit note; review the credit note first' });
+  await assertGstSourceOpen(tx, ctx.organisationId, [
+    { kind: 'customer_settlement', dates: [input.paymentDate] },
+    ...(invoice.status === 'draft' ? [{ kind: 'sales_document' as const, dates: [invoice.date] }] : []),
+  ]);
   if (invoice.paymentStatus === 'cancelled') {
     throw new HTTPException(400, { message: 'Cannot pay a cancelled invoice' });
   }
@@ -167,6 +172,7 @@ export async function reversePaymentInTx(
     const payment = await repo.getPayment(tx, ctx.organisationId, id);
     if (!payment) throw new HTTPException(404, { message: 'Payment not found' });
     await assertAccountingDateOpen(tx, ctx.organisationId, payment.paymentDate, input.reversalDate);
+    await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'customer_settlement', dates: [payment.paymentDate, input.reversalDate] }]);
     if (payment.status === 'refunded') {
       throw apiError(409, 'PAYMENT_ALREADY_REVERSED', 'Payment has already been reversed');
     }

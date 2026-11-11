@@ -23,4 +23,7 @@ export const gstSettingsApi = {
     await request(`/api/tax-returns/${encodeURIComponent(id)}/file`, taxReturnSchema, 'POST', { irdReference });
     return request(`/api/tax-returns/${encodeURIComponent(id)}`, taxReturnSchema);
   },
+  reopen(id: string, reason: string) {
+    return request(`/api/tax-returns/${encodeURIComponent(id)}/reopen`, taxReturnSchema, 'POST', { reason });
+  },
 };

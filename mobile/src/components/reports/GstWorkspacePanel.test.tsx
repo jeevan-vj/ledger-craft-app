@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GstWorkspacePanel } from './GstWorkspacePanel';
 import { gstWorkspaceApi } from '@/features/reports/api/gstWorkspaceApi';
 import { shareGstReturn } from '@/features/reports/model/gstReturnDocument';
-jest.mock('@/features/reports/api/gstWorkspaceApi', () => ({ gstWorkspaceApi: { periods: jest.fn(), saveSettings: jest.fn(), getReturn: jest.fn(), fileReturn: jest.fn() } }));
+jest.mock('@/features/reports/api/gstWorkspaceApi', () => ({ gstWorkspaceApi: { periods: jest.fn(), saveSettings: jest.fn(), getReturn: jest.fn(), fileReturn: jest.fn(), reopen: jest.fn() } }));
 jest.mock('@/features/reports/model/gstReturnDocument', () => ({ shareGstReturn: jest.fn() }));
 jest.mock('./GstPreparationPanel', () => ({ GstPreparationPanel: () => null }));
 function renderWorkspace() { const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: Infinity } } }); const view = render(<QueryClientProvider client={client}><GstWorkspacePanel /></QueryClientProvider>); return { ...view, client, redraw: () => view.rerender(<QueryClientProvider client={client}><GstWorkspacePanel /></QueryClientProvider>) }; }
@@ -22,6 +22,16 @@ it('records external filing only after review and myIR reference, then shares sa
  fireEvent.press(s.getByText('Share GST preparation PDF')); await waitFor(() => expect(shareGstReturn).toHaveBeenCalledWith(expect.objectContaining({ netGst: '141.00', irdReference: 'MYIR-141' })));
 });
 it('shows missing configuration and retryable failure rather than a false empty success', async () => { jest.mocked(gstWorkspaceApi.periods).mockRejectedValueOnce(new Error('Check your connection and try again.')); const s = renderWorkspace(); await s.findByText('Check your connection and try again.'); jest.mocked(gstWorkspaceApi.periods).mockResolvedValue({ settings: { ...settings, configured: false, gstAccountingBasis: null }, asOf: '2026-06-01', periods: [], reviewRequired: true, warnings: ['Complete GST settings before preparing a return.'] } as never); fireEvent.press(s.getByText('Retry GST workspace')); expect(await s.findByText('Complete GST settings before preparing a return.')).toBeTruthy(); expect(s.queryByText('No GST periods due')).toBeNull(); });
+it('asks an owner for a reason before reopening a filed return', async () => {
+ mockPermissions.splice(0, mockPermissions.length, 'settings.write', 'banking.write', 'organisations.update');
+ jest.mocked(gstWorkspaceApi.getReturn).mockResolvedValue({ ...saved, status: 'submitted', irdReference: 'MYIR-141' } as never);
+ jest.mocked(gstWorkspaceApi.reopen).mockResolvedValue({ ...saved, status: 'submitted', irdReference: 'MYIR-141', supersededAt: '2026-11-11T00:00:00.000Z', reopenReason: 'Correct October' } as never);
+ const s = renderWorkspace(); await s.findByText('Registered basis: Payments'); fireEvent.press(s.getByText('View saved return'));
+ fireEvent.press(await s.findByText('Reopen filed period')); expect(s.getByText('Enter a reason for reopening this filed period.')).toBeTruthy();
+ fireEvent.changeText(s.getByLabelText('Reason for reopening'), 'Correct October'); fireEvent.press(s.getByText('Reopen filed period'));
+ expect(await s.findByText(/Filed snapshot superseded/)).toBeTruthy();
+ expect(gstWorkspaceApi.reopen).toHaveBeenCalledWith('return-1', 'Correct October');
+});
 it('hides settings and filing mutations for read-only users', async () => { mockPermissions.splice(0, mockPermissions.length, 'reports.read'); const s = renderWorkspace(); await s.findByText('Registered basis: Payments'); expect(s.queryByText('Edit GST settings')).toBeNull(); fireEvent.press(s.getByText('View saved return')); await s.findByText('Saved net GST: $141.00'); expect(s.queryByText('Record external filing')).toBeNull(); });
 
 it('clears prior-company GST periods when the authenticated query cache is cleared', async () => { const s = renderWorkspace(); await s.findByText('Registered basis: Payments'); jest.mocked(gstWorkspaceApi.periods).mockResolvedValue({ settings: { ...settings, gstAccountingBasis: 'invoice' }, asOf: '2026-06-01', periods: [], reviewRequired: false, warnings: [] } as never); act(() => s.client.clear()); s.redraw(); expect(await s.findByText('Registered basis: Invoice')).toBeTruthy(); expect(s.queryByText(/2026-04-01.*2026-05-31/)).toBeNull(); });

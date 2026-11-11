@@ -16,7 +16,7 @@ function snapshotContent(snapshot: GstCalculationSnapshot) {
 
 export async function assertNoFiledGstOverlap(tx: Database, organisationId: string, from: string, to: string, exceptId?: string) {
   const overlap = (await repo.listReturns(tx, organisationId)).some(row => row.id !== exceptId && row.returnType === 'GST'
-    && ['submitted', 'approved'].includes(row.status) && row.periodStart <= to && row.periodEnd >= from);
+    && ['submitted', 'approved'].includes(row.status) && !row.supersededAt && row.periodStart <= to && row.periodEnd >= from);
   if (overlap) throw apiError(409, 'GST_PERIOD_ALREADY_FILED', 'This period overlaps a recorded filed GST return. Prepare a separate correction rather than a duplicate filing.');
 }
 

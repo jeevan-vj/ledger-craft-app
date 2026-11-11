@@ -18,6 +18,7 @@ const USER_FACING_CODES = new Set([
   'GOOGLE_SIGN_IN_DISABLED',
   'SHARE_INACTIVE',
   'GST_FILING_SETTINGS_REQUIRED',
+  'GST_PERIOD_FILED',
 ]);
 
 export const validationFailureCopy =

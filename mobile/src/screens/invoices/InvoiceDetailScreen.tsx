@@ -169,8 +169,11 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
     } catch (error) {
       console.error('Error updating the draft invoice:', error);
       if (request === finishRequest.current) {
+        const filedPeriod = error instanceof AuthApiError && error.code === 'GST_PERIOD_FILED';
         const stale = error instanceof AuthApiError && error.status === 409;
-        setFinishError(stale
+        setFinishError(filedPeriod
+          ? error.message
+          : stale
           ? 'This invoice changed. Review it and try again.'
           : 'The invoice could not be updated. Check your connection and try again.');
         if (stale) await refreshInvoice().catch(() => undefined);
