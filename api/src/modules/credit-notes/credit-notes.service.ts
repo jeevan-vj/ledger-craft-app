@@ -1,5 +1,5 @@
 import { assertAccountingDateOpen } from '../accounting/period-lock';
-import { assertGstSourceOpen } from '../tax/gst-period-lock';
+import { assertGstSourceOpen, invoiceSettlementDates } from '../tax/gst-period-lock';
 import { creditNoteSchema, type CreateCreditNoteRequest, type CreditNoteDto, type InvoiceDto, type ReverseCreditNoteRequest } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
@@ -99,7 +99,10 @@ export async function reverseCreditNoteForUser(db: Database, userId: string, id:
       return credit;
     }
     await assertAccountingDateOpen(tx, ctx.organisationId, credit.issueDate, input.date);
-    await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'credit_note', dates: [credit.issueDate, input.date] }]);
+    await assertGstSourceOpen(tx, ctx.organisationId, [
+      { kind: 'credit_note', dates: [credit.issueDate, input.date] },
+      { kind: 'customer_settlement', dates: [input.date], cumulativeWith: await invoiceSettlementDates(tx, ctx.organisationId, credit.invoiceId) },
+    ]);
     if (input.date < credit.issueDate || credit.refunds.some(refund => (refund.reversalDate ?? refund.refundDate) > input.date)) throw new HTTPException(400, { message: 'Reversal date must follow the credit note and its refund reversals' });
     if (credit.refunds.some(refund => refund.status === 'completed')) throw new HTTPException(409, { message: 'Reverse customer refunds before reversing the credit note' });
     const invoice = required(await invoicesRepo.getInvoice(tx, ctx.organisationId, credit.invoiceId), 'Invoice');

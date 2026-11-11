@@ -35,7 +35,7 @@ export function GstReturnDetail({ initial, canFile, canReopen = false, onFiled }
   <Text style={theme.type.caption}>EasyBizInvoice does not submit GST returns to IRD. File in myIR first, then record its confirmation reference here.</Text>
   {(saved.status === 'submitted' || saved.status === 'approved') && !saved.supersededAt && canReopen ? <>
    <ModernInput label="Reason for reopening" value={reopenReason} onChangeText={setReopenReason} editable={!busy} />
-   <ModernButton disabled={busy} loading={busy} onPress={() => void reopen()}>Reopen filed period</ModernButton>
+   <ModernButton disabled={busy || !reopenReason.trim()} loading={busy} onPress={() => void reopen()}>Reopen filed period</ModernButton>
   </> : null}
   {saved.status === 'draft' && canFile ? <>
    <ModernInput label="myIR confirmation reference" value={reference} onChangeText={setReference} editable={!busy} />

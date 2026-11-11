@@ -1,5 +1,5 @@
 import { assertAccountingDateOpen } from '../accounting/period-lock';
-import { assertGstSourceOpen, billPaymentDates, billSettlementDates } from '../tax/gst-period-lock';
+import { assertGstSourceOpen, billSettlementDates, openBillPayment } from '../tax/gst-period-lock';
 import {
   billListResponseSchema,
   billPaymentBatchSchema,
@@ -257,7 +257,7 @@ export async function recordBillPaymentInTx(
     const bill = await repo.getBill(tx, ctx.organisationId, id);
     if (!bill) throw new HTTPException(404, { message: 'Bill not found' });
     await assertAccountingDateOpen(tx, ctx.organisationId, input.paymentDate);
-    await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'supplier_settlement', dates: [input.paymentDate] }]);
+    await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'supplier_settlement', dates: [input.paymentDate], cumulativeWith: await billSettlementDates(tx, ctx.organisationId, id) }]);
     if (bill.lifecycleStatus !== 'received') throw new HTTPException(409, { message: 'Only received bills can be paid' });
     if (input.paymentDate < bill.issueDate) throw new HTTPException(400, { message: 'A bill payment cannot precede its bill issue date; record a supplier advance separately' });
     const allocations = input.allocations ?? [{ bankAccountId: input.bankAccountId!, amount: input.amount! }];
@@ -292,8 +292,11 @@ export async function reverseBillPaymentInTx(
   paymentId: string,
   input: { reason: string; reversalDate: string },
 ) {
-  const originalDates = await billPaymentDates(tx, ctx.organisationId, paymentId);
-  await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'supplier_settlement', dates: [...originalDates, input.reversalDate] }]);
+  const original = await openBillPayment(tx, ctx.organisationId, paymentId);
+  await assertGstSourceOpen(tx, ctx.organisationId, [
+    { kind: 'supplier_settlement', dates: [original?.paymentDate, input.reversalDate] },
+    { kind: 'supplier_settlement', dates: [input.reversalDate], cumulativeWith: original ? await billSettlementDates(tx, ctx.organisationId, original.billId) : [] },
+  ]);
   const reversed = await repo.reversePayment(tx, ctx, paymentId, input);
   if (!reversed) throw new HTTPException(409, { message: 'Bill payment is not reversible' });
   await assertAccountingDateOpen(tx, ctx.organisationId, reversed.paymentDate, input.reversalDate);

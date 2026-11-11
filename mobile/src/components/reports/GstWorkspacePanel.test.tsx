@@ -27,7 +27,7 @@ it('asks an owner for a reason before reopening a filed return', async () => {
  jest.mocked(gstWorkspaceApi.getReturn).mockResolvedValue({ ...saved, status: 'submitted', irdReference: 'MYIR-141' } as never);
  jest.mocked(gstWorkspaceApi.reopen).mockResolvedValue({ ...saved, status: 'submitted', irdReference: 'MYIR-141', supersededAt: '2026-11-11T00:00:00.000Z', reopenReason: 'Correct October' } as never);
  const s = renderWorkspace(); await s.findByText('Registered basis: Payments'); fireEvent.press(s.getByText('View saved return'));
- fireEvent.press(await s.findByText('Reopen filed period')); expect(s.getByText('Enter a reason for reopening this filed period.')).toBeTruthy();
+ const reopen = await s.findByText('Reopen filed period'); expect(reopen).toBeDisabled();
  fireEvent.changeText(s.getByLabelText('Reason for reopening'), 'Correct October'); fireEvent.press(s.getByText('Reopen filed period'));
  expect(await s.findByText(/Filed snapshot superseded/)).toBeTruthy();
  expect(gstWorkspaceApi.reopen).toHaveBeenCalledWith('return-1', 'Correct October');

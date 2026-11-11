@@ -22,6 +22,17 @@ beforeEach(() => {
     return new Response(JSON.stringify(value), { status: body ? 201 : 200 });
   }));
 });
+it('labels a superseded filing in the retained list', async () => {
+  vi.stubGlobal('fetch', vi.fn(async (path: string) => {
+    const value = path === '/api/tax/gst-periods'
+      ? { settings, asOf: '2026-11-07', periods: [], reviewRequired: false, warnings: [] }
+      : { taxReturns: [{ id: '11111111-1111-4111-8111-111111111111', returnType: 'GST', status: 'submitted', periodStart: '2026-09-01', periodEnd: '2026-10-31', totalSales: '0.00', totalPurchases: '0.00', gstOnSales: '0.00', gstOnPurchases: '0.00', netGst: '0.00', submittedAt: '2026-11-01T00:00:00.000Z', irdReference: 'MYIR-1', returnData: null, createdAt: '2026-11-01T00:00:00.000Z', updatedAt: '2026-11-11T00:00:00.000Z', supersededAt: '2026-11-11T00:00:00.000Z' }] };
+    return new Response(JSON.stringify(value), { status: 200 });
+  }));
+  render(<MemoryRouter><IRDReportingPage /></MemoryRouter>);
+  expect(await screen.findByText(/Filed snapshot superseded/)).toBeInTheDocument();
+  expect(screen.queryByText(/Recorded as filed/)).not.toBeInTheDocument();
+});
 it('opens an explicit ordinary-company worksheet without calculating personal tax bands or posting a return', async () => {
   render(<MemoryRouter><IRDReportingPage /></MemoryRouter>);
   fireEvent.click(screen.getByRole('button', { name: 'Company tax worksheet' }));

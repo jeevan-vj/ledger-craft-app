@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { describe, expect, it, vi } from 'vitest';
 import { eq } from 'drizzle-orm';
 import type { GstPreparationResponse, TaxReturnDto } from '@ledgercraft/contracts';
 import { createApp } from '../../app';
@@ -8,6 +10,7 @@ import { organisationMemberships } from '../../db/schema/identity';
 import { gstReturnAuditEvents } from '../../db/schema/tax';
 import { withTestDb } from '../../test/harness';
 import { createAuth } from '../auth/auth';
+import { createMemoryFileStorage } from '../storage/file-storage';
 import { gstLockApplies } from './gst-period-lock';
 
 const origin = { Origin: 'http://localhost:8080', 'Content-Type': 'application/json' };
@@ -90,6 +93,8 @@ describe('GST date by accounting basis', () => {
   });
 });
 
+const gstRegistration = (basis: Basis) => ({ gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2026-07-01', gstAccountingBasis: basis, gstFilingFrequency: 'two_monthly', gstPeriodAnchor: 10 });
+
 describe('filed GST period lock', () => {
   it('rejects an October invoice edit after Sep-Oct is filed and accepts a 3 Nov credit note', async () => withTestDb(async () => {
     const f = await org('invoice');
@@ -102,6 +107,10 @@ describe('filed GST period lock', () => {
         items: [{ description: 'Returned consulting', quantity: '1', rate: '100' }],
       }, 201, { 'Idempotency-Key': crypto.randomUUID() });
       expect(credit.issueDate).toBe('2026-11-03');
+      locked(await f.request('/api/credit-notes', 'POST', {
+        invoiceId: october.id, issueDate: '2026-10-20', reason: 'October credit inside the filed period', taxInclusive: false, taxRate: '15',
+        items: [{ description: 'October return', quantity: '1', rate: '10' }],
+      }, 409, { 'Idempotency-Key': crypto.randomUUID() }));
       const november = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-11-01&to=2026-12-31');
       expect(november.calculation?.sourceIds.creditNotes).toContain(credit.id);
       expect(filed.returnData?.gstCalculation?.fingerprint).toBeTruthy();
@@ -200,6 +209,83 @@ describe('filed GST period lock', () => {
       const retained = await f.request<TaxReturnDto>(`/api/tax-returns/${filed.id}`);
       expect(retained.returnData).toEqual(snapshot);
       expect(retained.supersededAt).toBe(reopened.supersededAt);
+      const outsider = await f.app.request('/api/auth/sign-up/email', { method: 'POST', headers: origin, body: JSON.stringify({ name: 'Other GST owner', email: `${crypto.randomUUID()}@example.test`, password: 'Local-GST-lock-2026!' }) });
+      const outsiderHeaders = { ...origin, Cookie: outsider.headers.getSetCookie().map((value) => value.split(';')[0]).join('; ') };
+      const cross = await f.app.request(`/api/tax-returns/${filed.id}/reopen`, { method: 'POST', headers: outsiderHeaders, body: JSON.stringify({ reason: 'Other company reopen' }) });
+      expect(cross.status).toBe(404);
     } finally { await f.sql.end(); }
+  }));
+
+  it('keeps the filed snapshot basis after the live basis changes', async () => withTestDb(async () => {
+    const f = await org('invoice');
+    try {
+      const { filed } = await filePeriod(f);
+      const snapshot = structuredClone(filed.returnData);
+      await f.request('/api/tax/gst-settings', 'PUT', gstRegistration('payments'));
+      locked(await f.request('/api/invoices', 'POST', { customerId: f.customer.id, date: '2026-10-15', dueDate: '2026-10-31', currency: 'NZD', taxInclusive: false, taxRate: '15', items: [{ description: 'October invoice after basis change', quantity: '1', rate: '100' }] }, 409));
+      locked(await f.request('/api/journal-entries', 'POST', { description: 'October output GST after basis change', entryDate: '2026-10-15', debitAccountId: f.expenseAccount.id, creditAccountId: f.outputGst, amount: '15.00' }, 409));
+      expect((await f.request<TaxReturnDto>(`/api/tax-returns/${filed.id}`)).returnData).toEqual(snapshot);
+    } finally { await f.sql.end(); }
+  }));
+
+  it('rejects an earlier payments-basis receipt that would restate GST already in a filed period', async () => withTestDb(async () => {
+    const f = await org('payments');
+    try {
+      const source = await f.request<{ id: string; total: string; taxAmount: string }>('/api/invoices', 'POST', { customerId: f.customer.id, date: '2026-08-01', dueDate: '2026-11-30', currency: 'NZD', taxInclusive: false, taxRate: '15', items: [{ description: 'Partial GST source', quantity: '1', rate: '1000.00' }] }, 201);
+      expect(source).toMatchObject({ total: '1150.00', taxAmount: '150.00' });
+      await f.request(`/api/invoices/${source.id}`, 'PATCH', { status: 'sent' });
+      await f.request('/api/payments', 'POST', { invoiceId: source.id, amount: '1.00', paymentDate: '2026-10-20', paymentMethod: 'bank_transfer' }, 201);
+      const { filed } = await filePeriod(f);
+      const snapshot = structuredClone(filed.returnData);
+      locked(await f.request('/api/payments', 'POST', { invoiceId: source.id, amount: '1.00', paymentDate: '2026-08-31', paymentMethod: 'bank_transfer' }, 409));
+      await f.request('/api/payments', 'POST', { invoiceId: source.id, amount: '1.00', paymentDate: '2026-11-05', paymentMethod: 'bank_transfer' }, 201);
+      expect((await f.request<TaxReturnDto>(`/api/tax-returns/${filed.id}`)).returnData).toEqual(snapshot);
+    } finally { await f.sql.end(); }
+  }));
+
+  it('rejects an expense reversal dated inside a filed period even when the expense is earlier', async () => withTestDb(async () => {
+    const f = await org('invoice');
+    try {
+      const expense = await f.request<{ id: string }>('/api/expenses', 'POST', { description: 'August receipt', amount: '20.00', taxAmount: '0.00', gstTreatment: 'exempt', currency: 'NZD', status: 'approved', expenseDate: '2026-08-12' }, 201);
+      const { filed } = await filePeriod(f);
+      const snapshot = structuredClone(filed.returnData);
+      vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-10-15T02:00:00.000Z') });
+      try {
+        locked(await f.request(`/api/expenses/${expense.id}`, 'DELETE', undefined, 409));
+      } finally { vi.useRealTimers(); }
+      expect((await f.request<TaxReturnDto>(`/api/tax-returns/${filed.id}`)).returnData).toEqual(snapshot);
+    } finally { await f.sql.end(); }
+  }));
+
+  it('rejects a purchase import dated inside a filed invoice-basis period', async () => withTestDb(async () => {
+    const { db, sql } = createDb(getDatabaseUrl());
+    const app = createApp({ auth: createAuth(db), db, fileStorage: createMemoryFileStorage(), checkDatabase: async () => true });
+    try {
+      const signup = await app.request('/api/auth/sign-up/email', { method: 'POST', headers: origin, body: JSON.stringify({ name: 'Import lock', email: `${crypto.randomUUID()}@example.test`, password: 'Local-GST-lock-2026!' }) });
+      const headers = { ...origin, Cookie: signup.headers.getSetCookie().map((value) => value.split(';')[0]).join('; ') };
+      const call = async <T = Record<string, unknown>>(path: string, method = 'GET', body?: unknown, expected = 200) => {
+        const response = await app.request(path, { method, headers, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
+        const value = response.status === 204 ? null : await response.json();
+        expect(response.status, `${method} ${path} ${JSON.stringify(value)}`).toBe(expected);
+        return value as T;
+      };
+      await call('/api/business-profile', 'PUT', { name: 'Import GST Limited', email: 'owner@example.test', country: 'NZ', defaultTaxRate: '15' });
+      await call('/api/tax/gst-settings', 'PUT', gstRegistration('invoice'));
+      const preparation = await call<GstPreparationResponse>(`/api/tax/gst-preparation?from=${period.from}&to=${period.to}`);
+      const draft = await call<{ id: string }>('/api/tax-returns', 'POST', {
+        periodStart: period.from, periodEnd: period.to, returnType: 'GST',
+        totalSales: preparation.totalSales, totalPurchases: preparation.totalPurchases,
+        gstOnSales: preparation.gstOnSales, gstOnPurchases: preparation.gstOnPurchases, netGst: preparation.netGstPosition,
+        returnData: { preparation: { basis: preparation.basis, baseCurrency: 'NZD', calculationFingerprint: preparation.calculation!.fingerprint } },
+      }, 201);
+      await call(`/api/tax-returns/${draft.id}/file`, 'POST', { irdReference: 'MYIR-IMPORT-LOCK' });
+      const vendor = await call<{ id: string }>('/api/vendors', 'POST', { name: 'Sparkle Supplies' }, 201);
+      const bytes = await readFile(resolve(import.meta.dirname, '../invoice-imports/__fixtures__/sparkle-supplies-bill.pdf'));
+      const uploaded = await call<{ documents: Array<{ id: string }> }>('/api/invoice-imports', 'POST', { files: [{ filename: 'sparkle-supplies-bill.pdf', contentType: 'application/pdf', contentBase64: bytes.toString('base64') }] }, 201);
+      const documentId = uploaded.documents[0].id as string;
+      await call(`/api/invoice-imports/${documentId}/extract`, 'POST', {});
+      await call(`/api/invoice-imports/${documentId}/draft`, 'PATCH', { direction: 'PURCHASE', thirdPartyIssued: false, contactId: vendor.id, issueDate: '2026-10-15' });
+      locked(await call(`/api/invoice-imports/${documentId}/commit`, 'POST', {}, 409));
+    } finally { await sql.end(); }
   }));
 });

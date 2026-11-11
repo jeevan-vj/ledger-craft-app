@@ -6,7 +6,6 @@ import { payments } from '../../db/schema/payments';
 import { billPayments } from '../../db/schema/purchases';
 import { taxReturns } from '../../db/schema/tax';
 import { apiError } from '../../http-error';
-import { gstSettingsInTx } from './gst-settings';
 
 export type GstBasis = 'invoice' | 'payments' | 'hybrid';
 /** Dates the GST engine uses to place a source in a return. */
@@ -20,7 +19,12 @@ export type GstLockKind =
   | 'output_gst_journal'
   | 'input_gst_journal';
 
-export type GstLockCheck = { kind: GstLockKind; dates: Array<string | null | undefined> };
+export type GstLockCheck = {
+  kind: GstLockKind;
+  dates: Array<string | null | undefined>;
+  /** Existing settlement dates. A new date on or before a filed period end is locked when one of these already falls inside that period. */
+  cumulativeWith?: Array<string | null | undefined>;
+};
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -32,8 +36,10 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
  * a manual GST journal is not included by the payments-basis engine.
  * Hybrid: invoice-date sales (invoices, credit notes, output GST journals) and
  * payments-date purchases (supplier payments and expenses).
- * A source edit also checks settlement dates already inside a filed period,
- * because those settlements take their GST from the source.
+ * Each in-force filed return uses the basis stored on its snapshot, not the live setting.
+ * A later basis change does not reopen that period.
+ * Payments-basis allocation is cumulative: a settlement on or before a filed period end
+ * is locked when that document already has a settlement inside the period.
  */
 export function gstLockApplies(basis: GstBasis, kind: GstLockKind): boolean {
   switch (kind) {
@@ -61,6 +67,15 @@ function datesOf(values: Array<string | null | undefined>): string[] {
   return values.filter((value): value is string => typeof value === 'string' && DATE.test(value));
 }
 
+function snapshotBasis(returnData: unknown): GstBasis {
+  const data = returnData as {
+    preparation?: { basis?: string };
+    gstCalculation?: { period?: { basis?: string }; settings?: { gstAccountingBasis?: string | null } };
+  } | null;
+  const candidate = data?.gstCalculation?.period?.basis ?? data?.gstCalculation?.settings?.gstAccountingBasis ?? data?.preparation?.basis;
+  return candidate === 'payments' || candidate === 'hybrid' || candidate === 'invoice' ? candidate : 'invoice';
+}
+
 async function filedGstPeriods(tx: Database, organisationId: string) {
   const rows = await tx.select({
     periodStart: taxReturns.periodStart,
@@ -68,20 +83,24 @@ async function filedGstPeriods(tx: Database, organisationId: string) {
     status: taxReturns.status,
     returnType: taxReturns.returnType,
     supersededAt: taxReturns.supersededAt,
+    returnData: taxReturns.returnData,
   }).from(taxReturns).where(eq(taxReturns.organisationId, organisationId));
-  return rows.filter((row) => row.returnType === 'GST' && (row.status === 'submitted' || row.status === 'approved') && !row.supersededAt);
+  return rows.filter((row) => row.returnType === 'GST' && (row.status === 'submitted' || row.status === 'approved') && !row.supersededAt)
+    .map((row) => ({ periodStart: row.periodStart, periodEnd: row.periodEnd, basis: snapshotBasis(row.returnData) }));
 }
 
 export async function assertGstSourceOpen(tx: Database, organisationId: string, checks: GstLockCheck[]) {
-  const pending = checks.map((check) => ({ kind: check.kind, dates: datesOf(check.dates) })).filter((check) => check.dates.length > 0);
+  const pending = checks.map((check) => ({ kind: check.kind, dates: datesOf(check.dates), cumulativeWith: datesOf(check.cumulativeWith ?? []) })).filter((check) => check.dates.length > 0);
   if (!pending.length) return;
   const periods = await filedGstPeriods(tx, organisationId);
   if (!periods.length) return;
-  const settings = await gstSettingsInTx(tx, organisationId);
-  const basis: GstBasis = settings.gstAccountingBasis ?? 'invoice';
   for (const check of pending) {
-    if (!gstLockApplies(basis, check.kind)) continue;
-    const hit = periods.find((period) => check.dates.some((date) => date >= period.periodStart && date <= period.periodEnd));
+    const hit = periods.find((period) => {
+      if (!gstLockApplies(period.basis, check.kind)) return false;
+      if (check.dates.some((date) => date >= period.periodStart && date <= period.periodEnd)) return true;
+      const anchored = check.cumulativeWith.some((date) => date >= period.periodStart && date <= period.periodEnd);
+      return anchored && check.dates.some((date) => date <= period.periodEnd);
+    });
     if (hit) {
       throw apiError(409, 'GST_PERIOD_FILED', `This date falls in the filed GST period ${hit.periodStart} to ${hit.periodEnd}. Record a correction in the next open period, or ask an owner or admin to reopen the period.`);
     }
@@ -113,8 +132,8 @@ export async function gstJournalChecks(tx: Database, organisationId: string, dat
   return checks;
 }
 
-export async function billPaymentDates(tx: Database, organisationId: string, paymentId: string): Promise<string[]> {
-  const [row] = await tx.select({ paymentDate: billPayments.paymentDate }).from(billPayments)
+export async function openBillPayment(tx: Database, organisationId: string, paymentId: string) {
+  const [row] = await tx.select({ paymentDate: billPayments.paymentDate, billId: billPayments.billId }).from(billPayments)
     .where(and(eq(billPayments.organisationId, organisationId), eq(billPayments.id, paymentId), isNull(billPayments.reversalDate)));
-  return row ? [row.paymentDate] : [];
+  return row;
 }

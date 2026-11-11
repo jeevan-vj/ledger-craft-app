@@ -1,4 +1,5 @@
 import { assertAccountingDateOpen } from '../accounting/period-lock';
+import { organisationToday } from '../accounting/organisation-date';
 import { assertGstSourceOpen } from '../tax/gst-period-lock';
 import { decimal, roundMoney } from '../invoices/money';
 import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from '../invoices/idempotency';
@@ -154,11 +155,10 @@ export async function deleteExpenseForUser(db: Database, userId: string, id: str
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const current = await repo.getExpense(tx, ctx.organisationId, id);
     if (current) {
-      await assertAccountingDateOpen(tx, ctx.organisationId, current.expenseDate);
-      await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'expense', dates: [current.expenseDate] }]);
-    }
-    if (current?.status === 'approved') {
-      await reversePosting(tx, ctx, { referenceType: 'expense', referenceId: id, reversalType: 'expense_reversal', date: new Date().toISOString().slice(0, 10), description: `Reverse expense ${current.description}` });
+      const reversalDate = current.status === 'approved' ? await organisationToday(tx, ctx.organisationId) : undefined;
+      await assertAccountingDateOpen(tx, ctx.organisationId, current.expenseDate, ...(reversalDate ? [reversalDate] : []));
+      await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'expense', dates: [current.expenseDate, reversalDate] }]);
+      if (reversalDate) await reversePosting(tx, ctx, { referenceType: 'expense', referenceId: id, reversalType: 'expense_reversal', date: reversalDate, description: `Reverse expense ${current.description}` });
     }
     const deleted = await repo.deleteExpense(tx, ctx.organisationId, id);
     if (!deleted) throw new HTTPException(404, { message: 'Expense not found' });

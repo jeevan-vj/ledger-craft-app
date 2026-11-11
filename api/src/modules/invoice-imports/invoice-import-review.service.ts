@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { assertAccountingDateOpen } from '../accounting/period-lock';
+import { assertGstSourceOpen } from '../tax/gst-period-lock';
 import {
   invoiceImportCommitResponseSchema,
   invoiceImportDraftResponseSchema,
@@ -159,6 +160,7 @@ export async function commitInvoiceImportForUser(db: Database, userId: string, i
     } else {
       const vendor = await purchaseRepo.getVendor(tx, ctx.organisationId, row.contactId);
       if (!vendor) throw apiError(422, 'CONTACT_REQUIRED', 'Selected vendor was not found');
+      await assertGstSourceOpen(tx, ctx.organisationId, [{ kind: 'purchase_document', dates: [issueDate] }]);
       const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, draft.currency, issueDate);
       const bill = await purchaseRepo.insertBill(tx, ctx, {
         vendorId: row.contactId, vendorReference: draft.documentNumber, issueDate, dueDate,
