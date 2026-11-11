@@ -154,6 +154,13 @@ async function priceAssistantDraft(
     const profile = await getBusinessProfile(tx, organisationId);
     const resolved = await resolveDocumentCurrency(tx, organisationId, request.currency, request.date);
     const totals = computeInvoiceTotals(request, profile?.defaultTaxRate ?? '0', resolved.currency.precision);
+    totals.lines.forEach((line, index) => {
+      const rate = decimal(line.taxes[0]?.rate ?? '0');
+      const code = source[index]?.taxCode;
+      if (rate.compare(0) === 0 && decimal(line.tax).compare(0) === 0 && code !== 'zero_rated' && code !== 'exempt') {
+        errors.push({ field: `lines.${index}.taxCode`, message: 'Choose zero-rated or exempt for a line with no GST.' });
+      }
+    });
     subtotal = totals.subtotal;
     taxAmount = totals.taxAmount;
     total = totals.total;

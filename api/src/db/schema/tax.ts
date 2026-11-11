@@ -83,6 +83,7 @@ export const salesTaxReclassifications = sqliteTable('sales_tax_reclassification
   previousCodes: text('previous_codes', { mode: 'json' }).$type<Record<string, string | null>>().notNull(),
   beforeImpact: text('before_impact', { mode: 'json' }).notNull(),
   afterImpact: text('after_impact', { mode: 'json' }).notNull(),
+  periodImpacts: text('period_impacts', { mode: 'json' }).notNull(),
   undoneAt: timestamptz('undone_at'),
   undoOfId: text('undo_of_id'),
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),

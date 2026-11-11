@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { salesTaxCodeSchema } from './sales-tax-code';
 
 const sha256HexSchema = z.string().regex(/^[a-f0-9]{64}$/i, 'Expected a SHA-256 hex digest');
 
@@ -115,6 +116,7 @@ export const invoiceImportExtractedLineSchema = z.object({
   unitPrice: decimalTextSchema,
   amount: decimalTextSchema,
   gstRate: decimalTextSchema,
+  taxCode: salesTaxCodeSchema.optional(),
 }).strict();
 
 export const invoiceImportExtractionDraftSchema = z.object({

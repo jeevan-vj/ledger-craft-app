@@ -17,6 +17,7 @@ import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as profileRepo from '../business-profile/business-profile.repository';
 import { currencyRepository, resolveDocumentCurrency } from '../currency/currency.service';
+import { decimal } from '../invoices/money';
 import { createInvoiceInTx } from '../invoices/invoices.service';
 import * as purchaseRepo from '../purchases/purchases.repository';
 import type { FileStorage } from '../storage/file-storage';
@@ -145,10 +146,17 @@ export async function commitInvoiceImportForUser(db: Database, userId: string, i
       const invoice = await createInvoiceInTx(tx, ctx, {
         customerId: row.contactId, externalNumber: draft.documentNumber,
         date: issueDate, dueDate, currency: draft.currency, taxInclusive: false, status: 'draft',
-        items: draft.lineItems.map((line) => ({
-          description: line.description, quantity: line.quantity, rate: line.unitPrice,
-          taxes: [{ id: 'import-gst', name: 'GST', rate: line.gstRate }],
-        })),
+        items: draft.lineItems.map((line) => {
+          const zeroRated = decimal(line.gstRate).compare(0) === 0;
+          if (zeroRated && line.taxCode !== 'zero_rated' && line.taxCode !== 'exempt') {
+            throw apiError(422, 'SALES_TAX_CODE_REQUIRED', 'Choose zero-rated or exempt for each imported line with no GST.');
+          }
+          return {
+            description: line.description, quantity: line.quantity, rate: line.unitPrice,
+            taxes: [{ id: 'import-gst', name: 'GST', rate: line.gstRate }],
+            ...(line.taxCode ? { taxCode: line.taxCode } : {}),
+          };
+        }),
       });
       if (invoice.total !== computed.total) throw apiError(422, 'TOTALS_MISMATCH', 'Imported invoice totals do not match domain totals');
       await reviewRepo.linkInvoice(tx, {

@@ -14,16 +14,14 @@ export function resolveSalesTaxCode(input: CodedLine): SalesTaxCode | null {
   const carriesGst = decimal(input.tax).compare(0) > 0 || rate.compare(0) > 0;
   const code = input.taxCode ?? null;
   if (code === 'standard_15') {
-    if (rate.compare('15') !== 0 || decimal(input.tax).compare(0) <= 0) {
-      throw apiError(422, 'SALES_TAX_CODE_MISMATCH', 'Standard GST (15%) only applies to a line that carries 15% GST.');
-    }
+    if (rate.compare('15') !== 0) throw apiError(422, 'SALES_TAX_CODE_MISMATCH', 'Standard GST (15%) only applies to a line whose GST rate is 15%.');
     return 'standard_15';
   }
   if (code === 'zero_rated' || code === 'exempt') {
     if (carriesGst) throw apiError(422, 'SALES_TAX_CODE_MISMATCH', 'Zero-rated and exempt lines cannot carry GST.');
     return code;
   }
-  if (carriesGst && rate.compare('15') === 0) return 'standard_15';
+  if (rate.compare('15') === 0) return 'standard_15';
   return null;
 }
 

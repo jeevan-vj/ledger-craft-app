@@ -16,7 +16,7 @@ describe('sales tax reclassify panel', () => {
   it('previews the Box 5 and Box 6 change and applies the chosen code', async () => {
     const fetchMock = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
-      if (url.endsWith('/preview')) return json({ taxCode: 'zero_rated', lineCount: 1, before: impact, after });
+      if (url.endsWith('/preview')) return json({ taxCode: 'zero_rated', lineCount: 1, before: impact, after, periods: [{ from: '2026-09-01', to: '2026-10-31', before: impact, after }] });
       if (init?.method === 'POST') return json({ id: '77777777-7777-4777-8777-777777777777', action: 'apply', taxCode: 'zero_rated', reason: 'Reviewed export documents', lineIds: [line.id], before: impact, after, undoneAt: null, createdAt: '2026-11-11T00:00:00.000Z' }, 201);
       return json({ lines: [line], events: [] });
     });

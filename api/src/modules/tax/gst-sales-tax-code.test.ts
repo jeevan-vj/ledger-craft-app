@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
+import { lineItems } from '../../db/schema/invoices';
 import type { CreateTaxReturnRequest, GstPreparationResponse, TaxReturnDto } from '@ledgercraft/contracts';
 import { createApp } from '../../app';
 import { createDb } from '../../db/local';
@@ -128,6 +129,18 @@ describe('sales tax codes feed GST boxes 5 and 6', () => {
         items: [{ description: 'Taxed export', quantity: '1', rate: '100', taxCode: 'zero_rated', taxes: [{ id: 'gst', name: 'GST', rate: '15' }] }],
       }, 422);
       expect(mismatch.error.code).toBe('SALES_TAX_CODE_MISMATCH');
+      const rounded = await f.request<{ id: string; items: Array<{ taxCode?: string; tax: string | null }> }>('/api/invoices', 'POST', {
+        customerId: f.customerId, date: '2026-09-16', dueDate: '2026-10-31', currency: 'NZD', taxInclusive: false, taxRate: '15',
+        items: [
+          { description: 'Normal sale', quantity: '1', rate: '100' },
+          { description: 'One cent', quantity: '1', rate: '0.01', taxCode: 'standard_15', taxes: [{ id: 'gst', name: 'GST', rate: '15' }] },
+        ],
+      }, 201);
+      expect(rounded.items.map((item) => item.taxCode)).toEqual(['standard_15', 'standard_15']);
+      expect(rounded.items[1].tax).toBe('0.00');
+      await f.request(`/api/invoices/${rounded.id}`, 'PATCH', { status: 'sent' });
+      const tiny = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-09-01&to=2026-10-31');
+      expect(tiny.calculation).toMatchObject({ mappingStatus: 'supported', myIrBoxes: { '5': '115.01', '6': '0.00', '7': '115.01', '8': '15.00', '9': '0.00', '10': '15.00' } });
       const quote = await f.request<{ items: Array<{ taxCode?: string }> }>('/api/quotes', 'POST', {
         customerId: f.customerId, date: '2026-09-01', expiryDate: '2026-10-01', taxInclusive: false, taxRate: '0',
         items: [{ description: 'Export quote', quantity: '1', rate: '50', taxCode: 'zero_rated' }],
@@ -154,7 +167,11 @@ describe('bulk reclassify of unclassified 0% sales', () => {
       expect(listed.lines).toEqual([expect.objectContaining({ description: 'Older export', total: '2000.00', taxCode: null })]);
       expect(listed.events).toEqual([]);
       const lineId = listed.lines[0].id;
+      const [beforeLine] = await f.db.select({ updatedAt: lineItems.updatedAt, taxCode: lineItems.taxCode }).from(lineItems).where(eq(lineItems.id, lineId));
       const preview = await f.request<{ before: { box5: string | null; box6: string | null; mappingStatus: string }; after: { box5: string | null; box6: string | null; unclassifiedSales: string; zeroRatedSales: string; mappingStatus: string } }>('/api/tax/sales-tax-reclassifications/preview', 'POST', { lineIds: [lineId], taxCode: 'zero_rated' });
+      const [afterLine] = await f.db.select({ updatedAt: lineItems.updatedAt, taxCode: lineItems.taxCode }).from(lineItems).where(eq(lineItems.id, lineId));
+      expect(afterLine.taxCode).toBeNull();
+      expect(afterLine.updatedAt?.getTime()).toBe(beforeLine.updatedAt?.getTime());
       expect(preview.before).toMatchObject({ box5: null, box6: null, mappingStatus: 'requires_confirmation' });
       expect(preview.after).toMatchObject({ box5: '2000.00', box6: '2000.00', unclassifiedSales: '0.00', zeroRatedSales: '2000.00', mappingStatus: 'supported' });
       expect((await f.request<{ items: Array<{ taxCode?: string }> }>(`/api/invoices/${invoice.id}`)).items[0].taxCode).toBeUndefined();
@@ -192,6 +209,67 @@ describe('bulk reclassify of unclassified 0% sales', () => {
       expect(accountant.error.code).toBe('FORBIDDEN');
       await f.db.update(organisationMemberships).set({ role: 'member' }).where(eq(organisationMemberships.id, membership.id));
       await f.request('/api/tax/sales-tax-reclassifications/preview', 'POST', { lineIds: [lineId], taxCode: 'exempt' }, 403);
+      await f.request('/api/tax/sales-tax-reclassifications', 'GET', undefined, 403);
+    } finally { await f.sql.end(); }
+  }));
+
+  it('previews Box 5 and Box 6 for the whole GST period, including a supply on another day', async () => withTestDb(async () => {
+    const f = await registered('invoice');
+    try {
+      await postSale(f, { date: '2026-09-15', taxInclusive: true, taxRate: '15', items: [{ description: 'Standard sale', quantity: '1', rate: '11500' }] });
+      await postSale(f, { date: '2026-10-02', taxInclusive: false, taxRate: '0', items: [{ description: 'Older export', quantity: '1', rate: '2000' }] });
+      const lineId = (await f.request<{ lines: Array<{ id: string }> }>('/api/tax/sales-tax-reclassifications')).lines[0].id;
+      const preview = await f.request<{ after: { box5: string | null; box6: string | null }; periods: Array<{ from: string; to: string; after: { box5: string | null; box6: string | null } }> }>('/api/tax/sales-tax-reclassifications/preview', 'POST', { lineIds: [lineId], taxCode: 'zero_rated' });
+      expect(preview.periods).toEqual([expect.objectContaining({ from: '2026-09-01', to: '2026-10-31' })]);
+      expect(preview.after).toMatchObject({ box5: '13500.00', box6: '2000.00' });
+      expect(preview.periods[0].after).toMatchObject({ box5: '13500.00', box6: '2000.00' });
+    } finally { await f.sql.end(); }
+  }));
+
+  it('refuses reclassify and undo when a later credit note is in a filed period', async () => withTestDb(async () => {
+    const f = await registered('invoice');
+    try {
+      const invoice = await postSale(f, { date: '2026-06-15', taxInclusive: false, taxRate: '0', items: [{ description: 'Open period export', quantity: '1', rate: '100' }] });
+      await f.request('/api/credit-notes', 'POST', {
+        invoiceId: invoice.id, issueDate: '2026-07-10', reason: 'Returned part of the export', taxInclusive: false, taxRate: '0',
+        items: [{ description: 'Export credit', quantity: '1', rate: '20' }],
+      }, 201);
+      const lineId = (await f.request<{ lines: Array<{ id: string }> }>('/api/tax/sales-tax-reclassifications')).lines[0].id;
+      const open = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-07-01&to=2026-08-31');
+      const reviewed = await f.request<GstPreparationResponse>('/api/tax/gst-preparation', 'POST', {
+        from: '2026-07-01', to: '2026-08-31', reviewConfirmed: true, adjustments: [],
+        salesClassificationReview: { zeroRatedSales: open.unclassifiedSales ?? '0.00', exemptSales: '0.00', reason: 'Reviewed the July credit', sourceReference: 'CN-JULY' },
+      });
+      const saved = await f.request<TaxReturnDto>('/api/tax-returns', 'POST', draft(reviewed), 201);
+      await f.request(`/api/tax-returns/${saved.id}/file`, 'POST', { irdReference: 'GST-2026-JUL-AUG' });
+      const refused = await f.request<{ error: { code: string } }>('/api/tax/sales-tax-reclassifications', 'POST', { lineIds: [lineId], taxCode: 'zero_rated', reason: 'Tried after the credit was filed' }, 409);
+      expect(refused.error.code).toBe('GST_PERIOD_FILED');
+      await f.request(`/api/tax-returns/${saved.id}/reopen`, 'POST', { reason: 'Reopen to record the code, then file again' });
+      const applied = await f.request<{ id: string }>('/api/tax/sales-tax-reclassifications', 'POST', { lineIds: [lineId], taxCode: 'zero_rated', reason: 'Reviewed export documents' }, 201);
+      const again = await f.request<GstPreparationResponse>('/api/tax/gst-preparation', 'POST', {
+        from: '2026-07-01', to: '2026-08-31', reviewConfirmed: true, adjustments: [],
+      });
+      const refiled = await f.request<TaxReturnDto>('/api/tax-returns', 'POST', draft(again), 201);
+      await f.request(`/api/tax-returns/${refiled.id}/file`, 'POST', { irdReference: 'GST-2026-JUL-AUG-2' });
+      const undo = await f.request<{ error: { code: string } }>(`/api/tax/sales-tax-reclassifications/${applied.id}/undo`, 'POST', { reason: 'Undo after the credit period was filed' }, 409);
+      expect(undo.error.code).toBe('GST_PERIOD_FILED');
+    } finally { await f.sql.end(); }
+  }));
+
+  it('copies the invoice supply code onto a credit note and rejects a different code', async () => withTestDb(async () => {
+    const f = await registered('invoice');
+    try {
+      const invoice = await postSale(f, { date: '2026-09-12', taxInclusive: false, taxRate: '0', items: [{ description: 'Zero-rated export', quantity: '1', rate: '200', taxCode: 'zero_rated' }] });
+      const copied = await f.request<{ items: Array<{ taxCode?: string }> }>('/api/credit-notes', 'POST', {
+        invoiceId: invoice.id, issueDate: '2026-09-20', reason: 'Returned part of the export', taxInclusive: false, taxRate: '0',
+        items: [{ description: 'Export credit', quantity: '1', rate: '20' }],
+      }, 201);
+      expect(copied.items[0].taxCode).toBe('zero_rated');
+      const mismatch = await f.request<{ error: { code: string } }>('/api/credit-notes', 'POST', {
+        invoiceId: invoice.id, issueDate: '2026-09-21', reason: 'Returned more of the export', taxInclusive: false, taxRate: '0',
+        items: [{ description: 'Export credit', quantity: '1', rate: '20', taxCode: 'exempt' }],
+      }, 422);
+      expect(mismatch.error.code).toBe('SALES_TAX_CODE_MISMATCH');
     } finally { await f.sql.end(); }
   }));
 });

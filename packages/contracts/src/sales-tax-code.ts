@@ -38,11 +38,20 @@ export const salesTaxReclassifyRequestSchema = salesTaxReclassifyPreviewRequestS
   reason: z.string().trim().min(8).max(1000),
 }).strict();
 
+export const salesTaxPeriodImpactSchema = z.object({
+  from: taxPeriodDateSchema,
+  to: taxPeriodDateSchema,
+  before: salesTaxBoxImpactSchema,
+  after: salesTaxBoxImpactSchema,
+}).strict();
+export type SalesTaxPeriodImpact = z.infer<typeof salesTaxPeriodImpactSchema>;
+
 export const salesTaxReclassifyPreviewSchema = z.object({
   taxCode: z.enum(['zero_rated', 'exempt']),
   lineCount: z.number().int().positive(),
   before: salesTaxBoxImpactSchema,
   after: salesTaxBoxImpactSchema,
+  periods: z.array(salesTaxPeriodImpactSchema).min(1),
 }).strict();
 
 export const salesTaxReclassificationSchema = z.object({
@@ -53,6 +62,7 @@ export const salesTaxReclassificationSchema = z.object({
   lineIds: z.array(z.string().uuid()),
   before: salesTaxBoxImpactSchema,
   after: salesTaxBoxImpactSchema,
+  periods: z.array(salesTaxPeriodImpactSchema).min(1).optional(),
   undoneAt: z.string().datetime().nullable(),
   createdAt: z.string().datetime(),
 }).strict();

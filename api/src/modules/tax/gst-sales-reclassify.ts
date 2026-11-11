@@ -1,11 +1,14 @@
 import {
+  generateGstPeriods,
   salesTaxBoxImpactSchema,
+  salesTaxPeriodImpactSchema,
   salesTaxReclassificationLineSchema,
   salesTaxReclassificationListSchema,
   salesTaxReclassificationSchema,
   salesTaxReclassifyPreviewSchema,
   type GstPreparationResponse,
   type SalesTaxBoxImpact,
+  type SalesTaxPeriodImpact,
   type SalesTaxReclassification,
   type SalesTaxReclassificationList,
   type SalesTaxReclassifyPreview,
@@ -16,13 +19,16 @@ import {
 import { and, desc, eq, inArray } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
+import { creditNotes } from '../../db/schema/credit-notes';
 import { invoices, lineItems } from '../../db/schema/invoices';
+import { payments } from '../../db/schema/payments';
 import { salesTaxReclassifications } from '../../db/schema/tax';
 import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import { decimal, roundMoney } from '../invoices/money';
 import { gstPreparationInTx } from './gst-preparation';
-import { assertGstSourceOpen, invoiceSettlementDates } from './gst-period-lock';
+import { gstSettingsInTx } from './gst-settings';
+import { assertGstSourceOpen, type GstLockCheck } from './gst-period-lock';
 
 type Context = { organisationId: string; userId: string; role: string };
 type LoadedLine = {
@@ -74,13 +80,27 @@ function unclassified(line: LoadedLine): boolean {
   return line.status !== 'draft' && (line.taxCode == null || line.taxCode === 'unclassified') && decimal(line.tax ?? '0').compare(0) === 0;
 }
 
+function dated(values: Array<string | null>): string[] {
+  return values.filter((value): value is string => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value));
+}
+
+async function reclassifyLockChecks(tx: Database, organisationId: string, line: LoadedLine): Promise<GstLockCheck[]> {
+  const payRows = await tx.select({ paymentDate: payments.paymentDate, reversalDate: payments.reversalDate }).from(payments)
+    .where(and(eq(payments.organisationId, organisationId), eq(payments.invoiceId, line.invoiceId)));
+  const noteRows = await tx.select({ issueDate: creditNotes.issueDate, reversalDate: creditNotes.reversalDate }).from(creditNotes)
+    .where(and(eq(creditNotes.organisationId, organisationId), eq(creditNotes.invoiceId, line.invoiceId)));
+  const paymentDates = dated(payRows.flatMap((row) => [row.paymentDate, row.reversalDate]));
+  const creditDates = dated(noteRows.flatMap((row) => [row.issueDate, row.reversalDate]));
+  return [
+    { kind: 'sales_document', dates: [line.date] },
+    { kind: 'credit_note', dates: creditDates },
+    { kind: 'customer_settlement', dates: paymentDates, cumulativeWith: paymentDates },
+  ];
+}
+
 async function openForReclassify(tx: Database, organisationId: string, line: LoadedLine): Promise<boolean> {
-  const settlements = await invoiceSettlementDates(tx, organisationId, line.invoiceId);
   try {
-    await assertGstSourceOpen(tx, organisationId, [
-      { kind: 'sales_document', dates: [line.date] },
-      { kind: 'customer_settlement', dates: settlements, cumulativeWith: settlements },
-    ]);
+    await assertGstSourceOpen(tx, organisationId, await reclassifyLockChecks(tx, organisationId, line));
     return true;
   } catch (error) {
     if (error instanceof HTTPException && error.status === 409) return false;
@@ -89,13 +109,7 @@ async function openForReclassify(tx: Database, organisationId: string, line: Loa
 }
 
 async function assertLinesOpen(tx: Database, organisationId: string, lines: LoadedLine[]) {
-  for (const line of lines) {
-    const settlements = await invoiceSettlementDates(tx, organisationId, line.invoiceId);
-    await assertGstSourceOpen(tx, organisationId, [
-      { kind: 'sales_document', dates: [line.date] },
-      { kind: 'customer_settlement', dates: settlements, cumulativeWith: settlements },
-    ]);
-  }
+  for (const line of lines) await assertGstSourceOpen(tx, organisationId, await reclassifyLockChecks(tx, organisationId, line));
 }
 
 async function selectedLines(tx: Database, organisationId: string, lineIds: string[]): Promise<LoadedLine[]> {
@@ -110,9 +124,34 @@ async function selectedLines(tx: Database, organisationId: string, lineIds: stri
   return lines;
 }
 
-async function preparationFor(tx: Database, ctx: Context, lines: LoadedLine[]): Promise<GstPreparationResponse> {
-  const dates = lines.map((line) => line.date).sort();
-  return gstPreparationInTx(tx, ctx, { from: dates[0], to: dates[dates.length - 1] });
+async function periodsFor(tx: Database, ctx: Context, lines: LoadedLine[]): Promise<Array<{ from: string; to: string }>> {
+  const settings = await gstSettingsInTx(tx, ctx.organisationId);
+  const latest = lines.map((line) => line.date).sort().at(-1) ?? settings.gstRegisteredFrom;
+  if (!settings.gstRegisteredFrom || !settings.gstFilingFrequency || settings.gstPeriodAnchor == null || !latest) {
+    throw apiError(422, 'GST_NOT_REGISTERED', 'Confirm GST registration, frequency and period anchor before reclassifying sales.');
+  }
+  const generated = generateGstPeriods(settings, latest);
+  const matched = new Map<string, { from: string; to: string }>();
+  for (const line of lines) {
+    const period = generated.find((item) => line.date >= item.periodStart && line.date <= item.periodEnd);
+    if (!period) throw apiError(422, 'GST_PERIOD_UNKNOWN', `No GST period covers ${line.date}. Review the registration date and filing frequency.`);
+    matched.set(period.periodStart, { from: period.periodStart, to: period.periodEnd });
+  }
+  return [...matched.values()];
+}
+
+async function readPeriods(tx: Database, ctx: Context, periods: Array<{ from: string; to: string }>): Promise<SalesTaxBoxImpact[]> {
+  const impacts: SalesTaxBoxImpact[] = [];
+  for (const period of periods) impacts.push(impactOf(await gstPreparationInTx(tx, ctx, period)));
+  return impacts;
+}
+
+function zipPeriods(periods: Array<{ from: string; to: string }>, before: SalesTaxBoxImpact[], after: SalesTaxBoxImpact[]): SalesTaxPeriodImpact[] {
+  return periods.map((period, index) => salesTaxPeriodImpactSchema.parse({ ...period, before: before[index], after: after[index] }));
+}
+
+class PreviewRolledBack extends Error {
+  constructor(readonly periods: SalesTaxPeriodImpact[]) { super('preview rolled back'); }
 }
 
 async function writeCodes(tx: Database, organisationId: string, lines: LoadedLine[], taxCode: string | null) {
@@ -138,23 +177,38 @@ function toEvent(row: typeof salesTaxReclassifications.$inferSelect): SalesTaxRe
     lineIds: row.lineIds,
     before: row.beforeImpact,
     after: row.afterImpact,
+    periods: row.periodImpacts,
     undoneAt: row.undoneAt ? row.undoneAt.toISOString() : null,
     createdAt: row.createdAt.toISOString(),
   });
 }
 
+function previewResponse(taxCode: SalesTaxReclassifyPreviewRequest['taxCode'], lineCount: number, periods: SalesTaxPeriodImpact[]): SalesTaxReclassifyPreview {
+  return salesTaxReclassifyPreviewSchema.parse({
+    taxCode, lineCount, before: periods[0].before, after: periods[0].after, periods,
+  });
+}
+
 async function previewInTx(tx: Database, ctx: Context, input: SalesTaxReclassifyPreviewRequest): Promise<SalesTaxReclassifyPreview> {
   const lines = await selectedLines(tx, ctx.organisationId, input.lineIds);
-  const before = impactOf(await preparationFor(tx, ctx, lines));
-  const previous = Object.fromEntries(lines.map((line) => [line.id, line.taxCode]));
-  await writeCodes(tx, ctx.organisationId, lines, input.taxCode);
-  const after = impactOf(await preparationFor(tx, ctx, lines));
-  await restoreCodes(tx, ctx.organisationId, previous);
-  return salesTaxReclassifyPreviewSchema.parse({ taxCode: input.taxCode, lineCount: lines.length, before, after });
+  const periods = await periodsFor(tx, ctx, lines);
+  const before = await readPeriods(tx, ctx, periods);
+  try {
+    await tx.transaction(async () => {
+      await writeCodes(tx, ctx.organisationId, lines, input.taxCode);
+      const after = await readPeriods(tx, ctx, periods);
+      throw new PreviewRolledBack(zipPeriods(periods, before, after));
+    });
+  } catch (error) {
+    if (!(error instanceof PreviewRolledBack)) throw error;
+    return previewResponse(input.taxCode, lines.length, error.periods);
+  }
+  throw apiError(500, 'INTERNAL', 'The reclassification preview could not be rolled back.');
 }
 
 export async function listSalesTaxReclassificationsForUser(db: Database, userId: string): Promise<SalesTaxReclassificationList> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    assertOwner(ctx.role);
     const rows = await loadLines(tx, ctx.organisationId);
     const open: SalesTaxReclassificationList['lines'] = [];
     for (const line of rows.filter(unclassified)) {
@@ -182,13 +236,15 @@ export async function applySalesTaxReclassificationForUser(db: Database, userId:
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     assertOwner(ctx.role);
     const lines = await selectedLines(tx, ctx.organisationId, input.lineIds);
-    const before = impactOf(await preparationFor(tx, ctx, lines));
+    const periods = await periodsFor(tx, ctx, lines);
+    const before = await readPeriods(tx, ctx, periods);
     const previous = Object.fromEntries(lines.map((line) => [line.id, line.taxCode]));
     await writeCodes(tx, ctx.organisationId, lines, input.taxCode);
-    const after = impactOf(await preparationFor(tx, ctx, lines));
+    const after = await readPeriods(tx, ctx, periods);
+    const impacts = zipPeriods(periods, before, after);
     const [row] = await tx.insert(salesTaxReclassifications).values({
       organisationId: ctx.organisationId, actorId: ctx.userId, action: 'apply', taxCode: input.taxCode, reason: input.reason,
-      lineIds: lines.map((line) => line.id), previousCodes: previous, beforeImpact: before, afterImpact: after,
+      lineIds: lines.map((line) => line.id), previousCodes: previous, beforeImpact: impacts[0].before, afterImpact: impacts[0].after, periodImpacts: impacts,
     }).returning();
     if (!row) throw apiError(500, 'INTERNAL', 'The reclassification could not be recorded.');
     return toEvent(row);
@@ -210,16 +266,19 @@ export async function undoSalesTaxReclassificationForUser(db: Database, userId: 
     const lines = targets as LoadedLine[];
     if (lines.some((line) => line.taxCode !== existing.taxCode)) throw apiError(409, 'SALES_TAX_RECLASSIFICATION_STALE', 'A line has changed since this reclassification. Review it before undoing.');
     await assertLinesOpen(tx, ctx.organisationId, lines);
-    const before = impactOf(await preparationFor(tx, ctx, lines));
+    const periods = await periodsFor(tx, ctx, lines);
+    const before = await readPeriods(tx, ctx, periods);
     await restoreCodes(tx, ctx.organisationId, existing.previousCodes);
-    const after = impactOf(await preparationFor(tx, ctx, lines));
+    const after = await readPeriods(tx, ctx, periods);
+    const impacts = zipPeriods(periods, before, after);
     const undoneAt = new Date();
     await tx.update(salesTaxReclassifications).set({ undoneAt }).where(and(
       eq(salesTaxReclassifications.organisationId, ctx.organisationId), eq(salesTaxReclassifications.id, id),
     ));
     const [row] = await tx.insert(salesTaxReclassifications).values({
       organisationId: ctx.organisationId, actorId: ctx.userId, action: 'undo', taxCode: null, reason: input.reason,
-      lineIds: existing.lineIds, previousCodes: existing.previousCodes, beforeImpact: before, afterImpact: after, undoOfId: id,
+      lineIds: existing.lineIds, previousCodes: existing.previousCodes, beforeImpact: impacts[0].before, afterImpact: impacts[0].after,
+      periodImpacts: impacts, undoOfId: id,
     }).returning();
     if (!row) throw apiError(500, 'INTERNAL', 'The undo could not be recorded.');
     return toEvent(row);

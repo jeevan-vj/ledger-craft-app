@@ -16,9 +16,21 @@ function hasAdjustment(source: SalesSource): boolean {
   return decimal(source.discount ?? '0').compare(0) !== 0 || decimal(source.additionalCharges ?? '0').compare(0) !== 0;
 }
 
+const BUCKET_KEYS = ['zeroRated', 'exempt', 'unclassified'] as const;
+
+/** Keep a split of one allocated amount exact. The largest bucket absorbs the rounding cent. */
+export function plugLargestBucket(parts: SupplyBuckets, total: string): SupplyBuckets {
+  let largest: typeof BUCKET_KEYS[number] = 'zeroRated';
+  for (const key of BUCKET_KEYS) {
+    if (decimal(parts[key]).abs().compare(decimal(parts[largest]).abs()) > 0) largest = key;
+  }
+  const others = BUCKET_KEYS.filter((key) => key !== largest).reduce((sum, key) => sum.add(parts[key]), decimal(0));
+  return { ...parts, [largest]: roundMoney(decimal(total).sub(others)) };
+}
+
 function supplyKind(line: SalesLine): 'standard_15' | 'zero_rated' | 'exempt' | 'unclassified' | 'bad' {
+  if (line.taxCode === 'standard_15') return 'standard_15';
   const tax = decimal(line.tax ?? '0');
-  if (line.taxCode === 'standard_15') return tax.compare(0) > 0 ? 'standard_15' : 'bad';
   if (line.taxCode === 'zero_rated' || line.taxCode === 'exempt') return tax.compare(0) === 0 ? line.taxCode : 'bad';
   if (line.taxCode == null || line.taxCode === '' || line.taxCode === 'unclassified') return 'unclassified';
   return 'bad';
