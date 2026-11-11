@@ -7,6 +7,7 @@ import { grossGstDocuments } from './gst-preparation.repository';
 import { paymentsBasisGst } from './gst-payments';
 import { gstSettingsInTx } from './gst-settings';
 import { buildGstCalculationSnapshot } from './gst-calculation';
+import { normalizeGstAdjustment } from './gst-return-boxes';
 import { apiError } from '../../http-error';
 import { gstSourceClassificationInTx } from './gst-classification';
 import { gstRegistrationExclusions } from './gst-registration.repository';
@@ -83,8 +84,9 @@ export async function reviewedGstPreparationInTx(tx: Database, ctx: Context, inp
   // Read the books again for this review. Signed adjustments never rewrite the
   // source ledger and are retained with documentary references in the draft.
   const preparation = await gstPreparationInTx(tx, ctx, { from: input.from, to: input.to, basis: input.basis }, options);
-  const adjustment = (kind: 'output' | 'input') => input.adjustments.filter(row => row.kind === kind).reduce((sum, row) => sum.add(row.amount), decimal(0));
-  const grossAdjustment = (kind: 'output' | 'input') => input.adjustments.filter(row => row.kind === kind).reduce((sum, row) => sum.add(row.grossAdjustment ?? '0'), decimal(0));
+  const adjustments = input.adjustments.map(normalizeGstAdjustment);
+  const adjustment = (kind: 'output' | 'input') => adjustments.filter(row => row.kind === kind).reduce((sum, row) => sum.add(row.amount), decimal(0));
+  const grossAdjustment = (kind: 'output' | 'input') => adjustments.filter(row => row.kind === kind).reduce((sum, row) => sum.add(row.grossAdjustment ?? '0'), decimal(0));
   const output = decimal(preparation.gstOnSales).add(adjustment('output'));
   const purchases = decimal(preparation.gstOnPurchases).add(adjustment('input'));
   const unclassified = preparation.unclassifiedSales ?? '0.00';
@@ -103,7 +105,7 @@ export async function reviewedGstPreparationInTx(tx: Database, ctx: Context, inp
     } : {}),
     ...(classificationStale ? { salesClassificationSupported: false, requiresReview: true } : {}),
     ...(preparation.claimablePurchases !== undefined ? { claimablePurchases: roundMoney(decimal(preparation.claimablePurchases).add(grossAdjustment('input'))) } : {}),
-    review: { confirmed: true, reviewedAt: new Date().toISOString(), reviewedBy: ctx.userId, adjustments: input.adjustments, unadjustedGstOnSales: preparation.gstOnSales, unadjustedGstOnPurchases: preparation.gstOnPurchases, unadjustedTotalSales: preparation.totalSales, unadjustedTotalPurchases: preparation.totalPurchases,
+    review: { confirmed: true, reviewedAt: new Date().toISOString(), reviewedBy: ctx.userId, adjustments, unadjustedGstOnSales: preparation.gstOnSales, unadjustedGstOnPurchases: preparation.gstOnPurchases, unadjustedTotalSales: preparation.totalSales, unadjustedTotalPurchases: preparation.totalPurchases,
       ...(input.salesClassificationReview ? { salesClassificationReview: input.salesClassificationReview } : {}),
     },
     warnings: [...preparation.warnings, ...(classificationStale ? ['The recorded zero-rated/exempt classification no longer matches current source totals. This read-only comparison needs a fresh classification before any new filing.'] : []), 'Reviewed preparation adjustments change this return only, not posted ledger balances. Do not duplicate credit notes already included in the books. Confirm adjustment treatment before filing.'],

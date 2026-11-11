@@ -75,11 +75,15 @@ export async function paymentsBasisGst(tx: Database, organisationId: string, per
     return rows[0].referenceType === 'expense_reversal' ? sum.sub(total) : sum.add(total);
   }, decimal(0));
   const expenseTax = expenseRows.filter(row => row.accountNumber === '2150').reduce((sum, row) => sum.add(row.debit).sub(row.credit), decimal(0));
+  // Customs GST is claimed on the journal date (the payment date on this basis).
+  // It is input GST only. It is not a Box 11 purchase gross.
+  const customsTax = allRows.filter(row => row.date >= period.from && row.date <= period.to && (row.referenceType === 'customs_gst' || row.referenceType === 'customs_gst_reversal') && row.accountNumber === '2150')
+    .reduce((sum, row) => sum.add(row.debit).sub(row.credit), decimal(0));
   const foreignSettlement = [...settlements.sales, ...settlements.purchases, ...settlements.refunds].some(row => row.currency !== 'NZD' && !foreign.has(row.documentId) && ((row.date >= period.from && row.date <= period.to) || (row.reversalDate && row.reversalDate >= period.from && row.reversalDate <= period.to)));
   const warnings = foreignSettlement ? ['Foreign payments-basis GST uses the original document-rate NZD carrying amounts allocated to receipts/payments; FX settlement gains/losses are excluded. Confirm that this conversion method is appropriate for your IRD registration with your accountant before saving or filing.'] : [];
   const missingSettlementSnapshots = settlements.sales.length !== salesRows.length || settlements.purchases.length !== purchaseRows.length;
   if (missingSettlementSnapshots) warnings.push('Historical foreign settlement snapshots are missing and have been excluded. Audit and correct these payments before filing.');
   if (settlements.credits.some(row => (row.date >= period.from && row.date <= period.to) || (row.reversalDate && row.reversalDate >= period.from && row.reversalDate <= period.to))) warnings.push('Payments-basis GST includes dated credit-note receivable allocations and rounding movements. Do not enter the same credit note again as a manual adjustment.');
   if (foreign.size) warnings.push('Unconverted legacy foreign journals are excluded. Audit and correct them before filing.');
-  return { ...(foreignSettlement || missingSettlementSnapshots ? { requiresReview: true } : {}), totalSales: roundMoney(decimal(sales.gross).sub(refunds.gross)), totalPurchases: roundMoney(decimal(bills.gross).add(expenseGross)), gstOnSales: roundMoney(decimal(sales.tax).sub(refunds.tax)), gstOnPurchases: roundMoney(decimal(bills.tax).add(expenseTax)), warnings };
+  return { ...(foreignSettlement || missingSettlementSnapshots ? { requiresReview: true } : {}), totalSales: roundMoney(decimal(sales.gross).sub(refunds.gross)), totalPurchases: roundMoney(decimal(bills.gross).add(expenseGross)), gstOnSales: roundMoney(decimal(sales.tax).sub(refunds.tax)), gstOnPurchases: roundMoney(decimal(bills.tax).add(expenseTax).add(customsTax)), warnings };
 }

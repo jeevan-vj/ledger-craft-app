@@ -48,6 +48,10 @@ export const irdReturnDataSchema = z.object({
     }).optional(),
   }).optional(),
   reconciliation: gstReconciliationSnapshotSchema.optional(),
+  roundingAcknowledgement: z.object({
+    acknowledgedAt: z.string().datetime(),
+    acknowledgedBy: z.string().min(1),
+  }).strict().optional(),
   incomeTax: z.object({
     grossIncome: z.number(),
     allowableDeductions: z.number(),
@@ -126,6 +130,7 @@ export const updateTaxReturnRequestSchema = createTaxReturnRequestSchema.partial
 
 export const fileTaxReturnRequestSchema = z.object({
   irdReference: z.string().trim().min(1).max(100),
+  acknowledgeRounding: z.literal(true).optional(),
 }).strict();
 
 export const reopenGstReturnRequestSchema = z.object({

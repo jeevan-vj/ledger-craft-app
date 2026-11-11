@@ -4,6 +4,7 @@ import { gstSalesClassificationReviewSchema, type GstPreparationResponse, type G
 import { ModernInput } from '@/components/ui/ModernInput';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { gstPreparationApi } from '@/features/reports/api/gstPreparationApi';
+import { customsGstApi } from '@/features/reports/api/customsGstApi';
 import { formatMoney } from '@/utils/money';
 import { useTheme } from '@/theme';
 import { GstAdjustmentForm } from './GstAdjustmentForm';
@@ -22,8 +23,10 @@ export function GstPreparationPanel({ initialFrom, initialTo, registeredBasis, o
   const [figures, setFigures] = useState<GstPreparationResponse>();
   const [saved, setSaved] = useState<TaxReturnDto>();
   const [error, setError] = useState<string>();
+  const [customsNotice, setCustomsNotice] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [classify, setClassify] = useState(false); const [zeroSales, setZeroSales] = useState('0.00'); const [exemptSales, setExemptSales] = useState('0.00'); const [classificationReason, setClassificationReason] = useState(''); const [classificationSource, setClassificationSource] = useState('');
+  const [customsDate, setCustomsDate] = useState(''); const [customsPaid, setCustomsPaid] = useState(''); const [customsAmount, setCustomsAmount] = useState(''); const [customsReference, setCustomsReference] = useState(''); const [customsDescription, setCustomsDescription] = useState('');
   const change = (setter: (value: string) => void, value: string) => { setter(value); setFigures(undefined); setSaved(undefined); setError(undefined); };
   async function prepare() {
     if (!validDate(from) || !validDate(to) || from > to) { setError('Choose valid dates with the period start on or before its end.'); return; }
@@ -63,12 +66,30 @@ export function GstPreparationPanel({ initialFrom, initialTo, registeredBasis, o
     } catch (caught) { setError(caught instanceof Error ? caught.message : 'GST draft could not be saved. Try again.'); }
     finally { setBusy(false); }
   }
+  async function recordCustoms() {
+    setBusy(true); setError(undefined); setCustomsNotice(undefined);
+    try {
+      const entry = await customsGstApi.create({ invoiceDate: customsDate, ...(customsPaid ? { paymentDate: customsPaid } : {}), amount: customsAmount, reference: customsReference, description: customsDescription });
+      setCustomsAmount(''); setCustomsReference(''); setCustomsDescription(''); setFigures(undefined); setSaved(undefined);
+      setCustomsNotice(entry.claimDate ? `Customs GST recorded. Claim date ${entry.claimDate}.` : 'Customs GST recorded. It is claimed when paid.');
+    } catch (caught) { setError(caught instanceof Error ? caught.message : 'Customs GST could not be recorded.'); }
+    finally { setBusy(false); }
+  }
   return <View style={{ gap: space.md }}>
     <Text style={theme.type.headline}>Prepare GST return</Text>
     <Text style={theme.type.subhead}>Choose your registered GST basis · NZD. Review these figures with your accountant before filing with IRD.</Text>
     {registeredBasis ? <Text style={theme.type.callout}>Registered GST basis: {basis === 'hybrid' ? 'Hybrid' : basis === 'payments' ? 'Payments' : 'Invoice'}</Text> : <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>{(['invoice', 'payments', 'hybrid'] as const).map((value) => <ModernButton key={value} variant={basis === value ? 'primary' : 'secondary'} disabled={busy} onPress={() => { setBasis(value); setFigures(undefined); setSaved(undefined); setAdjustments([]); }}>{value === 'invoice' ? 'Invoice basis' : value === 'payments' ? 'Payments basis' : 'Hybrid basis'}</ModernButton>)}</View>}
     <ModernInput label="GST period start" value={from} editable={!busy} onChangeText={(value) => change(setFrom, value)} placeholder="YYYY-MM-DD" />
     <ModernInput label="GST period end" value={to} editable={!busy} onChangeText={(value) => change(setTo, value)} placeholder="YYYY-MM-DD" />
+    <Text style={theme.type.subhead}>Customs GST</Text>
+    <Text style={theme.type.caption}>Posts GST only. Box 13, never Box 11. Invoice basis uses the earlier of the assessment and the payment. Payments and hybrid basis claim it when paid.</Text>
+    <ModernInput label="Customs invoice date" value={customsDate} editable={!busy} onChangeText={setCustomsDate} placeholder="YYYY-MM-DD" />
+    <ModernInput label="Customs payment date" value={customsPaid} editable={!busy} onChangeText={setCustomsPaid} placeholder="YYYY-MM-DD" />
+    <ModernInput label="Customs GST amount" value={customsAmount} editable={!busy} onChangeText={setCustomsAmount} />
+    <ModernInput label="Customs reference" value={customsReference} editable={!busy} onChangeText={setCustomsReference} />
+    <ModernInput label="Customs description" value={customsDescription} editable={!busy} onChangeText={setCustomsDescription} />
+    <ModernButton variant="secondary" disabled={busy} onPress={() => void recordCustoms()}>Record Customs GST</ModernButton>
+    {customsNotice ? <Text style={theme.type.body}>{customsNotice}</Text> : null}
     <ModernButton loading={busy} disabled={busy} onPress={() => void prepare()}>Prepare GST figures</ModernButton>
     {error ? <Text accessibilityRole="alert" style={{ color: theme.colors.danger }}>{error}</Text> : null}
     {figures ? <>
@@ -83,6 +104,7 @@ export function GstPreparationPanel({ initialFrom, initialTo, registeredBasis, o
       {saved ? <Text accessibilityLiveRegion="polite" style={theme.type.body}>Saved GST return: {saved.status}</Text> : null}
       {figures.requiresReview && !figures.review?.confirmed ? <Text accessibilityRole="alert" style={{ color: theme.colors.warning }}>GST source figures require accountant review before saving</Text> : null}
       {figures.review ? <Text style={theme.type.caption}>Reviewed adjustments recorded: {figures.review.adjustments.length}</Text> : null}
+      {figures.calculation?.version === 'gst-ledger-v3' ? <Text style={theme.type.body}>Rounding difference (ledger minus myIR form): output {figures.calculation.rounding.output}, input {figures.calculation.rounding.input}. This line is not included in Box 9 or Box 13.</Text> : null}
       {figures.calculation ? <><Text selectable style={theme.type.caption}>Calculation: {figures.calculation.fingerprint}</Text>{Object.entries(figures.calculation.myIrBoxes).map(([box, amount]) => amount != null ? <Text key={box} style={theme.type.body}>myIR Box {box}: {formatMoney(amount)}</Text> : null)}</> : null}
       <GstAdjustmentForm initialRows={adjustments} disabled={busy} onReview={async (rows) => { setBusy(true); setError(undefined); try { const salesClassificationReview = classify ? gstSalesClassificationReviewSchema.parse({ zeroRatedSales: zeroSales, exemptSales, reason: classificationReason, sourceReference: classificationSource }) : undefined; const reviewed = await gstPreparationApi.review({ from, to, basis, reviewConfirmed: true, adjustments: rows, ...(salesClassificationReview ? { salesClassificationReview } : {}) }); setAdjustments(rows); setFigures(reviewed); } catch (caught) { setError(caught instanceof Error ? caught.message : 'Adjustment review unavailable.'); } finally { setBusy(false); } }}>
         <ModernButton disabled={busy} variant="secondary" onPress={() => setClassify(!classify)}>{classify ? 'Hide sales classification review' : 'Review zero-rated and exempt sales'}</ModernButton>

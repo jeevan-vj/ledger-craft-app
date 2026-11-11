@@ -7,10 +7,31 @@ export const taxPeriodDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refin
 }, 'Must be a valid calendar date');
 const money = z.string().regex(/^-?\d+\.\d{2}$/);
 export const gstBasisSchema = z.enum(['invoice', 'payments', 'hybrid']);
+export const gstOutputAdjustmentTypes = ['private_use_output', 'bad_debt_recovered', 'change_of_use_output', 'prior_period_correction', 'other'] as const;
+export const gstInputAdjustmentTypes = ['bad_debt_written_off', 'customs_gst', 'change_of_use_input', 'entertainment', 'prior_period_correction', 'other'] as const;
+export const gstAdjustmentTypes = ['private_use_output', 'bad_debt_recovered', 'change_of_use_output', 'prior_period_correction', 'other', 'bad_debt_written_off', 'customs_gst', 'change_of_use_input', 'entertainment'] as const;
+export const gstAdjustmentTypeSchema = z.enum(gstAdjustmentTypes);
 export const gstSalesClassificationReviewSchema = z.object({
   zeroRatedSales: money, exemptSales: money,
   reason: z.string().trim().min(8).max(1000), sourceReference: z.string().trim().min(1).max(200),
 }).strict();
+
+export const gstAdjustmentSchema = z.object({
+  kind: z.enum(['output', 'input']),
+  type: gstAdjustmentTypeSchema.optional(),
+  amount: money, grossAdjustment: money.optional(),
+  reason: z.string().trim().min(8).max(1000), sourceReference: z.string().trim().min(1).max(200),
+  note: z.string().trim().min(1).max(1000).optional(),
+}).strict().superRefine((row, ctx) => {
+  if (!row.type) return;
+  const allowed = row.kind === 'output' ? gstOutputAdjustmentTypes : gstInputAdjustmentTypes;
+  if (!(allowed as readonly string[]).includes(row.type)) {
+    ctx.addIssue({ code: 'custom', message: 'Adjustment type does not belong to this GST box', path: ['type'] });
+  }
+  if (row.type === 'other' && !row.note) {
+    ctx.addIssue({ code: 'custom', message: 'Other adjustments need a note', path: ['note'] });
+  }
+});
 
 export const gstPreparationQuerySchema = z.object({ from: taxPeriodDateSchema, to: taxPeriodDateSchema, basis: gstBasisSchema.optional() }).strict()
   .refine((value) => value.from <= value.to, { message: 'From date must not be after to date', path: ['from'] });
@@ -31,7 +52,7 @@ export const gstPreparationResponseSchema = z.object({
   calculation: gstCalculationSnapshotSchema.optional(),
   review: z.object({
     confirmed: z.literal(true), reviewedAt: z.string().datetime(), reviewedBy: z.string().min(1),
-    adjustments: z.array(z.object({ kind: z.enum(['output', 'input']), amount: money, grossAdjustment: money.optional(), reason: z.string().trim().min(8).max(1000), sourceReference: z.string().trim().min(1).max(200) })),
+    adjustments: z.array(gstAdjustmentSchema),
     unadjustedGstOnSales: money, unadjustedGstOnPurchases: money, unadjustedTotalSales: money.optional(), unadjustedTotalPurchases: money.optional(),
     salesClassificationReview: gstSalesClassificationReviewSchema.optional(),
   }).optional(),
@@ -41,10 +62,6 @@ export type GstPreparationQuery = z.infer<typeof gstPreparationQuerySchema>;
 export type GstPreparationResponse = z.infer<typeof gstPreparationResponseSchema>;
 
 const orderedPeriod = { from: taxPeriodDateSchema, to: taxPeriodDateSchema };
-export const gstAdjustmentSchema = z.object({
-  kind: z.enum(['output', 'input']), amount: money, grossAdjustment: money.optional(),
-  reason: z.string().trim().min(8).max(1000), sourceReference: z.string().trim().min(1).max(200),
-}).strict();
 export const gstAdjustmentPreparationRequestSchema = z.object({
   ...orderedPeriod, basis: gstBasisSchema.optional(),
   reviewConfirmed: z.literal(true), adjustments: z.array(gstAdjustmentSchema).max(100),

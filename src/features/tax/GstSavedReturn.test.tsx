@@ -19,6 +19,19 @@ it('records an external myIR filing only after explicit confirmation, preserving
   expect(gstSettingsApi.file).toHaveBeenCalledWith('return', 'MYIR-0123');
   expect(onFiled).toHaveBeenCalled();
 });
+it('requires a rounding acknowledgement before recording a filing when the difference is over $1', async () => {
+  const calculation = { version: 'gst-ledger-v3', fingerprint: 'hash', warnings: [], sourceCounts: {}, myIrBoxes: { '9': '0.00' }, rounding: { output: '-1.20', input: '0.00' }, roundingReviewRequired: true };
+  vi.mocked(gstSettingsApi.file).mockResolvedValue({ ...value, status: 'submitted', irdReference: 'MYIR-ROUND' } as never);
+  render(<GstSavedReturn value={{ ...value, returnData: { ...value.returnData, gstCalculation: calculation } } as never} onFiled={vi.fn()} />);
+  expect(screen.getByText(/output -1.20, input 0.00/)).toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText('myIR confirmation reference'), { target: { value: 'MYIR-ROUND' } });
+  fireEvent.click(screen.getByLabelText('I have already filed this return separately in myIR'));
+  expect(screen.getByRole('button', { name: 'Record existing myIR filing' })).toBeDisabled();
+  fireEvent.click(screen.getByLabelText('I have reviewed the rounding difference'));
+  fireEvent.click(screen.getByRole('button', { name: 'Record existing myIR filing' }));
+  expect(await screen.findByRole('status')).toHaveTextContent('Existing myIR filing recorded');
+  expect(gstSettingsApi.file).toHaveBeenCalledWith('return', 'MYIR-ROUND', true);
+});
 it('keeps a filed snapshot read-only and shows its actual confirmation reference', () => {
   render(<GstSavedReturn value={{ ...value, status: 'submitted', irdReference: 'MYIR-SAVED' } as never} onFiled={vi.fn()} />);
   expect(screen.getByText('MYIR-SAVED')).toBeInTheDocument();
