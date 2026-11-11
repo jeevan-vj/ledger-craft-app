@@ -75,7 +75,7 @@ describe('registered GST basis is the calculation authority', () => {
     try {
       const figures = gstPreparationResponseSchema.parse(await f.request('/api/tax/gst-preparation?from=2026-03-01&to=2026-05-31'));
       expect(figures).toMatchObject({ basis: 'hybrid', totalSales: '1150.00', gstOnSales: '150.00', gstOnPurchases: '60.00' });
-      expect(figures.calculation).toMatchObject({ version: 'gst-ledger-v2', settings: { gstRegisteredFrom: '2026-04-01', gstAccountingBasis: 'hybrid' } });
+      expect(figures.calculation).toMatchObject({ version: 'gst-ledger-v3', settings: { gstRegisteredFrom: '2026-04-01', gstAccountingBasis: 'hybrid' } });
       expect(figures.calculation?.fingerprint).toMatch(/^[a-f0-9]{64}$/);
       expect(figures.calculation?.sourceIds.journals.length).toBeGreaterThan(0);
     } finally { await f.sql.end(); }

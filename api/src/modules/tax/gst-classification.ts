@@ -132,7 +132,7 @@ export async function gstSourceClassificationInTx(tx: Database, organisationId: 
   const inPeriod = (date: string) => date >= period.from && date <= period.to;
   for (const group of groups.values()) {
     const entry = group[0]; if (!inPeriod(entry.date)) continue;
-    if (!['bill', 'bill_void', 'bill_restore', 'expense', 'expense_reversal'].includes(entry.referenceType ?? '')
+    if (!['bill', 'bill_void', 'bill_restore', 'expense', 'expense_reversal', 'customs_gst', 'customs_gst_reversal'].includes(entry.referenceType ?? '')
       && decimal(groupTax(group, '2150')).compare(0) > 0) {
       unsupported('An unsupported or manual GST purchase source requires explicit eligible-gross classification review.');
     }

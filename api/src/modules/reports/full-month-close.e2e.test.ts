@@ -81,10 +81,10 @@ describe('full October close through real authenticated HTTP and SQLite', () => 
       const gst = gstPreparationResponseSchema.parse(await f.request('/api/tax/gst-preparation?from=2026-10-01&to=2026-10-31'));
       expect(gst).toMatchObject({ totalSales: '3105.00', totalPurchases: '1380.00', gstOnSales: '405.00', gstOnPurchases: '180.00', netGstPosition: '225.00' });
       const draft = await f.post('/api/tax-returns', { periodStart: '2026-10-01', periodEnd: '2026-10-31', returnType: 'GST', totalSales: gst.totalSales, totalPurchases: gst.totalPurchases, gstOnSales: gst.gstOnSales, gstOnPurchases: gst.gstOnPurchases, netGst: gst.netGstPosition, returnData: { preparation: { basis: 'invoice', baseCurrency: 'NZD', dueDate: '2026-11-30' }, gstReview: gst.review } });
-      expect(gst.calculation).toMatchObject({ version: 'gst-ledger-v2', mappingStatus: 'supported', requiresReview: false, myIrBoxes: { '5': expected.gst.invoice.salesGross, '8': expected.gst.invoice.output, '11': expected.gst.invoice.purchaseGross, '12': expected.gst.invoice.input, '15': expected.gst.invoice.net } });
+      expect(gst.calculation).toMatchObject({ version: 'gst-ledger-v3', mappingStatus: 'supported', requiresReview: false, myIrBoxes: { '5': expected.gst.invoice.salesGross, '8': expected.gst.invoice.output, '11': expected.gst.invoice.purchaseGross, '12': expected.gst.invoice.input, '15': expected.gst.invoice.net } });
       const originalJournalLines = await f.db.select().from(journalEntryLines);
       const retained = await f.request(`/api/tax-returns/${draft.id}`);
-      expect(retained).toMatchObject({ status: 'draft', netGst: expected.gst.invoice.net, returnData: { gstCalculation: { fingerprint: gst.calculation?.fingerprint, version: 'gst-ledger-v2', figures: gst.calculation?.figures } } });
+      expect(retained).toMatchObject({ status: 'draft', netGst: expected.gst.invoice.net, returnData: { gstCalculation: { fingerprint: gst.calculation?.fingerprint, version: 'gst-ledger-v3', figures: gst.calculation?.figures } } });
       await f.post('/api/payments', { invoiceId: f.invoices[0].id, amount: '920', paymentDate: '2026-11-02', paymentMethod: 'bank_transfer' });
       await f.post(`/api/bills/${f.bill.id}/payments`, { bankAccountId: f.bank.id, amount: '575', paymentDate: '2026-11-02' });
       expect(await f.request(`/api/tax-returns/${draft.id}`)).toEqual(retained);

@@ -10,6 +10,9 @@ import {
   salesTaxReclassifyPreviewRequestSchema,
   salesTaxReclassifyRequestSchema,
   undoSalesTaxReclassificationRequestSchema,
+  createCustomsGstRequestSchema,
+  payCustomsGstRequestSchema,
+  voidCustomsGstRequestSchema,
 } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
@@ -20,6 +23,7 @@ import { hashIdempotencyPayload, parseIdempotencyKey } from '../invoices/idempot
 import { companyIncomeTaxPreparationForUser } from './company-income-tax';
 import { gstSettingsRoutes } from './gst-settings';
 import { applySalesTaxReclassificationForUser, listSalesTaxReclassificationsForUser, previewSalesTaxReclassificationForUser, undoSalesTaxReclassificationForUser } from './gst-sales-reclassify';
+import { createCustomsGstForUser, listCustomsGstForUser, payCustomsGstForUser, voidCustomsGstForUser } from './customs-gst.service';
 
 export function taxRoutes() {
   const routes = new Hono<AppEnv>();
@@ -54,6 +58,31 @@ export function taxRoutes() {
       const { db, user } = await requireSession(c);
       const input = undoSalesTaxReclassificationRequestSchema.parse(await c.req.json());
       return c.json(await undoSalesTaxReclassificationForUser(db, user.id, c.req.param('id'), input));
+    });
+    routes.get(`${prefix}/tax/customs-gst`, async (c) => {
+      const { db, user } = await requireSession(c);
+      return c.json(await listCustomsGstForUser(db, user.id));
+    });
+    routes.post(`${prefix}/tax/customs-gst`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = createCustomsGstRequestSchema.parse(await c.req.json());
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      const scope = key ? { key, method: 'POST', path: '/api/tax/customs-gst', requestHash: hashIdempotencyPayload(input) } : undefined;
+      return c.json(await createCustomsGstForUser(db, user.id, input, scope), 201);
+    });
+    routes.post(`${prefix}/tax/customs-gst/:id/payment`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = payCustomsGstRequestSchema.parse(await c.req.json());
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      const scope = key ? { key, method: 'POST', path: `/api/tax/customs-gst/${c.req.param('id')}/payment`, requestHash: hashIdempotencyPayload(input) } : undefined;
+      return c.json(await payCustomsGstForUser(db, user.id, c.req.param('id'), input, scope));
+    });
+    routes.post(`${prefix}/tax/customs-gst/:id/void`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = voidCustomsGstRequestSchema.parse(await c.req.json());
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      const scope = key ? { key, method: 'POST', path: `/api/tax/customs-gst/${c.req.param('id')}/void`, requestHash: hashIdempotencyPayload(input) } : undefined;
+      return c.json(await voidCustomsGstForUser(db, user.id, c.req.param('id'), input, scope));
     });
     routes.post(`${prefix}/tax/company-income-tax-preparation`, async (c) => {
       const { db, user } = await requireSession(c);

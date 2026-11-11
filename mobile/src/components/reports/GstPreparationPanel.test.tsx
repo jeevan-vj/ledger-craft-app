@@ -109,7 +109,7 @@ it('reviews sourced output minus15 and input plus3 before saving authoritative11
   fireEvent(screen.getByLabelText('Confirm GST adjustment review'), 'valueChange', true);
   fireEvent.press(screen.getByText('Apply reviewed GST adjustments'));
   expect(await screen.findByText('Net GST payable: $117.00')).toBeTruthy();
-  expect(gstPreparationApi.review).toHaveBeenCalledWith(expect.objectContaining({ reviewConfirmed: true, adjustments: [expect.objectContaining({ kind: 'output', amount: '-15.00', sourceReference: 'CN-001' }), expect.objectContaining({ kind: 'input', amount: '3.00', sourceReference: 'REC-001' })] }));
+  expect(gstPreparationApi.review).toHaveBeenCalledWith(expect.objectContaining({ reviewConfirmed: true, adjustments: [expect.objectContaining({ kind: 'output', type: 'private_use_output', amount: '-15.00', sourceReference: 'CN-001' }), expect.objectContaining({ kind: 'input', type: 'bad_debt_written_off', amount: '3.00', sourceReference: 'REC-001' })] }));
   fireEvent.press(screen.getByText('Save GST draft'));
   await screen.findByText('Saved GST return: draft');
   expect(gstPreparationApi.save).toHaveBeenCalledWith(reviewed);

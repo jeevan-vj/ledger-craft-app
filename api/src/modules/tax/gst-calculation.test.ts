@@ -65,7 +65,7 @@ describe('authoritative saved GST calculation', () => {
     try {
       const source = await books(f);
       const preparation = await f.request<GstPreparationResponse>(url);
-      expect(preparation).toMatchObject({ basis, totalSales: sales, totalPurchases: purchases, netGstPosition: net, calculation: { version: 'gst-ledger-v2', settings: { gstAccountingBasis: basis }, myIrBoxes: { '5': sales, '11': purchases, '15': net }, mappingStatus: 'supported' } });
+      expect(preparation).toMatchObject({ basis, totalSales: sales, totalPurchases: purchases, netGstPosition: net, calculation: { version: 'gst-ledger-v3', settings: { gstAccountingBasis: basis }, myIrBoxes: { '5': sales, '11': purchases, '15': net }, mappingStatus: 'supported' } });
       expect(preparation.calculation!.sourceIds.invoices).toContain(source.invoice.id);
       expect(preparation.calculation!.sourceIds.bills).toContain(source.bill.id);
       expect(preparation.calculation!.sourceCounts.journalLines).toBeGreaterThan(0);

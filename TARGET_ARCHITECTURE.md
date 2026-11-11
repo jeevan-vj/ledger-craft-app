@@ -85,7 +85,10 @@ persist GST registration date, invoice/payments/hybrid basis, frequency and
 ending-month anchor. Migration `0028_gst-registration-settings.sql` is additive;
 legacy unknown settings require confirmation. Server-generated periods and
 canonical `gst-ledger-v2` snapshots retain exact totals, source identities,
-fingerprints and supported myIR preparation boxes. Draft revisions preserve
+fingerprints and supported myIR preparation boxes. New calculations use
+`gst-ledger-v3`: typed Box 9 and Box 13 adjustments, a disclosed
+ledger-versus-form rounding line, and Customs GST in Box 13. Saved
+`gst-ledger-v2` snapshots stay readable. Draft revisions preserve
 prior snapshots; filed records are immutable, with read-only original-settings
 recalculation. Pre-registration sources and their later reversals remain
 excluded. Unknown sales classification and unsupported purchase mapping block

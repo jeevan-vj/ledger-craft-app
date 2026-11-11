@@ -51,7 +51,7 @@ describe('sales tax codes feed GST boxes 5 and 6', () => {
       await postSale(f, { date: '2026-10-02', taxInclusive: false, taxRate: '0', items: [{ description: 'Exempt sale', quantity: '1', rate: '1000', taxCode: 'exempt' }] });
       const preparation = await f.request<GstPreparationResponse>(`/api/tax/gst-preparation?${period}`);
       expect(boxes(preparation)).toMatchObject({ '5': '13500.00', '6': '2000.00', '7': '11500.00', '8': '1500.00', '9': '0.00', '10': '1500.00' });
-      expect(preparation).toMatchObject({ zeroRatedSales: '2000.00', exemptSales: '1000.00', unclassifiedSales: '0.00', totalSales: '14500.00', calculation: { version: 'gst-ledger-v2', mappingStatus: 'supported' } });
+      expect(preparation).toMatchObject({ zeroRatedSales: '2000.00', exemptSales: '1000.00', unclassifiedSales: '0.00', totalSales: '14500.00', calculation: { version: 'gst-ledger-v3', mappingStatus: 'supported' } });
     } finally { await f.sql.end(); }
   }));
 

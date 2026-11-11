@@ -94,6 +94,25 @@ export const salesTaxReclassifications = sqliteTable('sales_tax_reclassification
   check('sales_tax_reclassifications_code_check', sql`${table.taxCode} IS NULL OR ${table.taxCode} IN ('zero_rated', 'exempt')`),
 ]);
 
+export const customsGstEntries = sqliteTable('customs_gst_entries', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  userId: text('user_id').notNull().references(() => users.id),
+  invoiceDate: text('invoice_date').notNull(),
+  paymentDate: text('payment_date'),
+  amount: money('amount').notNull(),
+  reference: text('reference').notNull(),
+  description: text('description').notNull(),
+  status: text('status').notNull().default('open'),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+  updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  uniqueIndex('customs_gst_entries_org_id_uidx').on(table.organisationId, table.id),
+  index('customs_gst_entries_org_idx').on(table.organisationId),
+  check('customs_gst_entries_status_check', sql`${table.status} IN ('open', 'void')`),
+  check('customs_gst_entries_amount_check', sql`${table.amount} <> '' AND ${table.amount} NOT GLOB '*[^0-9.]*' AND ${table.amount} GLOB '[0-9]*' AND ${table.amount} NOT LIKE '%.' AND length(${table.amount}) - length(replace(${table.amount}, '.', '')) <= 1`),
+]);
+
 export const gstReturnAuditEvents = sqliteTable('gst_return_audit_events', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   organisationId: text('organisation_id').notNull().references(() => organisations.id),

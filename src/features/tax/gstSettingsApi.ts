@@ -19,8 +19,8 @@ export const gstSettingsApi = {
   returns: () => request('/api/tax-returns', taxReturnListResponseSchema),
   recalculation: (id: string) => request(`/api/tax-returns/${encodeURIComponent(id)}/recalculation`, gstReturnRecalculationResponseSchema),
   getReturn: (id: string) => request(`/api/tax-returns/${encodeURIComponent(id)}`, taxReturnSchema),
-  async file(id: string, irdReference: string) {
-    await request(`/api/tax-returns/${encodeURIComponent(id)}/file`, taxReturnSchema, 'POST', { irdReference });
+  async file(id: string, irdReference: string, acknowledgeRounding?: boolean) {
+    await request(`/api/tax-returns/${encodeURIComponent(id)}/file`, taxReturnSchema, 'POST', { irdReference, ...(acknowledgeRounding ? { acknowledgeRounding: true } : {}) });
     return request(`/api/tax-returns/${encodeURIComponent(id)}`, taxReturnSchema);
   },
   reopen(id: string, reason: string) {

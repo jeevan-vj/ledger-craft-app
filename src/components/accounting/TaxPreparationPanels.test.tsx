@@ -86,7 +86,7 @@ describe('exact tax preparation', () => {
     fireEvent.click(screen.getByLabelText('I have reviewed the adjustment sources and tax treatment'));
     fireEvent.click(screen.getByRole('button', { name: 'Prepare GST worksheet' }));
     expect(await screen.findByText('NZD 126.00')).toBeInTheDocument();
-    expect(calls[0].body).toMatchObject({ reviewConfirmed: true, adjustments: [{ kind: 'output', amount: '-15.00', grossAdjustment: '-115.00', reason: 'Credit note for returned service', sourceReference: 'CN-001' }] });
+    expect(calls[0].body).toMatchObject({ reviewConfirmed: true, adjustments: [{ kind: 'output', type: 'private_use_output', amount: '-15.00', grossAdjustment: '-115.00', reason: 'Credit note for returned service', sourceReference: 'CN-001' }] });
   });
   it('shows an actionable ledger error and never leaves a stale save action', async () => {
     fail = true; render(<GstPreparationPanel />);

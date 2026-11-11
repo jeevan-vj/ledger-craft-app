@@ -8,12 +8,14 @@ import { ModernInput } from '@/components/ui/ModernInput';
 import { formatMoney } from '@/utils/money';
 import { space, useTheme } from '@/theme';
 export function GstReturnDetail({ initial, canFile, canReopen = false, onFiled }: { initial: TaxReturnDto; canFile: boolean; canReopen?: boolean; onFiled: () => Promise<void> }) {
- const theme = useTheme(); const [saved, setSaved] = useState(initial); const [reference, setReference] = useState(''); const [reviewed, setReviewed] = useState(false); const [reopenReason, setReopenReason] = useState(''); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
+ const theme = useTheme(); const [saved, setSaved] = useState(initial); const [reference, setReference] = useState(''); const [reviewed, setReviewed] = useState(false); const [roundingAck, setRoundingAck] = useState(false); const [reopenReason, setReopenReason] = useState(''); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
+ const needsRounding = saved.returnData?.gstCalculation?.version === 'gst-ledger-v3' && saved.returnData.gstCalculation.roundingReviewRequired;
  async function file() {
   if (!reference.trim()) { setError('Enter the confirmation reference from your completed myIR filing.'); return; }
   if (!reviewed) { setError('Confirm that you completed this filing externally in myIR.'); return; }
+  if (needsRounding && !roundingAck) { setError('Review the rounding difference before recording this return as filed.'); return; }
   setBusy(true); setError('');
-  try { setSaved(await gstWorkspaceApi.fileReturn(saved.id, reference.trim())); await onFiled(); }
+  try { setSaved(needsRounding ? await gstWorkspaceApi.fileReturn(saved.id, reference.trim(), true) : await gstWorkspaceApi.fileReturn(saved.id, reference.trim())); await onFiled(); }
   catch (caught) { setError(caught instanceof Error ? caught.message : 'Filing record could not be saved.'); }
   finally { setBusy(false); }
  }
@@ -39,7 +41,9 @@ export function GstReturnDetail({ initial, canFile, canReopen = false, onFiled }
   </> : null}
   {saved.status === 'draft' && canFile ? <>
    <ModernInput label="myIR confirmation reference" value={reference} onChangeText={setReference} editable={!busy} />
+   {saved.returnData?.gstCalculation?.version === 'gst-ledger-v3' ? <Text style={theme.type.body}>Rounding difference (ledger minus myIR form): output {saved.returnData.gstCalculation.rounding.output}, input {saved.returnData.gstCalculation.rounding.input}.</Text> : null}
    <Text style={theme.type.body}>This is a record of filing you already completed in myIR.</Text>
+   {needsRounding ? <><Text style={theme.type.body}>I have reviewed the rounding difference</Text><Switch accessibilityLabel="Confirm the rounding difference was reviewed" value={roundingAck} onValueChange={setRoundingAck} disabled={busy} /></> : null}
    <Switch accessibilityLabel="Confirm this return was filed externally in myIR" value={reviewed} onValueChange={setReviewed} disabled={busy} />
    <ModernButton disabled={busy} loading={busy} onPress={() => void file()}>Record external filing</ModernButton>
   </> : null}

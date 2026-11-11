@@ -136,6 +136,12 @@ export async function fileTaxReturnForUser(
         throw apiError(409, 'GST_CALCULATION_STALE', 'The books changed after this draft was prepared. Recalculate and review before recording it as filed.');
       }
       if (recorded.mappingStatus !== 'supported') throw apiError(422, 'GST_MAPPING_REVIEW_REQUIRED', 'Complete the supported myIR box mapping before recording this return as filed.');
+      if (recorded.version === 'gst-ledger-v3' && recorded.roundingReviewRequired && !input.acknowledgeRounding) {
+        throw apiError(422, 'GST_ROUNDING_REVIEW_REQUIRED', 'The ledger and the myIR 3/23 form differ by more than $1.00. Review the disclosed rounding line and acknowledge it before recording this return as filed.');
+      }
+      if (input.acknowledgeRounding) {
+        await repo.updateReturn(tx, ctx.organisationId, id, { returnData: { ...existing.returnData, roundingAcknowledgement: { acknowledgedAt: new Date().toISOString(), acknowledgedBy: ctx.userId } } });
+      }
     }
     const filed = await repo.fileReturn(tx, ctx.organisationId, id, input.irdReference);
     if (!filed) throw new HTTPException(409, { message: 'Tax return is no longer a draft' });
