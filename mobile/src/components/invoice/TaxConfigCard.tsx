@@ -14,6 +14,8 @@ interface TaxConfigCardProps {
   onTaxEnabledChange: (enabled: boolean) => void;
   onTaxRateChange: (rate: number) => void;
   formatCurrency: (amount: number) => string;
+  zeroRatedChoice?: 'zero_rated' | 'exempt' | null;
+  onZeroRatedChoice?: (choice: 'zero_rated' | 'exempt') => void;
 }
 
 type TaxOption = 'none' | 'gst' | 'custom';
@@ -27,6 +29,8 @@ export function TaxConfigCard({
   onTaxEnabledChange,
   onTaxRateChange,
   formatCurrency,
+  zeroRatedChoice = null,
+  onZeroRatedChoice,
 }: TaxConfigCardProps) {
   const theme = useTheme();
   const { colors: palette, type } = theme;
@@ -94,6 +98,29 @@ export function TaxConfigCard({
           );
         })}
       </View>
+
+      {taxOption === 'none' && onZeroRatedChoice ? (
+        <View style={[styles.segment, { marginTop: space.md }]}>
+          {([
+            { id: 'zero_rated' as const, label: 'Zero-rated' },
+            { id: 'exempt' as const, label: 'Exempt' },
+          ]).map((option) => {
+            const selected = zeroRatedChoice === option.id;
+            return (
+              <Pressable
+                key={option.id}
+                onPress={() => onZeroRatedChoice(option.id)}
+                accessibilityRole="button"
+                accessibilityState={{ selected }}
+                accessibilityLabel={option.label}
+                style={[styles.segmentItem, selected && styles.segmentItemSelected]}
+              >
+                <Text style={[styles.segmentLabel, selected && styles.segmentLabelSelected]}>{option.label}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      ) : null}
 
       {taxOption === 'custom' ? (
         <View style={styles.customRow}>

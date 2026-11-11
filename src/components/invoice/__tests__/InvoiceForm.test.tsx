@@ -152,6 +152,7 @@ const readyLineItem = {
   rate: 100,
   rateUnit: 'each',
   total: 100,
+  taxCode: 'exempt' as const,
 };
 
 const readyInvoice: Partial<Invoice> = {

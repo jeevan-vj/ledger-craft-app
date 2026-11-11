@@ -7,6 +7,9 @@ import {
   gstPreparationQuerySchema,
   gstAdjustmentPreparationRequestSchema,
   companyIncomeTaxPreparationRequestSchema,
+  salesTaxReclassifyPreviewRequestSchema,
+  salesTaxReclassifyRequestSchema,
+  undoSalesTaxReclassificationRequestSchema,
 } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
@@ -16,6 +19,7 @@ import { gstPreparationForUser, reviewedGstPreparationForUser } from './gst-prep
 import { hashIdempotencyPayload, parseIdempotencyKey } from '../invoices/idempotency';
 import { companyIncomeTaxPreparationForUser } from './company-income-tax';
 import { gstSettingsRoutes } from './gst-settings';
+import { applySalesTaxReclassificationForUser, listSalesTaxReclassificationsForUser, previewSalesTaxReclassificationForUser, undoSalesTaxReclassificationForUser } from './gst-sales-reclassify';
 
 export function taxRoutes() {
   const routes = new Hono<AppEnv>();
@@ -31,6 +35,25 @@ export function taxRoutes() {
       const { db, user } = await requireSession(c);
       const input = gstAdjustmentPreparationRequestSchema.parse(await c.req.json());
       return c.json(await reviewedGstPreparationForUser(db, user.id, input));
+    });
+    routes.get(`${prefix}/tax/sales-tax-reclassifications`, async (c) => {
+      const { db, user } = await requireSession(c);
+      return c.json(await listSalesTaxReclassificationsForUser(db, user.id));
+    });
+    routes.post(`${prefix}/tax/sales-tax-reclassifications/preview`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = salesTaxReclassifyPreviewRequestSchema.parse(await c.req.json());
+      return c.json(await previewSalesTaxReclassificationForUser(db, user.id, input));
+    });
+    routes.post(`${prefix}/tax/sales-tax-reclassifications`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = salesTaxReclassifyRequestSchema.parse(await c.req.json());
+      return c.json(await applySalesTaxReclassificationForUser(db, user.id, input), 201);
+    });
+    routes.post(`${prefix}/tax/sales-tax-reclassifications/:id/undo`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = undoSalesTaxReclassificationRequestSchema.parse(await c.req.json());
+      return c.json(await undoSalesTaxReclassificationForUser(db, user.id, c.req.param('id'), input));
     });
     routes.post(`${prefix}/tax/company-income-tax-preparation`, async (c) => {
       const { db, user } = await requireSession(c);

@@ -55,6 +55,7 @@ type DraftSourceLine = {
   unit?: string | null;
   itemId?: string | null;
   taxRate?: string;
+  taxCode?: 'standard_15' | 'zero_rated' | 'exempt';
 };
 
 type FieldError = { field: string; message: string };
@@ -98,6 +99,7 @@ async function priceAssistantDraft(
       unit: line.unit,
       itemId: line.itemId,
       taxRate: line.taxRate,
+      taxCode: line.taxCode,
     }))
     : proposal.lines.map((line) => ({
       description: line.description,
@@ -105,6 +107,7 @@ async function priceAssistantDraft(
       rate: line.rate,
       unit: line.unit,
       itemId: line.itemId,
+      taxCode: line.taxCode,
     }));
 
   const lines: PricedDraft['lines'] = [];
@@ -144,12 +147,20 @@ async function priceAssistantDraft(
         quantity: line.quantity,
         rate: line.rate ?? '',
         ...(line.unit ? { unit: line.unit } : {}),
+        ...(line.taxCode ? { taxCode: line.taxCode } : {}),
         ...(line.taxRate !== undefined ? { taxes: [{ id: 'gst', name: 'GST', rate: line.taxRate }] } : {}),
       })),
     };
     const profile = await getBusinessProfile(tx, organisationId);
     const resolved = await resolveDocumentCurrency(tx, organisationId, request.currency, request.date);
     const totals = computeInvoiceTotals(request, profile?.defaultTaxRate ?? '0', resolved.currency.precision);
+    totals.lines.forEach((line, index) => {
+      const rate = decimal(line.taxes[0]?.rate ?? '0');
+      const code = source[index]?.taxCode;
+      if (rate.compare(0) === 0 && decimal(line.tax).compare(0) === 0 && code !== 'zero_rated' && code !== 'exempt') {
+        errors.push({ field: `lines.${index}.taxCode`, message: 'Choose zero-rated or exempt for a line with no GST.' });
+      }
+    });
     subtotal = totals.subtotal;
     taxAmount = totals.taxAmount;
     total = totals.total;

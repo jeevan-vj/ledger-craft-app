@@ -29,6 +29,7 @@ function toLineDto(row: typeof lineItems.$inferSelect) {
     discountValue: row.discountValue ?? null,
     discountAmount: row.discountAmount,
     taxes: (row.taxes ?? []) as Array<{ id: string; name: string; rate: string }>,
+    ...(row.taxCode === 'standard_15' || row.taxCode === 'zero_rated' || row.taxCode === 'exempt' ? { taxCode: row.taxCode } : {}),
   };
 }
 
@@ -307,6 +308,7 @@ async function insertLines(
       discountValue: line.discountValue,
       discountAmount: line.discountAmount,
       taxes: line.taxes,
+      taxCode: line.taxCode,
     });
   }
 }

@@ -8,6 +8,7 @@ import { decimal, roundMoney } from '../invoices/money';
 import { ledgerRows, type LedgerRow } from '../reports/reports.repository';
 import { allocateGstSettlements } from './gst-payments';
 import { gstSettlements } from './gst-payments.repository';
+import { plugLargestBucket, supplyBucketsForInvoice, ZERO_SUPPLY, type SupplyBuckets } from './gst-sales-buckets';
 
 type Period = { from: string; to: string };
 type Basis = 'invoice' | 'payments' | 'hybrid';
@@ -36,7 +37,7 @@ function standardSalesTaxAssignments(value: unknown, positiveTax: boolean): bool
  * It never reverses rounded GST into a guessed purchase amount. Unsupported
  * history leaves the eligible purchase box unknown rather than fabricated. */
 export async function gstSourceClassificationInTx(tx: Database, organisationId: string, period: Period, basis: Basis, registeredFrom?: string): Promise<{
-  unclassifiedSales: string; claimablePurchases: string | null; salesClassificationSupported: boolean; warnings: string[];
+  zeroRatedSales: string; exemptSales: string; unclassifiedSales: string; claimablePurchases: string | null; salesClassificationSupported: boolean; warnings: string[];
 }> {
   const [rows, sourceExpenses, sourceBills, purchaseLines, sourceInvoices, salesLines, settlements, sourceCredits] = await Promise.all([
     ledgerRows(tx, organisationId, { from: '0001-01-01', to: period.to, basis: 'accrual', baseCurrency: 'NZD' }),
@@ -94,30 +95,40 @@ export async function gstSourceClassificationInTx(tx: Database, organisationId: 
       .reduce((sum, line) => sum.add(line.total), decimal(0));
     return roundMoney(taxableGross.mul(source.exchangeRate));
   };
-  const zeroSalesBudget = (id: string): string | null => {
+  const rejectSupply = (message: string): null => { salesClassificationSupported = false; warnings.add(message); return null; };
+  const zeroSalesBudget = (id: string): SupplyBuckets | null => {
     const source = invoiceById.get(id); const posted = originalSales.get(id);
-    if (!source || !posted) { salesClassificationSupported = false; warnings.add('Historical sale classification is missing; zero-rated versus exempt supplies require source review.'); return null; }
-    if (registeredFrom && posted[0].date < registeredFrom) { warnings.add('Pre-registration sale source is excluded from GST sales classification.'); return '0.00'; }
+    if (!source || !posted) return rejectSupply('Historical sale classification is missing; zero-rated versus exempt supplies require source review.');
+    if (registeredFrom && posted[0].date < registeredFrom) { warnings.add('Pre-registration sale source is excluded from GST sales classification.'); return { ...ZERO_SUPPLY }; }
     if (decimal(groupGross(posted)).compare(source.baseTotal) !== 0 || decimal(groupTax(posted, '2200')).compare(source.baseTaxAmount) !== 0) {
-      salesClassificationSupported = false; warnings.add('Historical sale classification differs from the posting; zero-rated versus exempt supplies require source review.'); return null;
+      return rejectSupply('Historical sale classification differs from the posting; zero-rated versus exempt supplies require source review.');
     }
-    // A fully untaxed source does not need any reconstructed line calculation.
-    if (decimal(source.taxAmount).compare(0) === 0) return roundMoney(source.baseTotal);
     const lines = salesLines.filter(line => line.invoiceId === id);
-    if (!lines.length) { salesClassificationSupported = false; warnings.add('Historical sale lines are missing; zero-rated versus exempt supplies require source review.'); return null; }
-    if (lines.some(line => line.tax == null || !standardSalesTaxAssignments(line.taxes, decimal(line.tax).compare(0) > 0))) {
-      salesClassificationSupported = false;
-      warnings.add('A non-standard or unknown sales tax assignment requires reviewed GST box classification; only declared 15% GST is supported automatically.');
-      return null;
+    if (decimal(source.taxAmount).compare(0) > 0) {
+      if (!lines.length) return rejectSupply('Historical sale lines are missing; zero-rated versus exempt supplies require source review.');
+      if (lines.some(line => line.tax == null || !standardSalesTaxAssignments(line.taxes, decimal(line.tax).compare(0) > 0))) {
+        return rejectSupply('A non-standard or unknown sales tax assignment requires reviewed GST box classification; only declared 15% GST is supported automatically.');
+      }
     }
-    const untaxed = lines.filter(line => decimal(line.tax).compare(0) === 0);
-    if (!untaxed.length) return '0.00';
-    if (decimal(source.discount).compare(0) !== 0 || decimal(source.additionalCharges).compare(0) !== 0) {
-      salesClassificationSupported = false; warnings.add('Mixed untaxed sales with document discounts or additional charges require source classification review.'); return null;
-    }
-    return roundMoney(untaxed.reduce((sum, line) => sum.add(line.total), decimal(0)).mul(source.exchangeRate));
+    const buckets = supplyBucketsForInvoice(source, lines);
+    if (buckets === 'unsupported') return rejectSupply('Mixed untaxed sales with document discounts or additional charges require source classification review.');
+    if (buckets === 'nonstandard') return rejectSupply('A non-standard or unknown sales tax assignment requires reviewed GST box classification; only declared 15% GST is supported automatically.');
+    return buckets;
   };
-  let purchaseGross = decimal(0); let unclassifiedSales = decimal(0);
+  let purchaseGross = decimal(0);
+  const salesSupply = { zeroRated: decimal(0), exempt: decimal(0), unclassified: decimal(0) };
+  const addSupply = (amount: SupplyBuckets, reverse: boolean) => {
+    const sign = reverse ? decimal(-1) : decimal(1);
+    salesSupply.zeroRated = salesSupply.zeroRated.add(decimal(amount.zeroRated).mul(sign));
+    salesSupply.exempt = salesSupply.exempt.add(decimal(amount.exempt).mul(sign));
+    salesSupply.unclassified = salesSupply.unclassified.add(decimal(amount.unclassified).mul(sign));
+  };
+  const scaleSupply = (amount: SupplyBuckets, numerator: ReturnType<typeof decimal>, denominator: ReturnType<typeof decimal>): SupplyBuckets => {
+    const scale = (value: string) => roundMoney(decimal(value).mul(numerator).div(denominator));
+    const separate = { zeroRated: scale(amount.zeroRated), exempt: scale(amount.exempt), unclassified: scale(amount.unclassified) };
+    const total = decimal(amount.zeroRated).add(amount.exempt).add(amount.unclassified);
+    return plugLargestBucket(separate, roundMoney(total.mul(numerator).div(denominator)));
+  };
   const inPeriod = (date: string) => date >= period.from && date <= period.to;
   for (const group of groups.values()) {
     const entry = group[0]; if (!inPeriod(entry.date)) continue;
@@ -141,7 +152,7 @@ export async function gstSourceClassificationInTx(tx: Database, organisationId: 
     }
     if (basis !== 'payments' && ['invoice', 'invoice_cancellation', 'invoice_restore'].includes(entry.referenceType ?? '')) {
       const budget = entry.referenceId ? zeroSalesBudget(entry.referenceId) : null;
-      if (budget !== null) unclassifiedSales = unclassifiedSales.add(signed(budget, entry.referenceType === 'invoice_cancellation'));
+      if (budget !== null) addSupply(budget, entry.referenceType === 'invoice_cancellation');
     }
     if (['credit_note', 'credit_note_reversal'].includes(entry.referenceType ?? '')) {
       if (basis !== 'payments') {
@@ -152,10 +163,8 @@ export async function gstSourceClassificationInTx(tx: Database, organisationId: 
         if (!source || budget === null || decimal(source.baseTotal).compare(0) <= 0) {
           salesClassificationSupported = false; warnings.add('Historical credit-note sales classification is missing; no zero-rate treatment is inferred.');
         } else {
-          // Credit-note service accepts proportional source tax allocations.
-          // Allocate the known untaxed source gross, retaining its own cents.
-          const movement = roundMoney(decimal(budget).mul(groupGross(group)).div(source.baseTotal));
-          unclassifiedSales = unclassifiedSales.add(signed(movement, entry.referenceType === 'credit_note'));
+          // Credit notes reduce the same boxes as the source supply, in proportion to the credit gross.
+          addSupply(scaleSupply(budget, decimal(groupGross(group)), decimal(source.baseTotal)), entry.referenceType === 'credit_note');
         }
       }
     }
@@ -173,32 +182,62 @@ export async function gstSourceClassificationInTx(tx: Database, organisationId: 
   }
   if (basis === 'payments') {
     const eligible = settlements.sales.filter(row => row.date <= period.to);
-    const budgets = new Map<string, string>();
+    const budgets = new Map<string, SupplyBuckets>();
     for (const row of eligible) {
       const budget = zeroSalesBudget(row.documentId);
       if (budget !== null) budgets.set(row.documentId, budget);
     }
-    const credits = settlements.credits.map(row => {
-      const source = invoiceById.get(row.documentId);
-      const budget = budgets.get(row.documentId);
-      return { ...row, tax: source && budget && decimal(source.total).compare(0) > 0
-        ? roundMoney(decimal(budget).mul(row.amount).div(source.total)) : '0.00' };
-    });
-    unclassifiedSales = decimal(allocateGstSettlements(eligible, budgets, period, credits).tax);
+    const portion = (pick: (budget: SupplyBuckets) => string) => {
+      const amounts = new Map([...budgets].map(([id, budget]) => [id, pick(budget)]));
+      const credits = settlements.credits.map(row => {
+        const source = invoiceById.get(row.documentId);
+        const budget = budgets.get(row.documentId);
+        return { ...row, tax: source && budget && decimal(source.total).compare(0) > 0
+          ? roundMoney(decimal(pick(budget)).mul(row.amount).div(source.total)) : '0.00' };
+      });
+      return roundMoney(allocateGstSettlements(eligible, amounts, period, credits).tax);
+    };
+    const combined = (budget: SupplyBuckets) => roundMoney(decimal(budget.zeroRated).add(budget.exempt).add(budget.unclassified));
+    const allocated = plugLargestBucket({
+      zeroRated: portion(budget => budget.zeroRated),
+      exempt: portion(budget => budget.exempt),
+      unclassified: portion(budget => budget.unclassified),
+    }, portion(combined));
+    salesSupply.zeroRated = decimal(allocated.zeroRated);
+    salesSupply.exempt = decimal(allocated.exempt);
+    salesSupply.unclassified = decimal(allocated.unclassified);
     const refunds = settlements.refunds.filter(row => row.date <= period.to);
-    const refundBudgets = new Map<string, string>();
+    const refundBudgets = new Map<string, SupplyBuckets>();
     for (const row of refunds) {
       const credit = creditById.get(row.documentId);
       const source = credit ? invoiceById.get(credit.invoiceId) : undefined;
       const budget = source ? zeroSalesBudget(source.id) : null;
       if (!credit || !source || budget === null || decimal(source.baseTotal).compare(0) <= 0) {
         salesClassificationSupported = false; warnings.add('Historical refund source classification is missing; no zero-rate treatment is inferred.');
-      } else {
-        refundBudgets.set(row.documentId, roundMoney(decimal(budget).mul(credit.baseCustomerCreditAmount).div(source.baseTotal)));
+      } else if (decimal(source.baseTotal).compare(0) > 0) {
+        const share = (value: string) => roundMoney(decimal(value).mul(credit.baseCustomerCreditAmount).div(source.baseTotal));
+        refundBudgets.set(row.documentId, plugLargestBucket(
+          { zeroRated: share(budget.zeroRated), exempt: share(budget.exempt), unclassified: share(budget.unclassified) },
+          share(roundMoney(decimal(budget.zeroRated).add(budget.exempt).add(budget.unclassified))),
+        ));
       }
     }
-    unclassifiedSales = unclassifiedSales.sub(allocateGstSettlements(refunds, refundBudgets, period).tax);
+    const refundPortion = (pick: (budget: SupplyBuckets) => string) => decimal(allocateGstSettlements(
+      refunds, new Map([...refundBudgets].map(([id, budget]) => [id, pick(budget)])), period,
+    ).tax);
+    const refundCombined = refundPortion(budget => roundMoney(decimal(budget.zeroRated).add(budget.exempt).add(budget.unclassified)));
+    const refundSplit = plugLargestBucket({
+      zeroRated: roundMoney(refundPortion(budget => budget.zeroRated)),
+      exempt: roundMoney(refundPortion(budget => budget.exempt)),
+      unclassified: roundMoney(refundPortion(budget => budget.unclassified)),
+    }, roundMoney(refundCombined));
+    salesSupply.zeroRated = salesSupply.zeroRated.sub(refundSplit.zeroRated);
+    salesSupply.exempt = salesSupply.exempt.sub(refundSplit.exempt);
+    salesSupply.unclassified = salesSupply.unclassified.sub(refundSplit.unclassified);
   }
-  if (unclassifiedSales.compare(0) !== 0) warnings.add('Untaxed sales require explicit zero-rated versus exempt classification; no zero-rate eligibility has been inferred.');
-  return { unclassifiedSales: roundMoney(unclassifiedSales), claimablePurchases: unsupportedPurchase ? null : roundMoney(purchaseGross), salesClassificationSupported, warnings: [...warnings] };
+  if (salesSupply.unclassified.compare(0) !== 0) warnings.add('Untaxed sales require explicit zero-rated versus exempt classification; no zero-rate eligibility has been inferred.');
+  return {
+    zeroRatedSales: roundMoney(salesSupply.zeroRated), exemptSales: roundMoney(salesSupply.exempt), unclassifiedSales: roundMoney(salesSupply.unclassified),
+    claimablePurchases: unsupportedPurchase ? null : roundMoney(purchaseGross), salesClassificationSupported, warnings: [...warnings],
+  };
 }

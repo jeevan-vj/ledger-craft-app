@@ -63,10 +63,10 @@ export async function gstPreparationInTx(tx: Database, ctx: Context, period: Gst
     }
   }
   const classification = effectiveFrom > period.to
-    ? { unclassifiedSales: '0.00', claimablePurchases: '0.00', salesClassificationSupported: true, warnings: [] }
+    ? { zeroRatedSales: '0.00', exemptSales: '0.00', unclassifiedSales: '0.00', claimablePurchases: '0.00', salesClassificationSupported: true, warnings: [] }
     : await gstSourceClassificationInTx(tx, ctx.organisationId, effectivePeriod, basis, registered ? settings.gstRegisteredFrom ?? undefined : undefined);
   return audited(tx, ctx, sourceReviewRequirement({ ...period, basis, baseCurrency: 'NZD', ...figures,
-    zeroRatedSales: '0.00', exemptSales: '0.00', unclassifiedSales: classification.unclassifiedSales,
+    zeroRatedSales: classification.zeroRatedSales, exemptSales: classification.exemptSales, unclassifiedSales: classification.unclassifiedSales,
     salesClassificationSupported: classification.salesClassificationSupported,
     ...(classification.claimablePurchases !== null ? { claimablePurchases: classification.claimablePurchases } : {}),
     netGstPosition: roundMoney(decimal(figures.gstOnSales).sub(figures.gstOnPurchases)),
@@ -97,7 +97,10 @@ export async function reviewedGstPreparationInTx(tx: Database, ctx: Context, inp
   return audited(tx, ctx, sourceReviewRequirement({ ...preparation,
     totalSales: roundMoney(decimal(preparation.totalSales).add(grossAdjustment('output'))), totalPurchases: roundMoney(decimal(preparation.totalPurchases).add(grossAdjustment('input'))),
     gstOnSales: roundMoney(output), gstOnPurchases: roundMoney(purchases), netGstPosition: roundMoney(output.sub(purchases)),
-    ...(classification && !classificationStale ? { zeroRatedSales: classification.zeroRatedSales, exemptSales: classification.exemptSales } : {}),
+    ...(classification && !classificationStale ? {
+      zeroRatedSales: roundMoney(decimal(preparation.zeroRatedSales ?? '0').add(classification.zeroRatedSales)),
+      exemptSales: roundMoney(decimal(preparation.exemptSales ?? '0').add(classification.exemptSales)),
+    } : {}),
     ...(classificationStale ? { salesClassificationSupported: false, requiresReview: true } : {}),
     ...(preparation.claimablePurchases !== undefined ? { claimablePurchases: roundMoney(decimal(preparation.claimablePurchases).add(grossAdjustment('input'))) } : {}),
     review: { confirmed: true, reviewedAt: new Date().toISOString(), reviewedBy: ctx.userId, adjustments: input.adjustments, unadjustedGstOnSales: preparation.gstOnSales, unadjustedGstOnPurchases: preparation.gstOnPurchases, unadjustedTotalSales: preparation.totalSales, unadjustedTotalPurchases: preparation.totalPurchases,

@@ -107,6 +107,35 @@ describe('InvoiceImportReview', () => {
     expect(screen.getByRole('region', { name: 'Original document preview' })).toHaveClass('self-start');
   });
 
+  it('asks for zero-rated or exempt before a 0% sales line can be committed', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const zeroLine = { description: 'Exported services', quantity: '1', unitPrice: '200.00', amount: '200.00', gstRate: '0' };
+    const data = review({ direction: 'SALES', contactId: '22222222-2222-4222-8222-222222222222' });
+    data.draft.lineItems = [zeroLine];
+    data.draft.net = '200.00';
+    data.draft.gst = '0.00';
+    data.draft.total = '200.00';
+    const { rerender } = render(<InvoiceImportReview {...defaultProps} onChange={onChange} review={data} />);
+    expect(screen.getByRole('button', { name: 'Create draft invoice' })).toBeDisabled();
+    expect(screen.getByText('Choose zero-rated or exempt for each sales line with no GST before creating the draft.')).toBeInTheDocument();
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Line 1 GST treatment' }), 'zero_rated');
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({
+      lineItems: [expect.objectContaining({ gstRate: '0', taxCode: 'zero_rated', amount: '200.00' })],
+    }));
+    data.draft.lineItems = [{ ...zeroLine, taxCode: 'zero_rated' }];
+    rerender(<InvoiceImportReview {...defaultProps} onChange={onChange} review={data} />);
+    expect(screen.getByRole('button', { name: 'Create draft invoice' })).toBeEnabled();
+  });
+
+  it('does not ask a purchase bill for a sales tax code', () => {
+    const data = review({ direction: 'PURCHASE', contactId: '22222222-2222-4222-8222-222222222222' });
+    data.draft.lineItems = [{ description: 'Supplies', quantity: '1', unitPrice: '50.00', amount: '50.00', gstRate: '0' }];
+    render(<InvoiceImportReview {...defaultProps} contacts={[{ id: '22222222-2222-4222-8222-222222222222', name: 'Supplier', type: 'vendor' }]} review={data} />);
+    expect(screen.queryByRole('combobox', { name: 'Line 1 GST treatment' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Create draft bill' })).toBeEnabled();
+  });
+
   it('keeps the line GST field visible inside the review panel', () => {
     render(<InvoiceImportReview {...defaultProps} review={review()} />);
     expect(screen.getByRole('textbox', { name: 'Line 1 GST rate' })).toHaveClass('min-w-0');

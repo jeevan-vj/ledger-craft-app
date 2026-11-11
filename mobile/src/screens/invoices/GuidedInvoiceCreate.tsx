@@ -83,6 +83,7 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [description, setDescription] = useState('');
+  const [zeroRatedChoice, setZeroRatedChoice] = useState<'zero_rated' | 'exempt' | null>(null);
   const [amount, setAmount] = useState('');
   const [dates, setDates] = useState<InvoiceDates>(() => defaultInvoiceDates());
   const savingRef = useRef(false);
@@ -228,6 +229,10 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
         setCustomers((current) => [...current, created]);
       }
 
+      if (!defaults.taxEnabled && zeroRatedChoice == null) {
+        setError('Choose zero-rated or exempt for a sale with no GST.');
+        return;
+      }
       const draft = buildInvoiceDraft({
         invoiceNumber,
         customerId,
@@ -236,6 +241,7 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
         currency: defaults.currency,
         taxEnabled: defaults.taxEnabled,
         taxRate: defaults.taxRate,
+        salesTaxCode: !defaults.taxEnabled ? zeroRatedChoice ?? undefined : defaults.taxRate === 15 ? 'standard_15' : undefined,
         notes: profile.defaultNotes,
         terms: profile.defaultTerms,
         dates,
@@ -411,6 +417,27 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
               <Text style={styles.noteText}>{taxNote}</Text>
               <Text style={styles.noteText}>Amounts are in {defaults.currency}.</Text>
             </View>
+            {!defaults.taxEnabled ? (
+              <View style={styles.choiceRow}>
+                {([
+                  { id: 'zero_rated' as const, label: 'Zero-rated' },
+                  { id: 'exempt' as const, label: 'Exempt' },
+                ]).map((option) => {
+                  const selected = zeroRatedChoice === option.id;
+                  return (
+                    <Pressable
+                      key={option.id}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected }}
+                      onPress={() => { setZeroRatedChoice(option.id); setError(undefined); }}
+                      style={[styles.choice, selected && styles.choiceSelected]}
+                    >
+                      <Text style={styles.choiceLabel}>{option.label}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            ) : null}
           </View>
         ) : null}
 
@@ -539,6 +566,19 @@ const createStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
     gap: space.xs,
   },
   noteText: { ...theme.type.subhead },
+  choiceRow: { flexDirection: 'row', gap: space.sm },
+  choice: {
+    flex: 1,
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.fillMuted,
+  },
+  choiceSelected: { borderColor: theme.colors.accent, backgroundColor: theme.colors.accentFill },
+  choiceLabel: { ...theme.type.subhead, color: theme.colors.text },
   review: {
     backgroundColor: theme.colors.surface,
     borderRadius: radius.group,

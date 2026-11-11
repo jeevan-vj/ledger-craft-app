@@ -92,6 +92,7 @@ export const lineItems = sqliteTable('line_items', {
   discountValue: money('discount_value'),
   discountAmount: money('discount_amount').notNull().default('0'),
   taxes: text('taxes', { mode: 'json' }),
+  taxCode: text('tax_code'),
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [

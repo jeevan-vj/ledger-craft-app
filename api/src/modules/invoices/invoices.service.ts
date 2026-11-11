@@ -26,6 +26,7 @@ import { postInvoiceJournal } from './invoices.journal';
 import * as invoicesRepo from './invoices.repository';
 import type { InvoiceMailer } from './mailer';
 import { formatInvoiceNumber } from './numbering';
+import { withSalesTaxCodes } from './sales-tax-code';
 import { computeInvoiceTotals } from './totals';
 import { convertToBase, currencyRepository, resolveDocumentCurrency } from '../currency/currency.service';
 import * as shareService from './share';
@@ -100,7 +101,7 @@ export async function createInvoiceInTx(
 
   const defaultTaxRate = profile.defaultTaxRate ?? '0';
   const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency, input.date);
-  const totals = computeInvoiceTotals(input, defaultTaxRate, resolved.currency.precision);
+  const totals = withSalesTaxCodes(computeInvoiceTotals(input, defaultTaxRate, resolved.currency.precision), input.items);
   const baseTotal = convertToBase(totals.total, resolved.rate, resolved.base.precision);
   assertGstBuyerInformation(profile, customer, resolved.currency.code, totals.total, input.date, { baseCurrency: resolved.base.code, baseTotal });
   const status = input.status === 'sent' ? 'draft' : (input.status ?? 'draft');
@@ -220,8 +221,12 @@ export async function updateInvoiceInTx(
         unit: item.unit,
         rate: item.rate,
         rateUnit: item.rateUnit,
+        discountType: item.discountType,
+        discountValue: item.discountValue,
+        taxes: item.taxes,
+        taxCode: item.taxCode ?? undefined,
       }));
-      totals = computeInvoiceTotals(
+      totals = withSalesTaxCodes(computeInvoiceTotals(
         {
           items,
           taxInclusive: input.taxInclusive ?? existing.taxInclusive,
@@ -236,7 +241,7 @@ export async function updateInvoiceInTx(
         },
         defaultTaxRate,
         resolvedCurrency.currency.precision,
-      );
+      ), items);
     }
 
     const complianceProfile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);

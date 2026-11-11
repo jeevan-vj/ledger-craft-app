@@ -146,6 +146,7 @@ export interface LineItem {
   discountValue?: number | null;
   discountAmount?: number;
   taxes?: Array<{ id: string; name: string; rate: number }>;
+  taxCode?: 'standard_15' | 'zero_rated' | 'exempt' | null;
   createdAt?: string;
   updatedAt?: string;
 }

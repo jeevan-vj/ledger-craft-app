@@ -25,6 +25,7 @@ import type { InvoiceMailer } from '../invoices/mailer';
 import { roundMoney } from '../invoices/money';
 import { formatInvoiceNumber } from '../invoices/numbering';
 import { addCalendarDays } from '../invoices/payment-terms';
+import { withSalesTaxCodes } from '../invoices/sales-tax-code';
 import { computeInvoiceTotals, type ComputedInvoiceTotals } from '../invoices/totals';
 import * as quotesRepo from './quotes.repository';
 import { assertQuoteTransition, aucklandToday } from './quotes.transitions';
@@ -91,7 +92,7 @@ function priced(
   const discountPercent = input.discountType === 'percent'
     ? roundMoney(input.discountPercent ?? 0)
     : input.discountPercent;
-  const totals = computeInvoiceTotals({ ...input, taxRate, discountPercent }, defaultTaxRate);
+  const totals = withSalesTaxCodes(computeInvoiceTotals({ ...input, taxRate, discountPercent }, defaultTaxRate), input.items);
   return { totals, taxRate };
 }
 

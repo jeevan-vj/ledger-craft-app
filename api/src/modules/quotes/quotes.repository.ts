@@ -23,6 +23,7 @@ function toLineDto(row: typeof quoteLineItems.$inferSelect) {
     rateUnit: row.rateUnit,
     tax: row.tax ?? null,
     total: row.total,
+    ...(row.taxCode === 'standard_15' || row.taxCode === 'zero_rated' || row.taxCode === 'exempt' ? { taxCode: row.taxCode } : {}),
   };
 }
 
@@ -207,6 +208,7 @@ async function insertLines(
       rateUnit: line.rateUnit,
       tax: line.tax,
       total: line.total,
+      taxCode: line.taxCode,
       sortOrder: index,
     });
   }

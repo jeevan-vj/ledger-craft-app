@@ -2,12 +2,14 @@ import { assertAccountingDateOpen } from '../accounting/period-lock';
 import { assertGstSourceOpen, invoiceSettlementDates } from '../tax/gst-period-lock';
 import { creditNoteSchema, type CreateCreditNoteRequest, type CreditNoteDto, type InvoiceDto, type ReverseCreditNoteRequest } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
+import { apiError } from '../../http-error';
 import type { Database } from '../../db/client';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import { postBalancedEntry, reversePosting, systemAccount } from '../accounting/posting';
 import { assertOpenSettlementPeriod } from '../currency/settlement.service';
 import { currencyRepository } from '../currency/currency.service';
 import { decimal, roundMoney } from '../invoices/money';
+import { withSalesTaxCodes } from '../invoices/sales-tax-code';
 import { computeInvoiceTotals } from '../invoices/totals';
 import * as invoicesRepo from '../invoices/invoices.repository';
 import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from '../invoices/idempotency';
@@ -48,7 +50,15 @@ export async function issueCreditNoteForUser(db: Database, userId: string, input
     if (invoice.baseCurrency !== 'NZD') throw new HTTPException(422, { message: 'Credit notes require NZD base books; the document can use a reviewed foreign currency' });
     const currency = required(await currencyRepository.getCurrency(tx, ctx.organisationId, invoice.currency), 'Document currency');
     if (decimal(input.taxRate).compare(100) > 0 || input.items.some(item => decimal(item.quantity).compare(0) <= 0 || decimal(item.rate).compare(0) < 0)) throw new HTTPException(400, { message: 'Credit quantities must be positive and GST rates between 0 and 100' });
-    const totals = computeInvoiceTotals(input, input.taxRate, currency.precision);
+    const sourceCodes = [...new Set(invoice.items.flatMap((item) => item.taxCode === 'standard_15' || item.taxCode === 'zero_rated' || item.taxCode === 'exempt' ? [item.taxCode] : []))];
+    const items = input.items.map((item) => {
+      if (item.taxCode && sourceCodes.length > 0 && !sourceCodes.includes(item.taxCode)) {
+        throw apiError(422, 'SALES_TAX_CODE_MISMATCH', 'Credit note tax code must match a supply code on the invoice.');
+      }
+      if (!item.taxCode && sourceCodes.length === 1 && (sourceCodes[0] === 'zero_rated' || sourceCodes[0] === 'exempt')) return { ...item, taxCode: sourceCodes[0] };
+      return item;
+    });
+    const totals = withSalesTaxCodes(computeInvoiceTotals({ ...input, items }, input.taxRate, currency.precision), items);
     const gross = decimal(totals.total); const tax = decimal(totals.taxAmount); const net = gross.sub(tax);
     if (gross.compare(0) <= 0 || net.compare(0) < 0) throw new HTTPException(400, { message: 'Credit note total must be positive' });
     const priorGross = decimal(invoice.totalCredited ?? '0'); const priorTax = decimal(invoice.taxCredited ?? '0');

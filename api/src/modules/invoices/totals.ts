@@ -15,6 +15,7 @@ export type ComputedInvoiceTotals = {
     discountValue: string | null;
     discountAmount: string;
     taxes: Array<{ id: string; name: string; rate: string }>;
+    taxCode: 'standard_15' | 'zero_rated' | 'exempt' | null;
   }>;
   subtotal: string;
   taxAmount: string;
@@ -97,6 +98,7 @@ export function computeInvoiceTotals(
       discountValue: item.discountValue == null ? null : round(lineDiscountValue),
       discountAmount: round(lineDiscount),
       taxes,
+      taxCode: null,
       exclusive,
       inclusive: taxInclusive ? discountedAmount : exclusive.add(tax),
       taxValue: tax,

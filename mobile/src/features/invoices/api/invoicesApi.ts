@@ -65,6 +65,7 @@ export interface MobileInvoiceDto {
     discountValue?: string | null;
     discountAmount?: string;
     taxes?: Array<{ id: string; name: string; rate: string }>;
+    taxCode?: 'standard_15' | 'zero_rated' | 'exempt' | null;
   }>;
   createdAt: string;
   updatedAt: string;
@@ -102,6 +103,7 @@ function toLine(dto: MobileInvoiceDto['items'][number]): LineItem {
     discountValue: dto.discountValue == null ? null : Number(dto.discountValue),
     discountAmount: Number(dto.discountAmount ?? 0),
     taxes: dto.taxes?.map((tax) => ({ ...tax, rate: Number(tax.rate) })),
+    taxCode: dto.taxCode ?? null,
   };
 }
 
@@ -186,6 +188,8 @@ function toCreateBody(
       discountType: item.discountType,
       discountValue: money(item.discountValue),
       taxes: item.taxes?.map((tax) => ({ ...tax, rate: String(tax.rate) })),
+      ...(item.taxCode ? { taxCode: item.taxCode } : {}),
+      ...((item.taxCode === 'zero_rated' || item.taxCode === 'exempt') ? { taxes: [] } : {}),
     })),
   };
 }
@@ -262,6 +266,8 @@ export const invoicesApi = {
                   discountType: item.discountType,
                   discountValue: money(item.discountValue),
                   taxes: item.taxes?.map((tax) => ({ ...tax, rate: String(tax.rate) })),
+                  ...(item.taxCode ? { taxCode: item.taxCode } : {}),
+                  ...((item.taxCode === 'zero_rated' || item.taxCode === 'exempt') ? { taxes: [] } : {}),
                 }))
               : undefined,
         }),

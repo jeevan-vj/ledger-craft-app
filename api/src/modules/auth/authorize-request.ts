@@ -44,6 +44,7 @@ export function permissionForRequest(method: string, path: string): Organisation
   if (!isReadMethod(method) && /^\/(?:api\/)?(?:tax-returns|tax-adjustments)(?:\/|$)/.test(path)) return 'banking.write';
   if (!isReadMethod(method) && /^\/(?:api\/)?tax-configurations(?:\/|$)/.test(path)) return 'settings.write';
   if (!isReadMethod(method) && /^\/(?:api\/)?tax\/gst-preparation$/.test(path)) return 'banking.write';
+  if (!isReadMethod(method) && /^\/(?:api\/)?tax\/sales-tax-reclassifications(?:\/|$)/.test(path)) return 'banking.write';
   if (/^\/(?:api\/)?payments\/stripe\/account(?:\/|$)/.test(path)) {
     return isReadMethod(method) ? 'invoices.read' : 'payments.manage';
   }

@@ -55,7 +55,7 @@ export interface QuoteFormInput {
   discount?: number | null;
   additionalCharges?: number | null;
   additionalChargesList?: AdditionalCharge[];
-  items: Array<Pick<LineItem, 'description' | 'quantity' | 'unit' | 'rate' | 'rateUnit'>>;
+  items: Array<Pick<LineItem, 'description' | 'quantity' | 'unit' | 'rate' | 'rateUnit' | 'taxCode' | 'taxes'>>;
 }
 
 export interface PublicQuoteView {
@@ -91,6 +91,7 @@ function toLine(dto: QuoteDto['items'][number]): LineItem {
     rateUnit: dto.rateUnit,
     tax: dto.tax == null ? null : toNumber(dto.tax),
     total: toNumber(dto.total),
+    taxCode: dto.taxCode ?? null,
   };
 }
 
@@ -185,6 +186,8 @@ export function toQuoteRequest(input: QuoteFormInput): CreateQuoteRequest {
       unit: item.unit || 'ea',
       rate: String(item.rate),
       rateUnit: item.rateUnit || item.unit || 'ea',
+      ...(item.taxCode ? { taxCode: item.taxCode } : {}),
+      ...(item.taxCode === 'zero_rated' || item.taxCode === 'exempt' ? { taxes: [] } : {}),
     })),
   };
 }

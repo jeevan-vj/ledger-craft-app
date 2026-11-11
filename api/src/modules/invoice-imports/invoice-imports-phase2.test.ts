@@ -210,4 +210,36 @@ describe('invoice import Phase 2 review and commit', () => {
     }finally{await sql.end();}
   }));
 
+  it('commits a 0% sales import only after the reviewer chooses zero-rated or exempt', async () => {
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, fileStorage: createMemoryFileStorage() });
+        const owner = await signUp(app, 'Zero rated import owner');
+        const { customerId } = await setupContacts(app, owner);
+        const document = await uploadFixture(app, owner, 'cleancorp-buyer-created-tax-invoice.pdf');
+        expect((await app.request(`/api/invoice-imports/${document.id}/extract`, { method: 'POST', headers: { Cookie: owner } })).status).toBe(200);
+        const zeroLine = { description: 'Exported services', quantity: '1', unitPrice: '200.00', amount: '200.00', gstRate: '0' };
+        const reviewed = await patchDraft(app, owner, document.id, {
+          direction: 'SALES', contactId: customerId, lineItems: [zeroLine], net: '200.00', gst: '0.00', total: '200.00',
+        });
+        expect(reviewed.status).toBe(200);
+        const missing = await app.request(`/api/invoice-imports/${document.id}/commit`, { method: 'POST', headers: { ...jsonHeaders, Cookie: owner }, body: '{}' });
+        expect(missing.status).toBe(422);
+        expect(await missing.json()).toMatchObject({ error: { code: 'SALES_TAX_CODE_REQUIRED' } });
+        const coded = await patchDraft(app, owner, document.id, {
+          lineItems: [{ ...zeroLine, taxCode: 'zero_rated' }], net: '200.00', gst: '0.00', total: '200.00',
+        });
+        expect(coded.status).toBe(200);
+        const committed = await app.request(`/api/invoice-imports/${document.id}/commit`, { method: 'POST', headers: { ...jsonHeaders, Cookie: owner }, body: '{}' });
+        expect(committed.status).toBe(201);
+        const result = await committed.json() as { recordId: string };
+        const invoice = await app.request(`/api/invoices/${result.recordId}`, { headers: { Cookie: owner } });
+        expect(await invoice.json()).toMatchObject({ items: [{ description: 'Exported services', taxCode: 'zero_rated', tax: '0.00' }] });
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
+
 });

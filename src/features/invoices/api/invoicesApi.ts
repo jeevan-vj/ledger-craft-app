@@ -52,6 +52,7 @@ type InvoiceLineInput = Pick<
   | 'discountType'
   | 'discountValue'
   | 'taxes'
+  | 'taxCode'
 >;
 
 function writableStatus(status: Invoice['status'] | undefined) {
@@ -71,6 +72,7 @@ function toLine(dto: InvoiceDto['items'][number]): LineItem {
     discountType: dto.discountType,
     discountValue: dto.discountValue == null ? null : Number(dto.discountValue),
     discountAmount: Number(dto.discountAmount ?? 0),
+    taxCode: dto.taxCode ?? null,
     taxes: dto.taxes?.map((tax) => ({
       id: tax.id ?? crypto.randomUUID(),
       name: tax.name ?? 'Tax',
@@ -181,6 +183,7 @@ export function toCreateInvoiceRequest(
       discountType: item.discountType,
       discountValue: money(item.discountValue),
       taxes: item.taxes?.map((tax) => ({ ...tax, rate: String(tax.rate) })),
+      ...(item.taxCode ? { taxCode: item.taxCode } : {}),
     })),
   };
 }
@@ -268,6 +271,7 @@ export const invoicesApi = {
             discountType: item.discountType,
             discountValue: money(item.discountValue),
             taxes: item.taxes?.map((tax) => ({ ...tax, rate: String(tax.rate) })),
+            ...(item.taxCode ? { taxCode: item.taxCode } : {}),
           }))
         : undefined,
     };

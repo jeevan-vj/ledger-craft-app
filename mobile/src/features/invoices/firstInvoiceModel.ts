@@ -101,11 +101,13 @@ export function buildInvoiceDraft(input: {
   currency: string;
   taxEnabled: boolean;
   taxRate: number;
+  salesTaxCode?: 'standard_15' | 'zero_rated' | 'exempt';
   notes?: string | null;
   terms?: string | null;
   dates: InvoiceDates;
 }): { invoice: Partial<Invoice>; lineItems: LineItem[] } {
   const totals = invoiceTotals(input.amount, input.taxEnabled, input.taxRate);
+  const taxCode = input.salesTaxCode ?? (input.taxEnabled && input.taxRate === 15 ? 'standard_15' : undefined);
   return {
     invoice: {
       invoiceNumber: input.invoiceNumber,
@@ -128,6 +130,8 @@ export function buildInvoiceDraft(input: {
       unit: 'each',
       rate: input.amount,
       total: input.amount,
+      ...(taxCode ? { taxCode } : {}),
+      ...(input.taxEnabled ? {} : { taxes: [] }),
     }],
   };
 }

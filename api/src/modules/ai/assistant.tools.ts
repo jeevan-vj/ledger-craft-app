@@ -221,6 +221,7 @@ async function prepareProposal(tx: Database, organisationId: string, args: unkno
       unit: item?.unit ?? null,
       itemId: item?.id ?? null,
       missing: lineMissing,
+      ...(decimal(taxRate).compare('15') === 0 ? { taxCode: 'standard_15' as const } : {}),
     };
   });
 

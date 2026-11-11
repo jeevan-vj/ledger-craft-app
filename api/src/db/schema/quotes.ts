@@ -78,6 +78,7 @@ export const quoteLineItems = sqliteTable('quote_line_items', {
   rateUnit: text('rate_unit').notNull().default('ea'),
   tax: money('tax'),
   total: money('total').notNull(),
+  taxCode: text('tax_code'),
   sortOrder: integer('sort_order').notNull().default(0),
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),

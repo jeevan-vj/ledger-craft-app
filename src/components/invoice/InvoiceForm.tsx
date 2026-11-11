@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card, CardContent } from "@/components/ui/card";
 import { previewQuoteTotals } from '@/features/quotes/quoteTotals';
+import { applySalesTaxCode, lineSalesTaxCode, salesTaxCodeOptions } from '@/features/invoices/salesTaxCode';
 import { useDocumentEditor } from '@/utils/documentEditor';
 import { calculateLineTotal } from '@/utils/invoiceUtils';
 import { getCompatibleUnits } from '@/utils/unitConversion';
@@ -228,7 +229,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     if (initialValues?.items && Array.isArray(initialValues.items) && initialValues.items.length > 0) {
       return initialValues.items;
     }
-    return [{ id: "1", description: "", quantity: 1, unit: "each", rate: 0, rateUnit: "each", total: 0 }];
+    return [{ id: "1", description: "", quantity: 1, unit: "each", rate: 0, rateUnit: "each", total: 0, taxCode: "standard_15" }];
   };
 
   const [items, setItems] = useState<LineItem[]>(() => getInitialItems());
@@ -518,6 +519,15 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     if (discountMode === 'percent') form.setValue('discount', Number(preview.discount ?? 0), { shouldDirty: false });
   }, [items, isTaxEnabled, taxRate, isAdditionalChargesEnabled, discountMode, additionalChargesList, additionalChargesFormValue, discountFormValue, discountPercentFormValue, pricesIncludeTax, businessProfile?.defaultTaxRate]);
 
+  const setLineTaxCode = (index: number, code: string) => {
+    if (code !== 'standard_15' && code !== 'zero_rated' && code !== 'exempt') return;
+    setItems((current) => current.map((item, itemIndex) => itemIndex === index ? applySalesTaxCode(item, code) : item));
+    if (code === 'standard_15' && !isTaxEnabled) {
+      setIsTaxEnabled(true);
+      setTaxRate(15);
+    }
+  };
+
   const updateItem = <Field extends keyof LineItem,>(idx: number, field: Field, value: LineItem[Field]) => {
     const updated = [...items];
     updated[idx] = { ...updated[idx], [field]: value };
@@ -534,7 +544,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   };
 
   const addItem = () => {
-    const newItem = { id: `${items.length + 1}`, description: "", quantity: 1, unit: "each", rate: 0, rateUnit: "each", total: 0 };
+    const newItem = { id: `${items.length + 1}`, description: "", quantity: 1, unit: "each", rate: 0, rateUnit: "each", total: 0, taxCode: "standard_15" as const };
     setItems([...items, newItem]);
     if (isMobile) {
       setCurrentItemIndex(items.length);
@@ -736,6 +746,13 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 className="w-full"
               />
             </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor={`line-gst-${currentItem.id}`}>GST</label>
+              <select id={`line-gst-${currentItem.id}`} className="flex h-11 w-full rounded-xl border border-input bg-background px-3 text-sm" value={lineSalesTaxCode(currentItem, isTaxEnabled)} onChange={(event) => setLineTaxCode(currentItemIndex, event.target.value)}>
+                {lineSalesTaxCode(currentItem, isTaxEnabled) === '' && <option value="">Choose zero-rated or exempt</option>}
+                {salesTaxCodeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
@@ -873,6 +890,20 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         item.rate >= 0
       );
       
+      const stampedItems = items.map((item) => {
+        const code = lineSalesTaxCode(item, isTaxEnabled);
+        return code ? applySalesTaxCode(item, code) : item;
+      });
+      if (stampedItems.some((item) => item.description?.trim() && item.quantity > 0 && lineSalesTaxCode(item, isTaxEnabled) === '')) {
+        toast({
+          title: "GST code",
+          description: "Choose zero-rated or exempt for each line that does not carry GST.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       if (validItems.length === 0) {
         toast({
           title: isQuote ? "Quote incomplete" : "Invoice Incomplete",
@@ -928,7 +959,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
 
       const savedDocument = await onSubmit(
         valuesWithTemplate,
-        items,
+        stampedItems,
         total,
         subtotal,
         taxAmount,
@@ -959,7 +990,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
           await upsertRecurringInvoiceTemplate({
             sourceInvoiceId: savedDocument.id,
             name: `${valuesWithTemplate.invoiceNumber} recurring invoice`,
-            payload: buildRecurringInvoicePayload({ values: recurringValues, items, delivery: repeatSettings.delivery }),
+            payload: buildRecurringInvoicePayload({ values: recurringValues, items: stampedItems, delivery: repeatSettings.delivery }),
             schedule: repeatSettings.schedule,
           });
         } catch (error) {
@@ -1648,6 +1679,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                                     />
                                                   </div>
                                                 </div>
+                                                <select aria-label={`GST code for line ${index + 1}`} className="h-8 max-w-xs rounded-md border border-input bg-background px-2 text-sm" value={lineSalesTaxCode(item, isTaxEnabled)} onChange={(event) => setLineTaxCode(index, event.target.value)}>
+                                                  {lineSalesTaxCode(item, isTaxEnabled) === '' && <option value="">Choose zero-rated or exempt</option>}
+                                                  {salesTaxCodeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                                                </select>
                                               </div>
                                             </td>
                                             <td className="py-2 px-2">

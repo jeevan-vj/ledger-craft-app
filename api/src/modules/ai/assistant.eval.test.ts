@@ -735,7 +735,7 @@ describe('assistant eval suite', () => {
       taxRate: '15',
       lines: [
         { description: 'Plumbing', quantity: '1', rate: '100.00', taxRate: '15' },
-        { description: 'Exempt supply', quantity: '1', rate: '40.00', taxRate: '0' },
+        { description: 'Exempt supply', quantity: '1', rate: '40.00', taxRate: '0', taxCode: 'exempt' },
       ],
     };
     const body = { conversationId: reply.conversationId, proposalId: proposal.proposal.id, edits };
@@ -748,6 +748,11 @@ describe('assistant eval suite', () => {
     expect(previewResponse.status).toBe(200);
     const preview = previewAssistantProposalResponseSchema.parse(await previewResponse.json());
     expect(preview.errors).toEqual([]);
+    const missingCode = await app.request(`/api/ai/assistant/proposals/${proposal.proposal.id}/preview`, {
+      method: 'POST', headers: { ...headers, Cookie: cookie },
+      body: JSON.stringify({ conversationId: reply.conversationId, edits: { ...edits, lines: edits.lines.map((line) => line.description === 'Exempt supply' ? { description: line.description, quantity: line.quantity, rate: line.rate, taxRate: line.taxRate } : line) } }),
+    });
+    expect(previewAssistantProposalResponseSchema.parse(await missingCode.json()).errors.map((error) => error.field)).toContain('lines.1.taxCode');
     expect(preview).toMatchObject({
       date: '2026-11-01',
       dueDate: '2026-11-20',
