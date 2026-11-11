@@ -42,11 +42,16 @@ function percentageCents(cents: bigint, rate: string) {
   const parsed = rational(rate);
   return halfUp(cents * parsed.numerator, parsed.denominator * 100n);
 }
+function isZeroGst(rate: string): boolean {
+  return /^\d+(?:\.\d+)?$/.test(rate.trim()) && Number(rate) === 0;
+}
 function linesPatch(lineItems: InvoiceImportDraftResponse['draft']['lineItems']): InvoiceImportDraftPatch {
   let net = 0n; let gst = 0n;
   const computed = lineItems.map((line) => {
     const amount = lineCents(line.quantity, line.unitPrice); net += amount; gst += percentageCents(amount, line.gstRate);
-    return { ...line, amount: centsText(amount) };
+    const next = { ...line, amount: centsText(amount) };
+    if (!isZeroGst(line.gstRate)) delete next.taxCode;
+    return next;
   });
   return { lineItems: computed, net: centsText(net), gst: centsText(gst), total: centsText(net + gst) };
 }
@@ -73,7 +78,8 @@ export function InvoiceImportReview({ review, filename, mimeType, previewUrl, or
   useEffect(() => setAcknowledged(false), [review.documentId]);
   const blocking = review.validationIssues.some((issue) => issue.blocking);
   const hasDuplicates = review.duplicateWarnings.length > 0;
-  const canCommit = Boolean(review.direction) && !blocking && (!hasDuplicates || acknowledged) && Boolean(review.contactId) && !committing;
+  const salesLineNeedsTaxCode = review.direction === 'SALES' && review.draft.lineItems.some((line) => isZeroGst(line.gstRate) && line.taxCode !== 'zero_rated' && line.taxCode !== 'exempt');
+  const canCommit = Boolean(review.direction) && !blocking && (!hasDuplicates || acknowledged) && Boolean(review.contactId) && !salesLineNeedsTaxCode && !committing;
   const buttonLabel = review.direction === 'SALES' ? 'Create draft invoice' : review.direction === 'PURCHASE' ? 'Create draft bill' : 'Choose Sales or Purchase to continue';
   const filteredContacts = contacts.filter((contact) => !review.direction || contact.type === (review.direction === 'SALES' ? 'customer' : 'vendor'));
 
@@ -108,6 +114,7 @@ export function InvoiceImportReview({ review, filename, mimeType, previewUrl, or
           <Input className="min-w-0" aria-label={`Line ${index + 1} unit price`} inputMode="decimal" defaultValue={line.unitPrice} onBlur={(event) => onChange(updateLines(review, index, { unitPrice: event.target.value }))} />
           <Input className="min-w-0" aria-label={`Line ${index + 1} GST rate`} inputMode="decimal" defaultValue={line.gstRate} onBlur={(event) => onChange(updateLines(review, index, { gstRate: event.target.value }))} />
           <Button type="button" variant="ghost" size="icon" aria-label={`Remove line ${index + 1}`} onClick={() => onChange(linesPatch(review.draft.lineItems.filter((_, i) => i !== index)))}><Trash2 /></Button>
+          {review.direction === 'SALES' && isZeroGst(line.gstRate) && <label className="sm:col-span-5 space-y-1 text-sm font-medium">GST treatment<select aria-label={`Line ${index + 1} GST treatment`} className="flex h-11 w-full rounded-xl border border-input bg-background px-3 font-normal" value={line.taxCode === 'zero_rated' || line.taxCode === 'exempt' ? line.taxCode : ''} onChange={(event) => { const taxCode = event.target.value; if (taxCode === 'zero_rated' || taxCode === 'exempt') onChange(updateLines(review, index, { taxCode })); }}><option value="">Choose zero-rated or exempt</option><option value="zero_rated">Zero-rated</option><option value="exempt">Exempt</option></select></label>}
           {review.draft.confidence.lineItems[index]?.label !== 'High' && <span className="sm:col-span-5"><span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900">Check this · {Math.round((review.draft.confidence.lineItems[index]?.value ?? 0) * 100)}%</span></span>}
         </div>)}</div>
 
@@ -115,6 +122,7 @@ export function InvoiceImportReview({ review, filename, mimeType, previewUrl, or
 
         {blocking && <div role="alert" className="rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive"><div className="flex gap-2 font-semibold"><FileWarning className="h-5 w-5" />Totals need correction</div><p className="mt-2">The line amounts do not match the stated total. Correct the lines or totals before creating a draft.</p>{review.validationIssues.filter((issue) => issue.blocking).map((issue) => <p key={`${issue.code}-${issue.path}`} className="mt-1">{issue.message}</p>)}</div>}
         {hasDuplicates && <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950"><div className="flex gap-2 font-semibold"><AlertTriangle className="h-5 w-5" />Possible duplicate</div><ul className="mt-2 list-disc space-y-1 pl-5">{review.duplicateWarnings.map((warning) => <li key={`${warning.kind}-${warning.recordId}`}>{warning.message}</li>)}</ul><Label className="mt-4 flex cursor-pointer items-start gap-3"><Checkbox checked={acknowledged} onCheckedChange={(value) => setAcknowledged(value === true)} aria-label="I reviewed the possible duplicate" /><span>I reviewed the possible duplicate and want to continue.</span></Label></div>}
+        {salesLineNeedsTaxCode && <p className="text-sm text-muted-foreground">Choose zero-rated or exempt for each sales line with no GST before creating the draft.</p>}
         <Button type="button" className="w-full bg-[#9FE870] text-[#163300] hover:bg-[#8ED85F]" size="lg" disabled={!canCommit} onClick={() => onCommit(acknowledged)}>{committing ? 'Creating draft…' : buttonLabel}</Button>
       </section>
     </div>

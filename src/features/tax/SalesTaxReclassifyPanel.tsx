@@ -106,8 +106,11 @@ export function SalesTaxReclassifyPanel({ canWrite }: { canWrite: boolean }) {
     </div>}
     {preview && <div className="rounded-xl border p-3 text-sm">
       <p>{preview.lineCount} {preview.lineCount === 1 ? 'line' : 'lines'} as {preview.taxCode === 'zero_rated' ? 'zero-rated' : 'exempt'}.</p>
-      <p className="mt-1">Box 5: {money(preview.before.box5)} → {money(preview.after.box5)}</p>
-      <p>Box 6: {money(preview.before.box6)} → {money(preview.after.box6)}</p>
+      {(preview.periods.length > 0 ? preview.periods : [{ from: '', to: '', before: preview.before, after: preview.after }]).map((impact) => <div key={`${impact.from}-${impact.to}`} className="mt-2">
+        {impact.from && <p className="font-medium">{impact.from} to {impact.to}</p>}
+        <p>Box 5: {money(impact.before.box5)} → {money(impact.after.box5)}</p>
+        <p>Box 6: {money(impact.before.box6)} → {money(impact.after.box6)}</p>
+      </div>)}
       <label className="mt-3 block space-y-1 font-medium">Reason<textarea className="min-h-20 w-full rounded-xl border border-input bg-background px-3 py-2 font-normal" value={reason} disabled={busy} onChange={(event) => setReason(event.target.value)} /></label>
       <Button type="button" className="mt-3" disabled={busy || reason.trim().length < 8} onClick={() => void apply()}>Apply tax codes</Button>
     </div>}

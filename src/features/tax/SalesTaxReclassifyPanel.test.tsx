@@ -26,10 +26,34 @@ describe('sales tax reclassify panel', () => {
     fireEvent.click(screen.getByRole('checkbox', { name: /INV-9 Older export/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Preview Box 5 and 6' }));
     expect(await screen.findByText(/Box 6: Not shown until every untaxed sale is classified → 2000.00/)).toBeTruthy();
+    expect(screen.getByText('2026-09-01 to 2026-10-31')).toBeTruthy();
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Reviewed export documents' } });
     fireEvent.click(screen.getByRole('button', { name: 'Apply tax codes' }));
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(/Box 5 and Box 6/));
     const applyCall = fetchMock.mock.calls.find((call) => String(call[0]).endsWith('/api/tax/sales-tax-reclassifications') && call[1]?.method === 'POST');
     expect(JSON.parse(String(applyCall?.[1]?.body))).toMatchObject({ lineIds: [line.id], taxCode: 'zero_rated', reason: 'Reviewed export documents' });
+  });
+
+  it('shows Box 5 and Box 6 for every GST period in the preview', async () => {
+    const second = { ...after, box5: '500.00', box6: '500.00', totalSales: '500.00', zeroRatedSales: '500.00' };
+    vi.stubGlobal('fetch', vi.fn((input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.endsWith('/preview')) return json({
+        taxCode: 'zero_rated', lineCount: 2, before: impact, after,
+        periods: [
+          { from: '2026-05-01', to: '2026-06-30', before: impact, after: second },
+          { from: '2026-09-01', to: '2026-10-31', before: impact, after },
+        ],
+      });
+      return json({ lines: [line, { ...line, id: '66666666-6666-4666-8666-666666666666', invoiceNumber: 'INV-10', date: '2026-06-15', description: 'June export' }], events: [] });
+    }));
+    render(<SalesTaxReclassifyPanel canWrite />);
+    fireEvent.click(await screen.findByRole('checkbox', { name: /INV-9 Older export/ }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /INV-10 June export/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Preview Box 5 and 6' }));
+    expect(await screen.findByText('2026-05-01 to 2026-06-30')).toBeTruthy();
+    expect(screen.getByText('2026-09-01 to 2026-10-31')).toBeTruthy();
+    expect(screen.getByText(/Box 6: Not shown until every untaxed sale is classified → 500.00/)).toBeTruthy();
+    expect(screen.getByText(/Box 6: Not shown until every untaxed sale is classified → 2000.00/)).toBeTruthy();
   });
 });
