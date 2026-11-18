@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { gstPriorPeriodCorrectionDisclosureSchema } from './gst-corrections';
 import { gstAccountingBasisSchema, gstDateSchema, gstSettingsSchema } from './gst-settings';
 
 const money = z.string().regex(/^-?\d+\.\d{2}$/);
@@ -29,6 +30,7 @@ export const gstCalculationSnapshotV3Schema = z.object({
   customsGst: money,
   rounding: z.object({ output: money, input: money }).strict(),
   roundingReviewRequired: z.boolean(),
+  priorPeriodCorrections: z.array(gstPriorPeriodCorrectionDisclosureSchema).optional(),
 }).strict();
 export const gstCalculationSnapshotSchema = z.union([gstCalculationSnapshotV2Schema, gstCalculationSnapshotV3Schema]);
 

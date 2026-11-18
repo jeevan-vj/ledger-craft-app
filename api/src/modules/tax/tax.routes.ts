@@ -13,6 +13,8 @@ import {
   createCustomsGstRequestSchema,
   payCustomsGstRequestSchema,
   voidCustomsGstRequestSchema,
+  createGstCorrectionRequestSchema,
+  resolveGstCorrectionRequestSchema,
 } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
@@ -24,6 +26,8 @@ import { companyIncomeTaxPreparationForUser } from './company-income-tax';
 import { gstSettingsRoutes } from './gst-settings';
 import { applySalesTaxReclassificationForUser, listSalesTaxReclassificationsForUser, previewSalesTaxReclassificationForUser, undoSalesTaxReclassificationForUser } from './gst-sales-reclassify';
 import { createCustomsGstForUser, listCustomsGstForUser, payCustomsGstForUser, voidCustomsGstForUser } from './customs-gst.service';
+import { listGstCorrectionsForUser, recordGstCorrectionForUser, resolveGstCorrectionForUser } from './gst-correction.service';
+import { apiError } from '../../http-error';
 
 export function taxRoutes() {
   const routes = new Hono<AppEnv>();
@@ -76,6 +80,25 @@ export function taxRoutes() {
       const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
       const scope = key ? { key, method: 'POST', path: `/api/tax/customs-gst/${c.req.param('id')}/payment`, requestHash: hashIdempotencyPayload(input) } : undefined;
       return c.json(await payCustomsGstForUser(db, user.id, c.req.param('id'), input, scope));
+    });
+    routes.get(`${prefix}/tax/gst-corrections`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const period = gstPreparationQuerySchema.parse(c.req.query());
+      return c.json(await listGstCorrectionsForUser(db, user.id, period.from, period.to));
+    });
+    routes.post(`${prefix}/tax/gst-corrections`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = createGstCorrectionRequestSchema.parse(await c.req.json());
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      const scope = key ? { key, method: 'POST', path: '/api/tax/gst-corrections', requestHash: hashIdempotencyPayload(input) } : undefined;
+      const correction = await recordGstCorrectionForUser(db, user.id, input, scope);
+      if (correction.status === 'over_limit') throw apiError(422, 'GST_CORRECTION_OVER_LIMIT', correction.guidance ?? 'Amend the original return in myIR instead of carrying this correction forward.');
+      return c.json(correction, 201);
+    });
+    routes.post(`${prefix}/tax/gst-corrections/:id/resolve`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = resolveGstCorrectionRequestSchema.parse(await c.req.json());
+      return c.json(await resolveGstCorrectionForUser(db, user.id, c.req.param('id'), input));
     });
     routes.post(`${prefix}/tax/customs-gst/:id/void`, async (c) => {
       const { db, user } = await requireSession(c);

@@ -87,8 +87,11 @@ legacy unknown settings require confirmation. Server-generated periods and
 canonical `gst-ledger-v2` snapshots retain exact totals, source identities,
 fingerprints and supported myIR preparation boxes. New calculations use
 `gst-ledger-v3`: typed Box 9 and Box 13 adjustments, a disclosed
-ledger-versus-form rounding line, and Customs GST in Box 13. Saved
-`gst-ledger-v2` snapshots stay readable. Draft revisions preserve
+ledger-versus-form rounding line, and Customs GST in Box 13. A
+prior-period correction links a filed-period transaction to the next open
+return without rewriting the filed snapshot, and is carried forward only
+inside the IRD limit. Saved `gst-ledger-v2` and earlier `gst-ledger-v3`
+snapshots stay readable. Draft revisions preserve
 prior snapshots; filed records are immutable, with read-only original-settings
 recalculation. Pre-registration sources and their later reversals remain
 excluded. Unknown sales classification and unsupported purchase mapping block

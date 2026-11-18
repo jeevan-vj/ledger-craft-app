@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { gstCalculationSnapshotSchema } from './gst-calculation';
+import { gstPeriodCorrectionSchema } from './gst-corrections';
 
 export const taxPeriodDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => {
   const parsed = new Date(`${value}T00:00:00.000Z`);
@@ -50,6 +51,7 @@ export const gstPreparationResponseSchema = z.object({
   warnings: z.array(z.string()),
   requiresReview: z.boolean().optional(),
   calculation: gstCalculationSnapshotSchema.optional(),
+  priorPeriodCorrections: z.array(gstPeriodCorrectionSchema).optional(),
   review: z.object({
     confirmed: z.literal(true), reviewedAt: z.string().datetime(), reviewedBy: z.string().min(1),
     adjustments: z.array(gstAdjustmentSchema),

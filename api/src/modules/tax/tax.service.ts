@@ -24,6 +24,8 @@ import { decimal, roundMoney } from '../invoices/money';
 import { stableGstFingerprint } from './gst-calculation';
 import { apiError } from '../../http-error';
 import { organisationToday } from '../accounting/organisation-date';
+import { includeCorrections, withdrawPendingForReturn } from './gst-correction.repository';
+import { GST_CORRECTION_UNRESOLVED_MESSAGE } from './gst-correction-limit';
 
 function bindPreparationAudit(data: CreateTaxReturnRequest['returnData'], userId: string): CreateTaxReturnRequest['returnData'] {
   if (!data) return data;
@@ -139,6 +141,9 @@ export async function fileTaxReturnForUser(
       if (recorded.version === 'gst-ledger-v3' && recorded.roundingReviewRequired && !input.acknowledgeRounding) {
         throw apiError(422, 'GST_ROUNDING_REVIEW_REQUIRED', 'The ledger and the myIR 3/23 form differ by more than $1.00. Review the disclosed rounding line and acknowledge it before recording this return as filed.');
       }
+      const corrections = current.priorPeriodCorrections ?? [];
+      if (corrections.some((row) => row.status === 'over_limit')) throw apiError(409, 'GST_CORRECTION_UNRESOLVED', GST_CORRECTION_UNRESOLVED_MESSAGE);
+      await includeCorrections(tx, ctx, existing.id, corrections.filter((row) => row.status === 'pending' && row.carryForward === 'included').map((row) => row.id));
       if (input.acknowledgeRounding) {
         await repo.updateReturn(tx, ctx.organisationId, id, { returnData: { ...existing.returnData, roundingAcknowledgement: { acknowledgedAt: new Date().toISOString(), acknowledgedBy: ctx.userId } } });
       }
@@ -163,6 +168,7 @@ export async function reopenGstReturnForUser(
     if (!['submitted', 'approved'].includes(existing.status) || existing.supersededAt) {
       throw apiError(409, 'GST_RETURN_NOT_FILED', 'Only a filed GST return that is still in force can be reopened.');
     }
+    await withdrawPendingForReturn(tx, ctx, id, input.reason);
     const reopened = await repo.supersedeFiledReturn(tx, ctx, id, input.reason);
     if (!reopened) throw apiError(409, 'GST_RETURN_NOT_FILED', 'Only a filed GST return that is still in force can be reopened.');
     return reopened;

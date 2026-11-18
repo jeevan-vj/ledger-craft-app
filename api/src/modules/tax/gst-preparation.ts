@@ -8,11 +8,12 @@ import { paymentsBasisGst } from './gst-payments';
 import { gstSettingsInTx } from './gst-settings';
 import { buildGstCalculationSnapshot } from './gst-calculation';
 import { normalizeGstAdjustment } from './gst-return-boxes';
+import { emptyPriorPeriodCarry, priorPeriodCarry } from './gst-correction-carry';
 import { apiError } from '../../http-error';
 import { gstSourceClassificationInTx } from './gst-classification';
 import { gstRegistrationExclusions } from './gst-registration.repository';
 
-export type GstCalculationOptions = { settingsOverride?: GstSettingsDto; allowStaleClassificationReview?: boolean };
+export type GstCalculationOptions = { settingsOverride?: GstSettingsDto; allowStaleClassificationReview?: boolean; omitPriorPeriodCarry?: boolean };
 type Context = { organisationId: string; userId: string };
 
 function sourceReviewRequirement(value: unknown): GstPreparationResponse {
@@ -34,10 +35,19 @@ async function invoiceFigures(tx: Database, organisationId: string, period: GstP
     };
 }
 
-async function audited(tx: Database, ctx: Context, figures: GstPreparationResponse, settings: GstSettingsDto) {
+async function audited(tx: Database, ctx: Context, figures: GstPreparationResponse, settings: GstSettingsDto, options?: GstCalculationOptions) {
   const parsed = sourceReviewRequirement(figures);
-  const calculation = await buildGstCalculationSnapshot(tx, ctx, parsed, settings);
-  return gstPreparationResponseSchema.parse({ ...parsed, calculation });
+  const outputTax = parsed.review?.unadjustedGstOnSales ?? parsed.gstOnSales;
+  const carry = options?.omitPriorPeriodCarry ? emptyPriorPeriodCarry : await priorPeriodCarry(tx, ctx.organisationId, parsed.from, parsed.to, outputTax);
+  const calculation = await buildGstCalculationSnapshot(tx, ctx, parsed, settings, carry);
+  return gstPreparationResponseSchema.parse({
+    ...parsed,
+    gstOnSales: calculation.figures.gstOnSales,
+    gstOnPurchases: calculation.figures.gstOnPurchases,
+    netGstPosition: calculation.figures.netGst,
+    ...(carry.review.length ? { priorPeriodCorrections: carry.review } : {}),
+    calculation,
+  });
 }
 
 export async function gstPreparationInTx(tx: Database, ctx: Context, period: GstPreparationQuery, options?: GstCalculationOptions): Promise<GstPreparationResponse> {
@@ -73,7 +83,7 @@ export async function gstPreparationInTx(tx: Database, ctx: Context, period: Gst
     netGstPosition: roundMoney(decimal(figures.gstOnSales).sub(figures.gstOnPurchases)),
     warnings: [...new Set([...warnings, ...figures.warnings, ...classification.warnings])],
     ...(!registered || classification.warnings.length > 0 ? { requiresReview: true } : {}),
-  }), settings);
+  }), settings, options);
 }
 
 export async function gstPreparationForUser(db: Database, userId: string, period: GstPreparationQuery): Promise<GstPreparationResponse> {
@@ -81,9 +91,12 @@ export async function gstPreparationForUser(db: Database, userId: string, period
 }
 
 export async function reviewedGstPreparationInTx(tx: Database, ctx: Context, input: GstAdjustmentPreparationRequest, options?: GstCalculationOptions): Promise<GstPreparationResponse> {
+  if (input.adjustments.some((row) => row.type === 'prior_period_correction')) {
+    throw apiError(422, 'GST_CORRECTION_RECORDED_SEPARATELY', 'Record a prior-period correction against the filed return. It is carried into this period when it is within the IRD limit, and it does not change the filed snapshot.');
+  }
   // Read the books again for this review. Signed adjustments never rewrite the
   // source ledger and are retained with documentary references in the draft.
-  const preparation = await gstPreparationInTx(tx, ctx, { from: input.from, to: input.to, basis: input.basis }, options);
+  const preparation = await gstPreparationInTx(tx, ctx, { from: input.from, to: input.to, basis: input.basis }, { ...options, omitPriorPeriodCarry: true });
   const adjustments = input.adjustments.map(normalizeGstAdjustment);
   const adjustment = (kind: 'output' | 'input') => adjustments.filter(row => row.kind === kind).reduce((sum, row) => sum.add(row.amount), decimal(0));
   const grossAdjustment = (kind: 'output' | 'input') => adjustments.filter(row => row.kind === kind).reduce((sum, row) => sum.add(row.grossAdjustment ?? '0'), decimal(0));

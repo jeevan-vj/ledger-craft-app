@@ -2,6 +2,7 @@ import { preparationError } from '@/features/accounting-completion/preparationEr
 import { useEffect, useState } from 'react';
 import { gstInputAdjustmentTypes, gstOutputAdjustmentTypes, type GstAdjustment, type GstPreparationResponse } from '@ledgercraft/contracts';
 import { CustomsGstForm } from '@/features/tax/CustomsGstForm';
+import { GstCorrectionReview } from '@/features/tax/GstCorrectionReview';
 import { GstRoundingLine } from '@/features/tax/GstRoundingLine';
 import { Button } from '@/components/ui/button';
 import { ContentPanel } from '@/components/ui/ContentPanel';
@@ -14,7 +15,7 @@ const adjustmentLabels: Record<string, string> = {
   bad_debt_written_off: 'Bad debt written off', customs_gst: 'Customs GST', change_of_use_input: 'Change of use', entertainment: 'Entertainment',
   prior_period_correction: 'Prior period correction', other: 'Other',
 };
-const typesFor = (kind: GstAdjustment['kind']) => kind === 'output' ? gstOutputAdjustmentTypes : gstInputAdjustmentTypes;
+const typesFor = (kind: GstAdjustment['kind']) => (kind === 'output' ? gstOutputAdjustmentTypes : gstInputAdjustmentTypes).filter((type) => type !== 'prior_period_correction');
 const negativeComponents = (value: GstPreparationResponse) => [value.totalSales, value.totalPurchases, value.gstOnSales, value.gstOnPurchases].some((amount) => amount.startsWith('-') && /[1-9]/.test(amount));
 const needsReview = (value: GstPreparationResponse) => negativeComponents(value) || value.requiresReview === true;
 const signature = (value: GstPreparationResponse) => JSON.stringify([value.basis, value.from, value.to, value.totalSales, value.totalPurchases, value.gstOnSales, value.gstOnPurchases, value.netGstPosition, value.review?.adjustments, value.requiresReview, value.warnings, value.calculation?.fingerprint]);
@@ -93,6 +94,7 @@ export function GstPreparationPanel({ onSaved, registeredBasis, period, canWrite
     </fieldset>)}</div>
     <Button type="button" variant="outline" disabled={busy || !canWrite} onClick={() => { setAdjustments((rows) => [...rows, { kind: 'output', type: 'private_use_output', amount: '0.00', reason: '', sourceReference: '' }]); invalidate(); setAdjustmentReview(false); }}>Add GST adjustment</Button>
     <CustomsGstForm disabled={busy || !canWrite} onCreated={invalidate} />
+    <GstCorrectionReview from={from} to={to} corrections={figures?.priorPeriodCorrections} canWrite={canWrite} onChanged={() => { void prepare(); }} />
     <PreparationCheck checked={classificationEnabled} disabled={busy || !canWrite} onChange={(value) => { setClassificationEnabled(value); setAdjustmentReview(false); invalidate(); }}>I need to classify zero-rated or exempt sales</PreparationCheck>
     {classificationEnabled && <fieldset className="space-y-3 rounded-xl border border-border p-4"><legend className="px-1 font-medium">Reviewed sales classification</legend><p className="text-sm text-muted-foreground">A zero tax rate does not establish whether a supply is zero-rated or exempt. Classify the included gross sales using supporting records. Do not include sales outside this worksheet period.</p>{([['zeroRatedSales', 'Reviewed zero-rated sales'], ['exemptSales', 'Reviewed exempt sales'], ['reason', 'Sales classification reason'], ['sourceReference', 'Sales classification source']] as const).map(([key, label]) => <PreparationField key={key} label={label} value={classification[key]} disabled={busy} onChange={value => { setClassification(current => ({ ...current, [key]: value })); setAdjustmentReview(false); invalidate(); }} />)}</fieldset>}
     {(classificationEnabled || adjustments.length > 0 || adjustmentReview || (figures && needsReview(figures))) && <PreparationCheck checked={adjustmentReview} disabled={busy || !canWrite} onChange={(value) => { setAdjustmentReview(value); setSaved(false); }}>I have reviewed the adjustment sources and tax treatment</PreparationCheck>}

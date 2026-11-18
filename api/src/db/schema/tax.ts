@@ -127,3 +127,51 @@ export const gstReturnAuditEvents = sqliteTable('gst_return_audit_events', {
   foreignKey({ columns: [table.organisationId, table.taxReturnId], foreignColumns: [taxReturns.organisationId, taxReturns.id] }).onDelete('restrict'),
   check('gst_return_audit_events_action_check', sql`${table.action} IN ('reopen')`),
 ]);
+
+export const gstPeriodCorrections = sqliteTable('gst_period_corrections', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  actorId: text('actor_id').notNull().references(() => users.id),
+  originalTaxReturnId: text('original_tax_return_id').notNull(),
+  originalPeriodStart: text('original_period_start').notNull(),
+  originalPeriodEnd: text('original_period_end').notNull(),
+  targetPeriodStart: text('target_period_start').notNull(),
+  targetPeriodEnd: text('target_period_end').notNull(),
+  sourceType: text('source_type').notNull(),
+  sourceId: text('source_id').notNull(),
+  action: text('action').notNull(),
+  kind: text('kind').notNull(),
+  amount: money('amount').notNull(),
+  reason: text('reason').notNull(),
+  status: text('status').notNull().default('pending'),
+  resolution: text('resolution'),
+  includedTaxReturnId: text('included_tax_return_id'),
+  resolvedAt: timestamptz('resolved_at'),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  uniqueIndex('gst_period_corrections_org_id_uidx').on(table.organisationId, table.id),
+  index('gst_period_corrections_org_idx').on(table.organisationId),
+  index('gst_period_corrections_org_target_idx').on(table.organisationId, table.targetPeriodStart, table.targetPeriodEnd),
+  foreignKey({ columns: [table.organisationId, table.originalTaxReturnId], foreignColumns: [taxReturns.organisationId, taxReturns.id] }).onDelete('restrict'),
+  foreignKey({ columns: [table.organisationId, table.includedTaxReturnId], foreignColumns: [taxReturns.organisationId, taxReturns.id] }).onDelete('restrict'),
+  check('gst_period_corrections_source_check', sql`${table.sourceType} IN ('invoice', 'bill', 'expense', 'credit_note', 'payment', 'bill_payment', 'customs_gst')`),
+  check('gst_period_corrections_action_check', sql`${table.action} IN ('added', 'changed', 'voided')`),
+  check('gst_period_corrections_kind_check', sql`${table.kind} IN ('output', 'input')`),
+  check('gst_period_corrections_status_check', sql`${table.status} IN ('pending', 'included', 'resolved', 'withdrawn')`),
+  check('gst_period_corrections_resolution_check', sql`${table.resolution} IS NULL OR ${table.resolution} IN ('amend_in_myir')`),
+]);
+
+export const gstCorrectionEvents = sqliteTable('gst_correction_events', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  correctionId: text('correction_id').notNull(),
+  actorId: text('actor_id').notNull().references(() => users.id),
+  action: text('action').notNull(),
+  reason: text('reason').notNull(),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  uniqueIndex('gst_correction_events_org_id_uidx').on(table.organisationId, table.id),
+  index('gst_correction_events_org_idx').on(table.organisationId),
+  foreignKey({ columns: [table.organisationId, table.correctionId], foreignColumns: [gstPeriodCorrections.organisationId, gstPeriodCorrections.id] }).onDelete('restrict'),
+  check('gst_correction_events_action_check', sql`${table.action} IN ('recorded', 'included', 'resolved', 'withdrawn')`),
+]);
