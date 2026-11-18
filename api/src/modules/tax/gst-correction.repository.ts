@@ -65,6 +65,20 @@ export function sourceApplies(basis: GstBasis, hit: SourceHit): boolean {
   return Boolean(hit.date) && gstLockApplies(basis, hit.kind);
 }
 
+export async function pendingDuplicate(tx: Database, organisationId: string, input: Pick<CorrectionInsert, 'originalTaxReturnId' | 'sourceType' | 'sourceId' | 'kind' | 'action' | 'amount'>): Promise<string | undefined> {
+  const [row] = await tx.select({ id: gstPeriodCorrections.id }).from(gstPeriodCorrections).where(and(
+    eq(gstPeriodCorrections.organisationId, organisationId),
+    eq(gstPeriodCorrections.originalTaxReturnId, input.originalTaxReturnId),
+    eq(gstPeriodCorrections.sourceType, input.sourceType),
+    eq(gstPeriodCorrections.sourceId, input.sourceId),
+    eq(gstPeriodCorrections.kind, input.kind),
+    eq(gstPeriodCorrections.action, input.action),
+    eq(gstPeriodCorrections.amount, input.amount),
+    eq(gstPeriodCorrections.status, 'pending'),
+  ));
+  return row?.id;
+}
+
 export async function insertCorrection(tx: Database, ctx: Actor, input: CorrectionInsert): Promise<GstCorrectionRow> {
   const [row] = await tx.insert(gstPeriodCorrections).values({
     organisationId: ctx.organisationId, actorId: ctx.userId, ...input, status: 'pending',
@@ -110,9 +124,10 @@ export async function resolveCorrection(tx: Database, ctx: Actor, id: string, re
 
 export async function includeCorrections(tx: Database, ctx: Actor, taxReturnId: string, ids: string[]) {
   if (!ids.length) return;
-  await tx.update(gstPeriodCorrections).set({ status: 'included', includedTaxReturnId: taxReturnId })
-    .where(and(eq(gstPeriodCorrections.organisationId, ctx.organisationId), inArray(gstPeriodCorrections.id, ids), eq(gstPeriodCorrections.status, 'pending')));
-  for (const id of ids) await insertEvent(tx, ctx, id, 'included', `Included in GST return ${taxReturnId}`);
+  const updated = await tx.update(gstPeriodCorrections).set({ status: 'included', includedTaxReturnId: taxReturnId })
+    .where(and(eq(gstPeriodCorrections.organisationId, ctx.organisationId), inArray(gstPeriodCorrections.id, ids), eq(gstPeriodCorrections.status, 'pending')))
+    .returning({ id: gstPeriodCorrections.id });
+  for (const row of updated) await insertEvent(tx, ctx, row.id, 'included', `Included in GST return ${taxReturnId}`);
 }
 
 export async function withdrawPendingForReturn(tx: Database, ctx: Actor, originalTaxReturnId: string, reason: string) {

@@ -89,7 +89,9 @@ export function taxRoutes() {
     routes.post(`${prefix}/tax/gst-corrections`, async (c) => {
       const { db, user } = await requireSession(c);
       const input = createGstCorrectionRequestSchema.parse(await c.req.json());
-      const correction = await recordGstCorrectionForUser(db, user.id, input);
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      const scope = key ? { key, method: 'POST', path: '/api/tax/gst-corrections', requestHash: hashIdempotencyPayload(input) } : undefined;
+      const correction = await recordGstCorrectionForUser(db, user.id, input, scope);
       if (correction.status === 'over_limit') throw apiError(422, 'GST_CORRECTION_OVER_LIMIT', correction.guidance ?? 'Amend the original return in myIR instead of carrying this correction forward.');
       return c.json(correction, 201);
     });

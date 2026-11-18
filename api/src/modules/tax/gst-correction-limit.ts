@@ -13,12 +13,12 @@ export const GST_CORRECTION_UNRESOLVED_MESSAGE =
 
 /**
  * Largest net GST discrepancy that can be carried into a return with this output tax.
- * Output tax is the including return's ledger GST on sales, before this correction.
+ * Output tax is the including return's signed ledger GST on sales, before this correction.
  * 2% is rounded to cents with roundMoney, then capped at $10,000.
- * The $1,000 safe harbour still applies when 2% is lower.
+ * A negative or zero output tax does not raise the ceiling: the $1,000 safe harbour remains.
  */
 export function gstCorrectionCarryLimit(outputTax: string): string {
-  const twoPercent = roundMoney(decimal(outputTax).abs().mul('0.02'));
+  const twoPercent = roundMoney(decimal(outputTax).mul('0.02'));
   const capped = decimal(twoPercent).compare(GST_CORRECTION_CAP) > 0 ? decimal(GST_CORRECTION_CAP) : decimal(twoPercent);
   const safe = decimal(GST_CORRECTION_SAFE_HARBOUR);
   return roundMoney(safe.compare(capped) >= 0 ? safe : capped);

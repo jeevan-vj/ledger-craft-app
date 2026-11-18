@@ -1,12 +1,21 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { GstSavedReturn } from './GstSavedReturn';
+import { gstCorrectionApi } from './gstCorrectionApi';
 import { gstSettingsApi } from './gstSettingsApi';
 vi.mock('./gstSettingsApi', () => ({ gstSettingsApi: { file: vi.fn(), recalculation: vi.fn(), reopen: vi.fn() } }));
 vi.mock('./gstCorrectionApi', () => ({ gstCorrectionApi: { list: vi.fn(async () => ({ corrections: [] })), create: vi.fn(), resolve: vi.fn() } }));
 vi.mock('./export/gstReturnPdf', () => ({ downloadGstReturnPdf: vi.fn() }));
 const value = { id: 'return', returnType: 'GST', periodStart: '2026-11-01', periodEnd: '2026-11-30', status: 'draft', totalSales: '1610.00', totalPurchases: '625.00', gstOnSales: '210.00', gstOnPurchases: '75.00', netGst: '135.00', irdReference: null, returnData: { preparation: { basis: 'hybrid', dueDate: '2027-01-15', baseCurrency: 'NZD' }, gstCalculation: { version: 'gst-ledger-v2', fingerprint: 'hash', warnings: [], sourceCounts: {}, myIrBoxes: {} } } };
 beforeEach(() => vi.clearAllMocks());
+it('keeps filing blocked when prior-period corrections cannot be loaded', async () => {
+  vi.mocked(gstCorrectionApi.list).mockRejectedValueOnce(new Error('Corrections unavailable'));
+  render(<GstSavedReturn value={value as never} onFiled={vi.fn()} />);
+  expect(await screen.findByRole('alert')).toHaveTextContent(/Filing stays blocked/);
+  fireEvent.change(screen.getByLabelText('myIR confirmation reference'), { target: { value: 'MYIR-0123' } });
+  fireEvent.click(screen.getByLabelText('I have already filed this return separately in myIR'));
+  expect(screen.getByRole('button', { name: 'Record existing myIR filing' })).toBeDisabled();
+});
 it('records an external myIR filing only after explicit confirmation, preserving exact saved figures', async () => {
   vi.mocked(gstSettingsApi.file).mockResolvedValue({ ...value, status: 'submitted', irdReference: 'MYIR-0123' } as never);
   const onFiled = vi.fn(); render(<GstSavedReturn value={value as never} onFiled={onFiled} />);

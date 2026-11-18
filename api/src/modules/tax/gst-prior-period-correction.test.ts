@@ -4,6 +4,7 @@ import type { GstPeriodCorrection, GstPreparationResponse, TaxReturnDto } from '
 import { createApp } from '../../app';
 import { createDb } from '../../db/local';
 import { getDatabaseUrl } from '../../env';
+import { organisationMemberships } from '../../db/schema/identity';
 import { invoices } from '../../db/schema/invoices';
 import { gstCorrectionEvents, gstPeriodCorrections } from '../../db/schema/tax';
 import { withTestDb } from '../../test/harness';
@@ -18,8 +19,8 @@ async function org(basis: Basis, registeredFrom = '2026-07-01') {
   const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
   const signup = await app.request('/api/auth/sign-up/email', { method: 'POST', headers: origin, body: JSON.stringify({ name: 'GST correction owner', email: `${crypto.randomUUID()}@example.test`, password: 'Local-GST-correction-2026!' }) });
   const headers = { ...origin, Cookie: signup.headers.getSetCookie().map((value) => value.split(';')[0]).join('; ') };
-  const request = async <T = Record<string, unknown>>(path: string, method = 'GET', body?: unknown, expected = 200) => {
-    const response = await app.request(path, { method, headers, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
+  const request = async <T = Record<string, unknown>>(path: string, method = 'GET', body?: unknown, expected = 200, extra?: Record<string, string>) => {
+    const response = await app.request(path, { method, headers: { ...headers, ...extra }, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
     const value = response.status === 204 ? null : await response.json();
     expect(response.status, `${method} ${path} ${JSON.stringify(value)}`).toBe(expected);
     return value as T;
@@ -164,6 +165,55 @@ describe('prior period GST corrections', () => {
       const overCap = await f.request<{ error: { code: string; message: string } }>('/api/tax/gst-corrections', 'POST', correctionBody(sale.id, '0.01'), 422);
       expect(overCap.error.code).toBe('GST_CORRECTION_OVER_LIMIT');
       expect(overCap.error.message).toMatch(/myIR/);
+    } finally { await f.sql.end(); }
+  }));
+
+  it('places input and negative output corrections, nets an offsetting pair, and refuses a repeated or $12,000 row', async () => withTestDb(async () => {
+    const f = await org('invoice');
+    try {
+      const sale = await f.request<{ id: string }>('/api/invoices', 'POST', { customerId: f.customer.id, date: '2026-07-15', dueDate: '2026-08-31', currency: 'NZD', taxInclusive: false, taxRate: '15', items: [{ description: 'July consulting', quantity: '1', rate: '100' }] }, 201);
+      await f.request(`/api/invoices/${sale.id}`, 'PATCH', { status: 'sent' });
+      await filePeriod(f, '2026-07-01', '2026-08-31', 'MYIR-JUL-AUG-2026');
+      const before = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-09-01&to=2026-10-31');
+      const key = crypto.randomUUID();
+      const large = correctionBody(sale.id, '12000.00');
+      const refused = await f.request<{ error: { code: string; message: string } }>('/api/tax/gst-corrections', 'POST', large, 422, { 'Idempotency-Key': key });
+      expect(refused.error.code).toBe('GST_CORRECTION_OVER_LIMIT');
+      expect(refused.error.message).toMatch(/myIR/);
+      const replay = await f.request<{ error: { code: string } }>('/api/tax/gst-corrections', 'POST', large, 422, { 'Idempotency-Key': key });
+      expect(replay.error.code).toBe('GST_CORRECTION_OVER_LIMIT');
+      const again = await f.request<{ error: { code: string } }>('/api/tax/gst-corrections', 'POST', large, 409);
+      expect(again.error.code).toBe('GST_CORRECTION_DUPLICATE');
+      const stored = await f.db.select({ id: gstPeriodCorrections.id }).from(gstPeriodCorrections).where(eq(gstPeriodCorrections.amount, '12000.00'));
+      expect(stored).toHaveLength(1);
+      const listed = await f.request<{ corrections: GstPeriodCorrection[] }>('/api/tax/gst-corrections?from=2026-09-01&to=2026-10-31');
+      for (const row of listed.corrections) await f.request(`/api/tax/gst-corrections/${row.id}/resolve`, 'POST', { resolution: 'amend_in_myir', reason: 'The large amount will be amended in myIR' });
+      const input = await f.request<GstPeriodCorrection>('/api/tax/gst-corrections', 'POST', { ...correctionBody(sale.id, '40.00'), kind: 'input', action: 'added' }, 201);
+      const withInput = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-09-01&to=2026-10-31');
+      expect(before.calculation?.myIrBoxes['15']).toBe('0.00');
+      expect(withInput.calculation?.myIrBoxes['13']).toBe('40.00');
+      expect(withInput.calculation?.myIrBoxes['15']).toBe('-40.00');
+      await f.request(`/api/tax/gst-corrections/${input.id}/resolve`, 'POST', { resolution: 'amend_in_myir', reason: 'Reset the input example before the negative output' });
+      await f.request('/api/tax/gst-corrections', 'POST', { ...correctionBody(sale.id, '-40.00'), action: 'voided' }, 201);
+      const reduced = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-09-01&to=2026-10-31');
+      expect(reduced.calculation?.myIrBoxes['9']).toBe('-40.00');
+      const negative = reduced.priorPeriodCorrections?.find((row) => row.amount === '-40.00');
+      await f.request(`/api/tax/gst-corrections/${negative!.id}/resolve`, 'POST', { resolution: 'amend_in_myir', reason: 'Reset the negative output example' });
+      const output = await f.request<GstPeriodCorrection>('/api/tax/gst-corrections', 'POST', correctionBody(sale.id, '40.00'), 201);
+      const offset = await f.request<GstPeriodCorrection>('/api/tax/gst-corrections', 'POST', { ...correctionBody(sale.id, '40.00'), kind: 'input', action: 'changed' }, 201);
+      expect(offset).toMatchObject({ status: 'pending', carryForward: 'included', netDiscrepancy: '0.00' });
+      const openPair = await f.request<{ corrections: GstPeriodCorrection[] }>('/api/tax/gst-corrections?from=2026-09-01&to=2026-10-31');
+      expect(openPair.corrections.find((row) => row.id === output.id)?.netDiscrepancy).toBe('0.00');
+      const paired = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-09-01&to=2026-10-31');
+      expect(paired.calculation?.myIrBoxes['9']).toBe('40.00');
+      expect(paired.calculation?.myIrBoxes['13']).toBe('40.00');
+      const duplicate = await f.request<{ error: { code: string } }>('/api/tax/gst-corrections', 'POST', correctionBody(sale.id, '40.00'), 409);
+      expect(duplicate.error.code).toBe('GST_CORRECTION_DUPLICATE');
+      const [membership] = await f.db.select().from(organisationMemberships);
+      await f.db.update(organisationMemberships).set({ role: 'member' }).where(eq(organisationMemberships.id, membership.id));
+      expect((await f.request<{ error: { code: string } }>('/api/tax/gst-corrections', 'POST', { ...correctionBody(sale.id, '1.00'), action: 'voided' }, 403)).error.code).toBe('FORBIDDEN');
+      await f.db.update(organisationMemberships).set({ role: 'read_only' }).where(eq(organisationMemberships.id, membership.id));
+      expect((await f.request<{ error: { code: string } }>(`/api/tax/gst-corrections/${output.id}/resolve`, 'POST', { resolution: 'amend_in_myir', reason: 'Read only member tries to resolve it' }, 403)).error.code).toBe('FORBIDDEN');
     } finally { await f.sql.end(); }
   }));
 

@@ -27,6 +27,14 @@ describe('IRD carry-forward limit for a GST correction', () => {
     expect(gstCorrectionWithinLimit('12000.00', '0.00')).toBe(false);
   });
 
+  it('keeps a negative output tax on the $1,000 safe harbour', () => {
+    expect(gstCorrectionCarryLimit('-200000.00')).toBe('1000.00');
+    expect(gstCorrectionCarryLimit('0.00')).toBe('1000.00');
+    expect(gstCorrectionWithinLimit('1000.00', '-200000.00')).toBe(true);
+    expect(gstCorrectionWithinLimit('1000.01', '-200000.00')).toBe(false);
+    expect(gstCorrectionWithinLimit('4000.00', '-200000.00')).toBe(false);
+  });
+
   it('rounds 2% of output tax to cents before the comparison', () => {
     expect(gstCorrectionCarryLimit('150000.25')).toBe('3000.01');
     expect(gstCorrectionWithinLimit('3000.01', '150000.25')).toBe(true);

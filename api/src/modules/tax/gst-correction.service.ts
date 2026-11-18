@@ -9,12 +9,14 @@ import { generateGstPeriods } from '@ledgercraft/contracts';
 import type { Database } from '../../db/client';
 import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
+import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from '../invoices/idempotency';
 import { GST_CORRECTION_AMEND_GUIDANCE } from './gst-correction-limit';
 import {
   correctionSourceDate,
   getCorrection,
   inForceFiledReturns,
   insertCorrection,
+  pendingDuplicate,
   resolveCorrection,
   sourceApplies,
 } from './gst-correction.repository';
@@ -39,8 +41,12 @@ async function openPeriodAfter(tx: Database, ctx: { organisationId: string; user
   return target;
 }
 
-export async function recordGstCorrectionForUser(db: Database, userId: string, input: CreateGstCorrectionRequest): Promise<GstPeriodCorrection> {
+export async function recordGstCorrectionForUser(db: Database, userId: string, input: CreateGstCorrectionRequest, idempotency?: IdempotencyScope): Promise<GstPeriodCorrection> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if (idempotency) {
+      const existing = await getIdempotencyRecord(tx, ctx, idempotency);
+      if (existing) { assertReplayMatches(existing.requestHash, idempotency.requestHash); return gstPeriodCorrectionSchema.parse(existing.responseBody); }
+    }
     const filed = await inForceFiledReturns(tx, ctx.organisationId);
     const original = filed.find((row) => row.periodStart === input.originalPeriodStart && row.periodEnd === input.originalPeriodEnd);
     if (!original) throw apiError(409, 'GST_CORRECTION_PERIOD_NOT_FILED', 'A prior-period correction can only refer to a filed GST period that is still in force.');
@@ -54,6 +60,10 @@ export async function recordGstCorrectionForUser(db: Database, userId: string, i
       throw apiError(422, 'GST_CORRECTION_SOURCE_PERIOD', `That transaction is dated ${source.date}, outside the filed period ${original.periodStart} to ${original.periodEnd}.`);
     }
     const target = await openPeriodAfter(tx, ctx, original.periodEnd);
+    const duplicate = await pendingDuplicate(tx, ctx.organisationId, {
+      originalTaxReturnId: original.id, sourceType: input.sourceType, sourceId: input.sourceId, kind: input.kind, action: input.action, amount: input.amount,
+    });
+    if (duplicate) throw apiError(409, 'GST_CORRECTION_DUPLICATE', 'This prior-period correction is already recorded for that transaction. It is included once.');
     const saved = await insertCorrection(tx, ctx, {
       originalTaxReturnId: original.id, originalPeriodStart: original.periodStart, originalPeriodEnd: original.periodEnd,
       targetPeriodStart: target.periodStart, targetPeriodEnd: target.periodEnd,
@@ -62,6 +72,7 @@ export async function recordGstCorrectionForUser(db: Database, userId: string, i
     const preparation = await gstPreparationInTx(tx, ctx, { from: target.periodStart, to: target.periodEnd });
     const match = preparation.priorPeriodCorrections?.find((row) => row.id === saved.id);
     if (!match) throw apiError(409, 'GST_CORRECTION_UNAVAILABLE', 'The correction was recorded but could not be placed on the next open GST period.');
+    if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, { status: match.status === 'over_limit' ? 422 : 201, body: match });
     return match;
   });
 }
