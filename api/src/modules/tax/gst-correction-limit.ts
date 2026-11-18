@@ -46,8 +46,16 @@ export type GstCorrectionAssessment = {
   guidance?: string;
 };
 
-/** Net each original return on its own. One original return over the limit does not refuse another. */
-export function assessGstCorrections<T extends CorrectionIdentity>(rows: T[], outputTax: string): {
+/**
+ * One ceiling for every correction carried into the same return.
+ * Rows are considered in the order given. A row that would push the combined
+ * net over the limit is refused on its own. Earlier rows that still fit stay included.
+ */
+export function assessGstCorrections<T extends CorrectionIdentity>(
+  rows: T[],
+  outputTax: string,
+  alreadyIncluded: Array<{ kind: 'output' | 'input'; amount: string }> = [],
+): {
   limit: string;
   included: Array<T & { assessment: GstCorrectionAssessment }>;
   refused: Array<T & { assessment: GstCorrectionAssessment }>;
@@ -55,35 +63,30 @@ export function assessGstCorrections<T extends CorrectionIdentity>(rows: T[], ou
   rows: Array<T & { assessment: GstCorrectionAssessment }>;
 } {
   const limit = gstCorrectionCarryLimit(outputTax);
-  const groups = new Map<string, T[]>();
-  for (const row of rows) {
-    const list = groups.get(row.originalTaxReturnId) ?? [];
-    list.push(row);
-    groups.set(row.originalTaxReturnId, list);
-  }
-  const refusedIds = new Set<string>();
-  const nets = new Map<string, string>();
-  for (const [key, group] of groups) {
-    const net = netGstDiscrepancy(group);
-    nets.set(key, net);
-    if (!gstCorrectionWithinLimit(net, outputTax)) group.forEach((row) => refusedIds.add(row.id));
-  }
+  const accepted: Array<{ kind: 'output' | 'input'; amount: string }> = alreadyIncluded.map((row) => ({ kind: row.kind, amount: row.amount }));
   const annotated = rows.map((row) => {
-    const refused = refusedIds.has(row.id);
+    const net = netGstDiscrepancy([...accepted, row]);
+    const refused = !gstCorrectionWithinLimit(net, outputTax);
+    if (!refused) accepted.push({ kind: row.kind, amount: row.amount });
     const assessment: GstCorrectionAssessment = {
       status: refused ? 'over_limit' : 'pending',
       carryForward: refused ? 'refused' : 'included',
-      netDiscrepancy: nets.get(row.originalTaxReturnId) ?? '0.00',
+      netDiscrepancy: net,
       limit,
       ...(refused ? { guidance: GST_CORRECTION_AMEND_GUIDANCE } : {}),
     };
     return { ...row, assessment };
   });
+  const combined = netGstDiscrepancy(accepted);
+  for (const row of annotated) {
+    if (row.assessment.carryForward === 'included') row.assessment.netDiscrepancy = combined;
+  }
+  const refused = annotated.filter((row) => row.assessment.carryForward === 'refused');
   return {
     limit,
     included: annotated.filter((row) => row.assessment.carryForward === 'included'),
-    refused: annotated.filter((row) => row.assessment.carryForward === 'refused'),
-    blocked: refusedIds.size > 0,
+    refused,
+    blocked: refused.length > 0,
     rows: annotated,
   };
 }

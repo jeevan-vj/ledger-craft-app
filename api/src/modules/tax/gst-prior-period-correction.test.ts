@@ -100,7 +100,7 @@ describe('prior period GST corrections', () => {
       expect(refused.error.code).toBe('GST_CORRECTION_OVER_LIMIT');
       expect(refused.error.message).toMatch(/myIR/);
       const blockedPrep = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-09-01&to=2026-10-31');
-      expect(blockedPrep.calculation?.myIrBoxes['9'] ?? '0.00').toBe('0.00');
+      expect(blockedPrep.calculation?.myIrBoxes['9']).toBe('1000.00');
       expect(blockedPrep.priorPeriodCorrections?.some((row) => row.status === 'over_limit')).toBe(true);
       const draft = await f.request<TaxReturnDto>('/api/tax-returns', 'POST', {
         periodStart: '2026-09-01', periodEnd: '2026-10-31', returnType: 'GST',
@@ -165,6 +165,31 @@ describe('prior period GST corrections', () => {
       const overCap = await f.request<{ error: { code: string; message: string } }>('/api/tax/gst-corrections', 'POST', correctionBody(sale.id, '0.01'), 422);
       expect(overCap.error.code).toBe('GST_CORRECTION_OVER_LIMIT');
       expect(overCap.error.message).toMatch(/myIR/);
+    } finally { await f.sql.end(); }
+  }));
+
+  it('refuses a second 9000.00 correction from another filed period when the combined net would exceed 10000.00', async () => withTestDb(async () => {
+    const f = await org('invoice');
+    try {
+      const july = await f.request<{ id: string }>('/api/invoices', 'POST', { customerId: f.customer.id, date: '2026-07-15', dueDate: '2026-08-31', currency: 'NZD', taxInclusive: false, taxRate: '15', items: [{ description: 'July consulting', quantity: '1', rate: '100' }] }, 201);
+      await f.request(`/api/invoices/${july.id}`, 'PATCH', { status: 'sent' });
+      await filePeriod(f, '2026-07-01', '2026-08-31', 'MYIR-JUL-AUG-2026');
+      const september = await f.request<{ id: string }>('/api/invoices', 'POST', { customerId: f.customer.id, date: '2026-09-15', dueDate: '2026-10-31', currency: 'NZD', taxInclusive: false, taxRate: '15', items: [{ description: 'September consulting', quantity: '1', rate: '100' }] }, 201);
+      await f.request(`/api/invoices/${september.id}`, 'PATCH', { status: 'sent' });
+      await filePeriod(f, '2026-09-01', '2026-10-31', 'MYIR-SEP-OCT-2026');
+      const november = await f.request<{ id: string }>('/api/invoices', 'POST', { customerId: f.customer.id, date: '2026-11-10', dueDate: '2026-11-30', currency: 'NZD', taxInclusive: false, taxRate: '15', items: [{ description: 'November sale', quantity: '1', rate: '4000000' }] }, 201);
+      await f.request(`/api/invoices/${november.id}`, 'PATCH', { status: 'sent' });
+      const open = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-11-01&to=2026-12-31');
+      expect(gstCorrectionCarryLimit(open.gstOnSales)).toBe('10000.00');
+      const first = await f.request<GstPeriodCorrection>('/api/tax/gst-corrections', 'POST', correctionBody(july.id, '9000.00', { originalPeriodStart: '2026-07-01', originalPeriodEnd: '2026-08-31' }), 201);
+      expect(first).toMatchObject({ status: 'pending', carryForward: 'included', targetPeriodStart: '2026-11-01', targetPeriodEnd: '2026-12-31', netDiscrepancy: '9000.00' });
+      const second = await f.request<{ error: { code: string; message: string } }>('/api/tax/gst-corrections', 'POST', correctionBody(september.id, '9000.00', { originalPeriodStart: '2026-09-01', originalPeriodEnd: '2026-10-31' }), 422);
+      expect(second.error.code).toBe('GST_CORRECTION_OVER_LIMIT');
+      expect(second.error.message).toMatch(/myIR/);
+      const combined = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2026-11-01&to=2026-12-31');
+      expect(combined.calculation?.myIrBoxes['9']).toBe('9000.00');
+      expect(combined.priorPeriodCorrections?.find((row) => row.amount === '9000.00' && row.originalPeriodStart === '2026-09-01')?.status).toBe('over_limit');
+      expect(combined.priorPeriodCorrections?.find((row) => row.id === first.id)?.status).toBe('pending');
     } finally { await f.sql.end(); }
   }));
 

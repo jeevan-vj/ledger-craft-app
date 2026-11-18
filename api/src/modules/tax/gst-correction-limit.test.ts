@@ -64,4 +64,30 @@ describe('IRD carry-forward limit for a GST correction', () => {
     expect(assessed.refused.map((item) => item.id)).toEqual(['large']);
     expect(assessed.blocked).toBe(true);
   });
+
+  it('caps the combined net of every correction on the including return', () => {
+    expect(gstCorrectionCarryLimit('500000.00')).toBe('10000.00');
+    const twoPeriods = assessGstCorrections([
+      row('first', 'output', '9000.00', 'jul'),
+      row('second', 'output', '9000.00', 'sep'),
+    ], '500000.00');
+    expect(twoPeriods.included.map((item) => item.id)).toEqual(['first']);
+    expect(twoPeriods.refused.map((item) => item.id)).toEqual(['second']);
+    expect(twoPeriods.refused[0]?.assessment.guidance).toMatch(/myIR/);
+    const exact = assessGstCorrections([
+      row('six', 'output', '6000.00', 'jul'),
+      row('four', 'output', '4000.00', 'sep'),
+    ], '500000.00');
+    expect(exact.included.map((item) => item.id)).toEqual(['six', 'four']);
+    expect(exact.blocked).toBe(false);
+    expect(exact.included[1]?.assessment.netDiscrepancy).toBe('10000.00');
+    const over = assessGstCorrections([
+      row('six-again', 'output', '6000.00', 'jul'),
+      row('four-plus', 'output', '4000.01', 'sep'),
+    ], '500000.00');
+    expect(over.included.map((item) => item.id)).toEqual(['six-again']);
+    expect(over.refused.map((item) => item.id)).toEqual(['four-plus']);
+    expect(over.refused[0]?.assessment.netDiscrepancy).toBe('10000.01');
+    expect(over.blocked).toBe(true);
+  });
 });

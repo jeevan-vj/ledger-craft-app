@@ -38,7 +38,7 @@ export async function priorPeriodCarry(tx: Database, organisationId: string, fro
   const narrow = (row: GstCorrectionRow) => ({ ...row, kind: row.kind as 'output' | 'input' });
   const pending = rows.filter((row) => row.status === 'pending' && inForce.has(row.originalTaxReturnId)).map(narrow);
   const included = rows.filter((row) => row.status === 'included').map(narrow);
-  const assessed = assessGstCorrections(pending, outputTax);
+  const assessed = assessGstCorrections(pending, outputTax, included);
   const inBoxes = [...assessed.included, ...included];
   const output = roundMoney(inBoxes.filter((row) => row.kind === 'output').reduce((sum, row) => sum.add(row.amount), decimal(0)));
   const input = roundMoney(inBoxes.filter((row) => row.kind === 'input').reduce((sum, row) => sum.add(row.amount), decimal(0)));

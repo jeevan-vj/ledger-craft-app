@@ -81,7 +81,7 @@ export async function pendingDuplicate(tx: Database, organisationId: string, inp
 
 export async function insertCorrection(tx: Database, ctx: Actor, input: CorrectionInsert): Promise<GstCorrectionRow> {
   const [row] = await tx.insert(gstPeriodCorrections).values({
-    organisationId: ctx.organisationId, actorId: ctx.userId, ...input, status: 'pending',
+    organisationId: ctx.organisationId, actorId: ctx.userId, ...input, status: 'pending', createdAt: new Date(),
   }).returning();
   if (!row) throw new Error('Failed to record GST correction');
   await insertEvent(tx, ctx, row.id, 'recorded', input.reason);
