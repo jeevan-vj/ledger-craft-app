@@ -72,6 +72,15 @@ describe('friendly API copy', () => {
     })).toBe('This date falls in the filed GST period 2026-09-01 to 2026-10-31. Record a correction in the next open period, or ask an owner or admin to reopen the period. Ref: req_gst_lock');
   });
 
+  it('keeps the myIR amendment guidance for an over-limit GST correction', () => {
+    expect(friendlyApiText({
+      status: 422,
+      code: 'GST_CORRECTION_OVER_LIMIT',
+      message: 'Amend the original return in myIR instead of carrying this correction forward.',
+      requestId: 'req_gst_correction',
+    })).toBe('Amend the original return in myIR instead of carrying this correction forward. Ref: req_gst_correction');
+  });
+
   it('keeps the actionable email-unavailable message', () => {
     expect(friendlyApiText({
       status: 503,

@@ -639,6 +639,7 @@ export * from './fx-revaluation';
 
 export * from "./gst-settings";
 export * from './gst-calculation';
+export * from './gst-corrections';
 export * from './sales-tax-code';
 
 export * from './customer-statements';

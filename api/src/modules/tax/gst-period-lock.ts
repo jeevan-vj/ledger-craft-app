@@ -67,7 +67,7 @@ function datesOf(values: Array<string | null | undefined>): string[] {
   return values.filter((value): value is string => typeof value === 'string' && DATE.test(value));
 }
 
-function snapshotBasis(returnData: unknown): GstBasis {
+export function gstSnapshotBasis(returnData: unknown): GstBasis {
   const data = returnData as {
     preparation?: { basis?: string };
     gstCalculation?: { period?: { basis?: string }; settings?: { gstAccountingBasis?: string | null } };
@@ -86,7 +86,7 @@ async function filedGstPeriods(tx: Database, organisationId: string) {
     returnData: taxReturns.returnData,
   }).from(taxReturns).where(eq(taxReturns.organisationId, organisationId));
   return rows.filter((row) => row.returnType === 'GST' && (row.status === 'submitted' || row.status === 'approved') && !row.supersededAt)
-    .map((row) => ({ periodStart: row.periodStart, periodEnd: row.periodEnd, basis: snapshotBasis(row.returnData) }));
+    .map((row) => ({ periodStart: row.periodStart, periodEnd: row.periodEnd, basis: gstSnapshotBasis(row.returnData) }));
 }
 
 export async function assertGstSourceOpen(tx: Database, organisationId: string, checks: GstLockCheck[]) {

@@ -3,6 +3,8 @@ import type { Database } from '../../db/client';
 import { hashIdempotencyPayload } from '../invoices/idempotency';
 import { decimal, roundMoney } from '../invoices/money';
 import { gstCalculationSources } from './gst-calculation.repository';
+import { priorPeriodCarry, type PriorPeriodCarry } from './gst-correction-carry';
+import { GST_CORRECTION_AMEND_GUIDANCE } from './gst-correction-limit';
 import { customsGstInPeriod, normalizeGstAdjustment, roundingDifference, roundingNeedsAcknowledgement, sumAdjustmentBox } from './gst-return-boxes';
 
 function stable(value: unknown): unknown {
@@ -12,12 +14,14 @@ function stable(value: unknown): unknown {
 }
 export function stableGstFingerprint(value: unknown) { return hashIdempotencyPayload(stable(value)); }
 
-export async function buildGstCalculationSnapshot(tx: Database, ctx: { organisationId: string; userId: string }, preparation: GstPreparationResponse, settings: GstSettingsDto): Promise<GstCalculationSnapshot> {
+export async function buildGstCalculationSnapshot(tx: Database, ctx: { organisationId: string; userId: string }, preparation: GstPreparationResponse, settings: GstSettingsDto, carry?: PriorPeriodCarry): Promise<GstCalculationSnapshot> {
   const sources = await gstCalculationSources(tx, ctx.organisationId, preparation.to);
   const sourceIds = Object.fromEntries(gstCalculationSourceTypes.map(type => [type, sources.filter(source => source.type === type).map(source => source.id)]));
   const sourceCounts = Object.fromEntries(gstCalculationSourceTypes.map(type => [type, sources.filter(source => source.type === type).length]));
   const review = preparation.review;
-  const adjustments = (review?.adjustments ?? []).map(normalizeGstAdjustment);
+  const outputTax = review?.unadjustedGstOnSales ?? preparation.gstOnSales;
+  const applied = carry ?? await priorPeriodCarry(tx, ctx.organisationId, preparation.from, preparation.to, outputTax);
+  const adjustments = [...(review?.adjustments ?? []).map(normalizeGstAdjustment), ...applied.adjustments.map(normalizeGstAdjustment)];
   const customsGst = customsGstInPeriod(sources, preparation.from, preparation.to);
   const zeroRated = preparation.zeroRatedSales ?? '0.00';
   const sales = decimal(preparation.totalSales).sub(preparation.exemptSales ?? '0.00');
@@ -45,7 +49,12 @@ export async function buildGstCalculationSnapshot(tx: Database, ctx: { organisat
   if (preparation.claimablePurchases == null) warnings.push('A supported claimable-purchases gross amount is not available for myIR box11. Review the source evidence before filing; no box11 amount has been invented from GST.');
   if (decimal(outputRounding).compare(0) !== 0 || decimal(inputRounding).compare(0) !== 0) warnings.push(`Ledger GST differs from the myIR 3/23 form by output ${outputRounding} and input ${inputRounding}. This rounding is disclosed separately and is not included in Box 9 or Box 13.`);
   if (roundingReviewRequired) warnings.push('The rounding difference is over $1.00. Review and acknowledge it before recording this return as filed.');
-  const figures = { totalSales: preparation.totalSales, totalPurchases: preparation.totalPurchases, gstOnSales: preparation.gstOnSales, gstOnPurchases: preparation.gstOnPurchases, netGst: preparation.netGstPosition };
+  if (decimal(applied.output).compare(0) !== 0 || decimal(applied.input).compare(0) !== 0) warnings.push(`Prior-period corrections are included in this return: output ${applied.output} and input ${applied.input}. The filed snapshot for the original period is unchanged.`);
+  if (applied.blocked) warnings.push(GST_CORRECTION_AMEND_GUIDANCE);
+  const gstOnSales = roundMoney(decimal(preparation.gstOnSales).add(applied.output));
+  const gstOnPurchases = roundMoney(decimal(preparation.gstOnPurchases).add(applied.input));
+  const netGst = roundMoney(decimal(gstOnSales).sub(gstOnPurchases));
+  const figures = { totalSales: preparation.totalSales, totalPurchases: preparation.totalPurchases, gstOnSales, gstOnPurchases, netGst };
   const body = {
     version: 'gst-ledger-v3' as const, period: { from: preparation.from, to: preparation.to, basis: preparation.basis }, settings, figures, sources, sourceIds, sourceCounts,
     customsGst, rounding: { output: outputRounding, input: inputRounding }, roundingReviewRequired,
@@ -54,7 +63,8 @@ export async function buildGstCalculationSnapshot(tx: Database, ctx: { organisat
       ...(box12 === undefined || box13 === undefined ? {} : { '12': box12, '13': box13 }), '14': box14, '15': box15 },
     mappingStatus: box12 === undefined || !classificationSupported ? 'requires_confirmation' : 'supported',
     warnings, requiresReview: Boolean(preparation.requiresReview || preparation.claimablePurchases == null || !classificationSupported),
-    result: decimal(preparation.netGstPosition).compare(0) > 0 ? 'payable' : decimal(preparation.netGstPosition).compare(0) < 0 ? 'refund' : 'nil',
+    result: decimal(netGst).compare(0) > 0 ? 'payable' : decimal(netGst).compare(0) < 0 ? 'refund' : 'nil',
+    ...(applied.disclosure.length ? { priorPeriodCorrections: applied.disclosure } : {}),
   };
   const fingerprint = stableGstFingerprint({ organisationId: ctx.organisationId, ...body, review: review ? { adjustments: review.adjustments, salesClassificationReview: review.salesClassificationReview ?? null } : null });
   return gstCalculationSnapshotSchema.parse({ ...body, fingerprint, calculatedAt: new Date().toISOString() });
